@@ -184,7 +184,7 @@ export class CustomerTypeDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Customer Type Added Successfully', 'secondary');
           this.customerTypeService.resetValues()
-          this.fetchCustomerTypeList(this.customerTypeService.pageIndex, this.customerTypeService.pageSize, this.customerTypeService.searchTerm);
+          //this.fetchCustomerTypeList(this.customerTypeService.pageIndex, this.customerTypeService.pageSize, this.customerTypeService.searchTerm);
           this.router.navigate(['/customer-type']);
         }
       })
@@ -202,7 +202,7 @@ export class CustomerTypeDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Customer Type updated Successfully', 'secondary');
           this.customerTypeService.resetValues()
-          this.fetchCustomerTypeList(this.customerTypeService.pageIndex, this.customerTypeService.pageSize, this.customerTypeService.searchTerm);
+          //this.fetchCustomerTypeList(this.customerTypeService.pageIndex, this.customerTypeService.pageSize, this.customerTypeService.searchTerm);
           this.router.navigate(['/customer-type']);
         }
       })

@@ -30,7 +30,7 @@ export class CustomerTypeService {
         if(data.responseData.length > 0){
 
           this.customerTypeList = [...this.customerTypeList,...data.responseData];
-          this.totalCount = data.responseData[0].totalCount;
+          this.totalCount = this.customerTypeList[0].totalCount;
 
          }
   

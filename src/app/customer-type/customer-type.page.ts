@@ -31,6 +31,11 @@ export class CustomerTypePage implements OnInit {
 
   }
 
+  ionViewWillEnter(){
+    this.customerTypeService.searchTerm = "";
+    this.fetchCustomerTypeList(this.customerTypeService.pageIndex, this.customerTypeService.pageSize, this.customerTypeService.searchTerm);
+    this.customerTypeService.pageIndex += 1;
+  }
   public async fetchCustomerTypeList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();
