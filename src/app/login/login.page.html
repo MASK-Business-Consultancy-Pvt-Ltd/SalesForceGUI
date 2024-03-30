@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Login From -->
+<div class="form login_form">
+  <form action="#" style="margin-top: 35px;" (ngSubmit)="onSubmit()">
+      <div class="title">
+          <ion-img style="height: 100px;" src="../../assets/maskbc_logo.png"></ion-img>
+      </div>
+      <div class="description">
+          <h3 style="color: rgb(92, 92, 92);">Sales CRM</h3>
+          <h6>Version: 1.0.0.1</h6>
+      </div>
+
+      <ion-grid no-padding>
+        <ion-row>
+          <ion-col no-padding>
+            <ion-item style="margin-top:20px;">
+              <ion-input id="ionInputUserName" label="User name" labelPlacement="floating"></ion-input>
+              <ion-icon name="person"></ion-icon>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col no-padding>
+            <ion-item style="margin-top:10px;">
+              <ion-input id="ionInputPassword" label="Password" labelPlacement="floating"></ion-input>
+              <ion-icon name="key"></ion-icon>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-col no-padding>
+        <a href="" class="ForgetPass" id="open-modal" style="margin-top:10px;"  [routerLink]="['/']">Forgot Password ? </a>  
+      </ion-col>
+        </ion-grid> 
+      <ion-button type="submit" class="loginbutton" expand="block">Log In</ion-button> 
+     <h6 style="text-align: center;margin-top: 20px;">Copyright © 2023 MASK BC. All Rights reserved.</h6>
+  </form>
+</div>
+
+   <!-- Pop-up Modal For Foeget PassWord Start 11-03-2024-->
+
+<ion-modal #modal trigger="open-modal" style="margin: 10px;">
+  <ng-template>
+    <ion-content>
+      <ion-toolbar>
+        <ion-title style="margin-left:10px;">Forgot Password</ion-title>
+        <ion-buttons slot="end">
+        <ion-button color="light" (click)="modal.dismiss()">Close</ion-button> 
+        </ion-buttons>
+      </ion-toolbar>
+      <p class="container-fluid"   >
+        You will receive the Reset Password Email on your registered email id.
+      </p>
+      <form action="#" style="margin-top: 5px;" (ngSubmit)="onPassSubmit()">
+        <ion-grid no-padding>
+          <ion-row>
+            <ion-col no-padding>
+              <ion-item style="margin-top:5px;">
+                <ion-input id="Email" label="Email" class="lable" labelPlacement="floating"></ion-input>
+                <ion-icon name="mail"></ion-icon>
+              </ion-item>
+            </ion-col>
+          </ion-row>      
+          <ion-row>
+            <ion-col no-padding>
+              <ion-item style="margin-top:5px;">
+                <ion-input id="otp" label="OTP"  class="lable" labelPlacement="floating"></ion-input>
+                <ion-icon name="password"></ion-icon>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          </ion-grid> 
+          <div class="container-fluid">
+          <ion-grid>
+            <ion-row>
+              <ion-col> <ion-button class="Submitbutton" expand="block">Send OTP</ion-button> </ion-col> &nbsp;
+              <ion-col> <ion-button type="submit" class="Submitbutton"  (click)="modal.dismiss()"  expand="block">Submit</ion-button> </ion-col>         
+            </ion-row>
+         </ion-grid>
+        </div>
+    </form>
+
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+  <!-- Pop-up Modal For Foeget PassWord End-->
+
+</ion-content>

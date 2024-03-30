@@ -1,0 +1,32 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Head Quarter</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button [routerLink]="['/head-quarter-detail']"><ion-icon name="add-outline" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+<ion-list>
+  <ion-item [routerLink]="['/head-quarter-detail']">
+    <ion-label>
+      <strong>Head Quarter Name</strong>
+      <br />
+      <ion-note color="medium" class="ion-text-wrap">
+        Diabetic
+      </ion-note>
+    </ion-label>
+    <div class="metadata-end-wrapper" slot="end">
+      <ion-note color="medium">2</ion-note>
+      <ion-icon color="medium" name="chevron-forward"></ion-icon>
+    </div>
+  </ion-item>
+ 
+</ion-list>
+

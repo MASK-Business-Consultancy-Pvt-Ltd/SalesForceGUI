@@ -1,0 +1,176 @@
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit(employeeForm)">
+
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/employee"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Employee Details</ion-title>
+  
+      <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="ChangeViewDataFlag();"><ion-icon name="create-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+  
+      <!-- <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="DeleteEmployee();"><ion-icon name="trash-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+   -->
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button type="submit">Save</ion-button>
+      </ion-buttons>
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button [routerLink]="['/employee']">Cancel</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  
+  </ion-header>
+  
+  <ion-content [fullscreen]="true">
+    <ion-grid no-padding>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Employee Code" labelPlacement="floating" formControlName="employeeCode"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="First Name" labelPlacement="floating" formControlName="firstname"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Last Name" labelPlacement="floating" formControlName="lastname"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="levelId" interface="popover" placeholder="Level" formControlName="levelID">
+              <ion-select-option *ngFor="let level of employeeService.levelList" [value]="level.id">
+                {{level.levelCode}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="reportingManagerId" interface="popover" placeholder="Reporting Manager" formControlName="reportingManagerId">
+              <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
+                {{employee.employeeName}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row> 
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Contact No" labelPlacement="floating" formControlName="contactNo"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding> 
+          <ion-item>
+            <ion-textarea labelPlacement="floating" label="Building" formControlName="building"></ion-textarea>
+          </ion-item> 
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding> 
+          <ion-item>
+            <ion-textarea labelPlacement="floating" label="Block" formControlName="block"></ion-textarea>
+          </ion-item> 
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding> 
+          <ion-item>
+            <ion-textarea labelPlacement="floating" label="City" formControlName="city"></ion-textarea>
+          </ion-item> 
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding> 
+          <ion-item>
+            <ion-textarea labelPlacement="floating" label="Zip Code" formControlName="zipcode"></ion-textarea>
+          </ion-item> 
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding> 
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="State" formControlName="State">
+              <ion-select-option *ngFor="let State of employeeService.territoryList" [value]="State.id">
+                {{State.territoryCode}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item> 
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding> 
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Country" formControlName="Country">
+              <ion-select-option *ngFor="let country of employeeService.territoryList" [value]="country.id">
+                {{country.territoryCode}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item> 
+        </ion-col>
+      </ion-row>    
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Active" formControlName="active">
+              <ion-select-option value=Y>Yes</ion-select-option>
+              <ion-select-option value=N>No</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row> 
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Emai Id" labelPlacement="floating" formControlName="emailId"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Login" labelPlacement="floating" formControlName="login"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Password" type="password" labelPlacement="floating" formControlName="password"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Territory Id" formControlName="territoryID">
+              <ion-select-option *ngFor="let territory of employeeService.territoryList" [value]="territory.id">
+                {{territory.territoryCode}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+  
+  </form>

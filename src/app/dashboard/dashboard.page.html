@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <!-- <ion-buttons slot="start">
+      <ion-menu-button style="color:whitesmoke"></ion-menu-button>
+    </ion-buttons> -->
+    <ion-title>Dashboard</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="Logout();" style="margin-right: 13px;font-size: 23px;"><ion-icon name="log-out-outline"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<!-----------------------------------DASHBOARD START--------------------------->
+
+<div class="ion-page" id="main-content">
+
+  <ion-content class="ion-padding">
+
+    <div type="button" class="icon-container">
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/master']">
+        <ion-button class="icon-btn" ><ion-icon name="school-outline"></ion-icon></ion-button>
+        <p>Master</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons"  [routerLink]="['/transaction']">
+        <ion-button class="icon-btn"><ion-icon name="swap-horizontal-outline"></ion-icon></ion-button>
+        <p>Transation</p>
+      </ion-buttons>
+
+    </div>
+
+  </ion-content>
+
+
+  <!-----------------------------------DASHBOARD END--------------------------->
+
+</div>
+
+

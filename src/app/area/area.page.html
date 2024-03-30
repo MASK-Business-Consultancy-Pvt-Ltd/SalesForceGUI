@@ -1,0 +1,52 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" *ngIf="!areaService.showSearchBar">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Area</ion-title>
+
+    <ion-buttons slot="primary">
+      <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="primary">
+      <ion-button [routerLink]="['/area','']"><ion-icon name="add-outline" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar color="primary" *ngIf="areaService.showSearchBar">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar [(ngModel)]="areaService.searchTerm"></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button  (click)="search(areaService.searchTerm)" style="text-transform: none;">Search</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelSearch()" style="text-transform: none;">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  
+</ion-header>
+
+<ion-content [fullscreen]="true">
+<ion-list>
+  <ion-item  *ngFor="let area of areaService.areaList" [routerLink]="['/area',area.id]">
+    <ion-label>
+      <strong>{{area.areaCode}}</strong>
+      <br />
+      <ion-note color="medium" class="ion-text-wrap">
+        {{area.areaName}}
+      </ion-note>
+    </ion-label>
+    <div class="metadata-end-wrapper" slot="end">
+      <!-- <ion-note color="medium">2</ion-note> -->
+      <ion-icon color="medium" name="chevron-forward"></ion-icon>
+    </div>
+  </ion-item>
+ 
+</ion-list>
+
+

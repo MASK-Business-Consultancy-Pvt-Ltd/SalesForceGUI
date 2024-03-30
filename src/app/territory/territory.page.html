@@ -1,0 +1,54 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" *ngIf="!territoryService.showSearchBar">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Territory</ion-title>
+
+    <ion-buttons slot="primary">
+      <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="primary">
+      <ion-button [routerLink]="['/territory','']"><ion-icon name="add-outline" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar color="primary" *ngIf="territoryService.showSearchBar">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar [(ngModel)]="territoryService.searchTerm"></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button  (click)="search(territoryService.searchTerm)" style="text-transform: none;">Search</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelSearch()" style="text-transform: none;">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header> 
+
+<ion-content [fullscreen]="true">
+<ion-list>
+  <ion-item *ngFor="let territory of territoryService.territoryList" [routerLink]="['/territory',territory.id]">
+    <ion-label>
+      <strong>{{territory.territoryCode}}</strong>
+      <br />
+      <ion-note color="medium" class="ion-text-wrap">
+        {{territory.territoryName}}
+      </ion-note>
+    </ion-label>
+    <div class="metadata-end-wrapper" slot="end">
+      <ion-icon color="medium" name="chevron-forward"></ion-icon>
+    </div>
+  </ion-item>
+ 
+</ion-list>
+
+<ion-infinite-scroll (ionInfinite)="onScrollLoadData($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
+</ion-content>

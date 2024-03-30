@@ -1,0 +1,26 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" *ngIf="!shiptoAddressService.showSearchBar">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ship To Address</ion-title>
+
+    <ion-buttons slot="primary">
+      <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+ 
+ <ion-content [fullscreen]="true">
+      <ion-list class="btns" [routerLink]="['/shiptoaddress','']">
+         Add Ship To Address
+      </ion-list>    
+
+<ion-infinite-scroll (ionInfinite)="onScrollLoadData($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
+</ion-content>
+

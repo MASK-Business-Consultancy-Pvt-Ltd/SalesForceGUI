@@ -1,0 +1,86 @@
+<form [formGroup]="billtoForm" (ngSubmit)="onSubmit(billtoForm)">
+
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/billToAddress"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Bill to Form Details</ion-title>
+  
+      <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="ChangeViewDataFlag();" ><ion-icon name="create-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+  
+      <!-- <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="DeleteProductType();"><ion-icon name="trash-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons> -->
+
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button type="submit">Save</ion-button>
+      </ion-buttons>
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button [routerLink]="['/billToAddress']">Cancel</ion-button>
+      </ion-buttons>
+    </ion-toolbar> 
+  </ion-header> 
+
+  <ion-content [fullscreen]="true">
+    <ion-grid no-padding>
+       <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Address Id" labelPlacement="floating" formControlName="addressId"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row> 
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Block" labelPlacement="floating" formControlName="block"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="City" labelPlacement="floating" formControlName="city"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="ZipCode" labelPlacement="floating" formControlName="zipCode"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="State" labelPlacement="floating" formControlName="state"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+   
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Country" labelPlacement="floating" formControlName="country"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="GST No" labelPlacement="floating" formControlName="gstNo"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </ion-content>  
+</form>

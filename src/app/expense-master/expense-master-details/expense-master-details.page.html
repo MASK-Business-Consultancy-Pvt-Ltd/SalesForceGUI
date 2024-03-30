@@ -1,0 +1,72 @@
+<form [formGroup]="expenseMasterForm" (ngSubmit)="onSubmit(expenseMasterForm)">
+
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/expensemaster"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Expense Master Details</ion-title>
+  
+      <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="ChangeViewDataFlag();" ><ion-icon name="create-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+  
+      <!-- <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="DeleteExpenseHead();"><ion-icon name="trash-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons> -->
+
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button type="submit">Save</ion-button>
+      </ion-buttons>
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button [routerLink]="['/expensemaster']">Cancel</ion-button>
+      </ion-buttons>
+    </ion-toolbar> 
+  </ion-header> 
+  
+  <ion-content [fullscreen]="true">
+    <ion-grid no-padding>
+      <ion-col  size="10" size-md="10" size-lg="11"  no-padding>
+        <ion-item>
+          <ion-select aria-label="DesignationId"  interface="popover" placeholder="Select Designation" formControlName="DesignationId">
+            <!-- <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
+              {{employee.employeeName}}
+            </ion-select-option> -->
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Daily Allowance Local" type="number" labelPlacement="floating" formControlName="DailyAllowanceLocal"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Daily Allowance out Station" type="number" labelPlacement="floating" formControlName="DailyAllowanceOutStation"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Traveling Allowance Local" type="number" labelPlacement="floating" formControlName="TravelingAllowanceLocal"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Traveling Allowance out Station" labelPlacement="floating" formControlName="TravelingAllowanceOutStation"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+  
+  </form> 

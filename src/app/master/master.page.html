@@ -1,0 +1,97 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Master</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<div class="ion-page">
+
+  <ion-content class="ion-padding">
+
+    <div type="button" class="icon-container">
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/products']">
+        <ion-button class="icon-btn" ><ion-icon name="cube-outline"></ion-icon></ion-button>
+        <p>Products</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/product-type']">
+        <ion-button class="icon-btn"><ion-icon name="server-outline"></ion-icon></ion-button>
+        <p>Product Type</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/area']">
+        <ion-button class="icon-btn"><ion-icon name="square-outline"></ion-icon></ion-button>
+        <p>Area</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/customer']">
+        <ion-button class="icon-btn"><ion-icon name="people-outline"></ion-icon></ion-button>
+        <p>Customer</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/customer-type']">
+        <ion-button class="icon-btn"><ion-icon name="people-circle-outline"></ion-icon></ion-button>
+        <p>Customer Type</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/employee']">
+        <ion-button class="icon-btn"><ion-icon name="person-outline"></ion-icon></ion-button>
+        <p>Employee</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/level']">
+        <ion-button class="icon-btn"><ion-icon name="cellular-outline"></ion-icon></ion-button>
+        <p>Level</p>
+      </ion-buttons>
+
+      <!-- <ion-buttons slot="start" class="icons" [routerLink]="['/head-quarter']">
+        <ion-button class="icon-btn"><ion-icon name="business-outline"></ion-icon></ion-button>
+        <p>Head Quarter</p>
+      </ion-buttons> -->
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/region']">
+        <ion-button class="icon-btn"><ion-icon name="locate-outline"></ion-icon></ion-button>
+        <p>Region </p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/territory']">
+        <ion-button class="icon-btn"><ion-icon name="navigate-circle-outline"></ion-icon></ion-button>
+        <p>Territory</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/zone']">
+        <ion-button class="icon-btn"><ion-icon name="location-outline"></ion-icon></ion-button>
+        <p>Zone</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/working-type']">
+        <ion-button class="icon-btn">
+          <ion-icon name="laptop-outline"></ion-icon>
+        </ion-button>
+        <p>Working Type</p>
+      </ion-buttons>
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/expense-head']">
+        <ion-button class="icon-btn">
+          <ion-icon name="cash-outline"></ion-icon>
+        </ion-button>
+        <p>Expense Head</p>
+      </ion-buttons>
+
+
+      <ion-buttons slot="start" class="icons" [routerLink]="['/expensemaster']">
+        <ion-button class="icon-btn">
+          <ion-icon name="card-outline"></ion-icon>
+        </ion-button>
+        <p>Expense Master</p>
+      </ion-buttons>
+
+    </div> 
+  </ion-content>
+</div>

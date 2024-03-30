@@ -1,0 +1,20 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Transaction</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<div class="ion-page">
+  <ion-content class="ion-padding">
+    <div type="button" class="icon-container">
+      <ion-buttons slot="start" class="icons" [routerLink]="['/dailyactivity']">
+        <ion-button class="icon-btn" ><ion-icon name="cube-outline"></ion-icon></ion-button>
+        <p>Daily Activity</p>
+      </ion-buttons>
+    </div> 
+  </ion-content>
+</div>
+

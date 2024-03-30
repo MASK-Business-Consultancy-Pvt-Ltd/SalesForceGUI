@@ -1,0 +1,121 @@
+<form [formGroup]="customerForm" (ngSubmit)="onSubmit(customerForm)">
+
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/customer"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Cutomer Details</ion-title>
+   
+      <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="ChangeViewDataFlag();"><ion-icon name="create-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+  
+      <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="DeleteCustomer();"><ion-icon name="trash-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button type="submit">Save</ion-button>
+      </ion-buttons>
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button [routerLink]="['/customer']">Cancel</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  
+  </ion-header>
+  
+  <ion-content [fullscreen]="true">
+    <ion-grid no-padding>
+      <!-- <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Cutomer Code" labelPlacement="floating" formControlName="customerCode"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row> -->
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Cutomer Name" labelPlacement="floating" formControlName="customerName"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Customer Type" interface="popover" placeholder="Customer Type" formControlName="customerType">
+              <ion-select-option *ngFor="let type of customerService.customerTypeList" [value]="type.id">
+                {{type.customerTypeCode }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Mobile No" type="number"  maxlength="10" labelPlacement="floating" formControlName="contactNo"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <!-- <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Gender" interface="popover" placeholder="Gender" formControlName="gender">
+              <ion-select-option [value]=1>Male</ion-select-option>
+              <ion-select-option [value]=2>Female</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row> -->
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Email Id" labelPlacement="floating" formControlName="emailId"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Active" formControlName="active">
+              <ion-select-option value=Y>Yes</ion-select-option>
+              <ion-select-option value=N>No</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Territory Id" interface="popover" placeholder="Territory Id" formControlName="territoryID">
+              <ion-select-option *ngFor="let territory of customerService.territoryList" [value]="territory.id">
+                {{territory.territoryCode}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Bill To Address" labelPlacement="floating" [routerLink]="['/billToAddress']" formControlName="billToAddress"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Ship To Address" labelPlacement="floating" [routerLink]="['/shiptoaddress']" formControlName="shipToAddress"></ion-input>  
+            <!-- [routerLink]="['/customer',customer.id]" -->
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </ion-content>
+  
+  </form>

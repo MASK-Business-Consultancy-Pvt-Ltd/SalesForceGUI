@@ -1,0 +1,158 @@
+<form [formGroup]="dailyActivityForm" (ngSubmit)="onSubmit(dailyActivityForm)">
+
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/dailyactivity"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Daily Activity Details</ion-title>
+  
+      <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="ChangeViewDataFlag();" ><ion-icon name="create-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button type="submit">Save</ion-button>
+      </ion-buttons>
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button [routerLink]="['/dailyactivity']">Cancel</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  
+  </ion-header> 
+  
+  <ion-content [fullscreen]="true">
+    <ion-grid no-padding>
+
+      <ion-row>
+        <ion-col size="10" size-md="10" size-lg="11" no-padding>
+          <ion-label></ion-label>
+          <ion-item>
+            <ion-datetime presentation="date" placeholder="Check Out" displayFormat="MM/DD/YYYY" formControlName="CheckOutTime" locale="en-US"></ion-datetime>
+          </ion-item>
+      </ion-col>
+     </ion-row>
+     
+      <ion-row>
+        <ion-col  size="10" size-md="10" size-lg="11" no-padding>
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Select Territory" formControlName="TerritoryId">
+              <ion-select-option *ngFor="let territory of dailyActivityService.TerritoryList" [value]="territory.id">
+                {{territory.territoryCode}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      
+      <ion-row>
+        <ion-col size="10" size-md="10" size-lg="11" no-padding>
+          <ion-item>
+            <ion-select aria-label="DoctorId" interface="popover" placeholder="Select Doctor" formControlName="DoctorId">
+              <!-- <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
+                {{employee.employeeName}}
+              </ion-select-option> -->
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col no-padding>        
+              <ion-button style="background-color: white;border-radius: 10px;" fill="outline">+</ion-button>                     
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="10" size-md="10" size-lg="11"  no-padding>
+          <ion-item>
+            <ion-select aria-label="Chemist" interface="popover" placeholder="Select Chemist" formControlName="ChemistId">
+              <!-- <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
+                {{employee.employeeName}}
+              </ion-select-option> -->
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col no-padding>
+            <ion-button style="background-color: white;background: none;" fill="outline">+</ion-button>            
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col  size="10" size-md="10" size-lg="11"  no-padding>
+          <ion-item>
+            <ion-select aria-label="StockistId" interface="popover" placeholder="Select Stockist" formControlName="StockistId">
+              <!-- <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
+                {{employee.employeeName}}
+              </ion-select-option> -->
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col  no-padding>          
+              <ion-button style="background-color: white;border-radius: 10px;" fill="outline"> + </ion-button>                     
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="10" size-md="10" size-lg="11"  no-padding>
+          <ion-item>
+            <ion-select aria-label="ProductId" interface="popover" placeholder="Select Product" formControlName="ProductId">
+               <ion-select-option *ngFor="let product of dailyActivityService.ProductTypeList" [value]="product.id">
+                {{product.groupName}}
+              </ion-select-option> 
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="10" size-md="10" size-lg="11"  no-padding>
+          <ion-item>
+            <ion-select aria-label="WorkingTypeId" interface="popover" placeholder="Select Working Type" formControlName="WorkingTypeId">
+              < <ion-select-option *ngFor="let workingtype of dailyActivityService.WorkingTypeList" [value]="workingtype.id">
+                {{workingtype.typeCode}}
+              </ion-select-option> 
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10" size-md="10" size-lg="11"  no-padding>
+          <ion-item>
+            <ion-select aria-label="VisitedWithId" interface="popover" placeholder="Select Visited With" formControlName="VisitedWithId">
+              <!-- <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
+                {{employee.employeeName}}
+              </ion-select-option> -->
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+  
+      <ion-row>
+        <ion-col size="10" size-md="10" size-lg="11"  no-padding>
+          <ion-label>Check In</ion-label>
+          <ion-item>
+              <ion-datetime presentation="time" placeholder="Check in" displayFormat="h:mm" formControlName="CheckInTime" locale="en-US"></ion-datetime>
+          </ion-item>
+      </ion-col>
+     </ion-row>
+     <ion-row>
+      <ion-col size="10" size-md="10" size-lg="11"  no-padding>
+        <ion-label>Check Out</ion-label>
+        <ion-item>
+            <ion-datetime presentation="time" placeholder="Check Out" displayFormat="h:mm" formControlName="CheckOutTime" locale="en-US"></ion-datetime>
+        </ion-item>
+    </ion-col>
+   </ion-row>
+   <ion-row>
+    <ion-col size="10" size-md="10" size-lg="11"  no-padding>
+      <ion-item>
+      <ion-textarea placeholder="Remark" formControlName="Remark" ></ion-textarea>
+      </ion-item>
+  </ion-col>
+  </ion-row>
+  </ion-grid>
+  </ion-content>
+
+  </form> 
+  
+

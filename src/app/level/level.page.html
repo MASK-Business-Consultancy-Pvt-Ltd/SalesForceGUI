@@ -1,0 +1,56 @@
+
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" *ngIf="!levelService.showSearchBar">
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Level</ion-title>
+
+    <ion-buttons slot="primary">
+      <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="primary">
+      <ion-button [routerLink]="['/level','']"><ion-icon name="add-outline" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar> 
+
+  <ion-toolbar color="primary" *ngIf="levelService.showSearchBar">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar [(ngModel)]="levelService.searchTerm"></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button  (click)="search(levelService.searchTerm)" style="text-transform: none;">Search</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelSearch()" style="text-transform: none;">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  
+</ion-header>
+
+<ion-content [fullscreen]="true">
+<ion-list>
+  <ion-item *ngFor="let level of levelService.levelList" [routerLink]="['/level',level.id]">
+    <ion-label>
+      <strong>{{level.levelCode}}</strong>
+      <br />
+      <ion-note color="medium" class="ion-text-wrap">
+        {{level.levelName}}
+      </ion-note>
+    </ion-label>
+    <div class="metadata-end-wrapper" slot="end">
+      <ion-icon color="medium" name="chevron-forward"></ion-icon>
+    </div>
+  </ion-item>
+ 
+</ion-list>
+
+<ion-infinite-scroll (ionInfinite)="onScrollLoadData($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
+</ion-content>
+
+

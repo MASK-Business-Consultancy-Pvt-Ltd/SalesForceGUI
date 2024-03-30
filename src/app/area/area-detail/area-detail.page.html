@@ -1,0 +1,71 @@
+<form [formGroup]="areaForm" (ngSubmit)="onSubmit(areaForm)">
+
+  <ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/area"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Area Details</ion-title>
+  
+      <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="ChangeViewDataFlag();"><ion-icon name="create-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons>
+  
+      <!-- <ion-buttons slot="primary" *ngIf="this.ViewDataFlag == true">
+        <ion-button (click)="DeleteArea();"><ion-icon name="trash-outline" slot="icon-only"></ion-icon></ion-button>
+      </ion-buttons> -->
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button type="submit">Save</ion-button>
+      </ion-buttons>
+  
+      <ion-buttons [collapse]="true" slot="end" *ngIf="this.ViewDataFlag == false">
+        <ion-button [routerLink]="['/area']">Cancel</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  
+  </ion-header>
+  
+  <ion-content [fullscreen]="true">
+    <ion-grid no-padding>
+      <!-- <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Area Code" labelPlacement="floating" formControlName="areaCode"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row> -->
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Area Name" labelPlacement="floating" formControlName="areaName"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Region Id" formControlName="regionId">
+              <ion-select-option *ngFor="let region of areaService.regionList" [value]="region.id">
+                {{region.regionCode}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+ 
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Active" formControlName="active">
+              <ion-select-option value=Y>Yes</ion-select-option>
+              <ion-select-option value=N>No</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+  
+  </form>
+  
