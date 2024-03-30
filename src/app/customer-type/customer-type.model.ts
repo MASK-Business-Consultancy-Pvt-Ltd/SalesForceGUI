@@ -8,3 +8,24 @@ export interface CustomerType{
     active?:string;
       
  }
+
+
+//  export interface CustomerType{
+
+//     code:number,
+//     name:string,
+//     totalCount:number
+       
+//   }
+ 
+//   {
+//      "responseData": [
+//        {
+//          "code": 0,
+//          "name": "string",
+//          "totalCount": 0
+//        }
+//      ],
+//      "errCode": 0,
+//      "message": "string"
+//    }
