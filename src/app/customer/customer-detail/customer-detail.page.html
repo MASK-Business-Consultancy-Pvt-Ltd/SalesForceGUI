@@ -46,8 +46,8 @@
         <ion-col no-padding>
           <ion-item>
             <ion-select aria-label="Customer Type" interface="popover" placeholder="Customer Type" formControlName="customerType">
-              <ion-select-option *ngFor="let type of customerService.customerTypeList" [value]="type.id">
-                {{type.customerTypeCode }}
+              <ion-select-option *ngFor="let type of customerService.customerTypeList" [value]="type.code">
+                {{type.name }}
               </ion-select-option>
             </ion-select>
           </ion-item>

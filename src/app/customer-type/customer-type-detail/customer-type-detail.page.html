@@ -1,4 +1,4 @@
-<form [formGroup]="customerTypeForm"  (ngSubmit)="onSubmit(customerTypeForm)">
+<form [formGroup]="customerTypeForm"  (ngSubmit)="onSubmit()">
 
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
@@ -38,17 +38,7 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Customer Type Name" labelPlacement="floating" formControlName="customerTypeName"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col no-padding>
-          <ion-item>
-            <ion-select aria-label="Active" interface="popover" placeholder="Active" formControlName="active">
-              <ion-select-option value=Y>Yes</ion-select-option>
-              <ion-select-option value=N>No</ion-select-option>
-            </ion-select>
+            <ion-input label="Customer Type Name" labelPlacement="floating" formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>

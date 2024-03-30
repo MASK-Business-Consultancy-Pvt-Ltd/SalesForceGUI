@@ -69,8 +69,9 @@ export const getAllCustomerType = BaseURL + 'CustomerGroup/GetAllCustomerGroup'
 export const getAllCustomerTypeWithoutPagination = BaseURL + 'CustomerGroup/GetAllCustomerTypeWithoutPagination'
 export const getCustomerTypeById = BaseURL + 'CustomerGroup/GetCustomerGroupById'
 export const DeleteCustomerType = BaseURL + 'CustomerGroup/DeleteCustomerType'
-export const AddCustomerType = BaseURL + 'CustomerGroup/AddCustomerType'
-export const UpdateCustomerType = BaseURL + 'CustomerGroup/UpdateCustomerType' 
+export const AddCustomerType = BaseURL + 'CustomerGroup/AddCustomerGroup'
+export const UpdateCustomerType = BaseURL + 'CustomerGroup/UpdateCustomerGroup' 
+export const CustomerTypeCode = 'bbpgt_CustomerGroup'
 
 //#region Level Type Master API link
 export const getAllLevel = BaseURL + 'Level/GetAllLevel'
