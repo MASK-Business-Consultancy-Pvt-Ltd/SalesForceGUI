@@ -1,8 +1,12 @@
-export interface Level{
+export interface EmployeeLevel {
+    positionID?: number,
+    name: string,
+    description: string,
+    totalCount?: number
+}
 
-    id? : number;
-    levelCode?:string;
-    levelName?:string;
-    // active?:string;
-          
- }
+export interface EmployeeLevelResponse {
+    responseData: EmployeeLevel[],
+    errCode: number,
+    message: string
+}

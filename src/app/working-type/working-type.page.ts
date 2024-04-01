@@ -27,6 +27,12 @@ export class WorkingTypePage implements OnInit {
     this.workingTypeService.pageIndex += 1;
   }
 
+  ionViewWillEnter(){
+    this.workingTypeService.searchTerm = "";
+    this.fetchworkingTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
+    this.workingTypeService.pageIndex += 1;
+  }
+
   public async fetchworkingTypeList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();

@@ -53,8 +53,8 @@
         <ion-col no-padding>
           <ion-item>
             <ion-select aria-label="levelId" interface="popover" placeholder="Level" formControlName="levelID">
-              <ion-select-option *ngFor="let level of employeeService.levelList" [value]="level.id">
-                {{level.levelCode}}
+              <ion-select-option *ngFor="let level of employeeService.levelList" [value]="level.positionID">
+                {{level.positionID}}
               </ion-select-option>
             </ion-select>
           </ion-item>

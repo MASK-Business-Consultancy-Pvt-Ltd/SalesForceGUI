@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WorkingType } from './working-type.model';
+import { WorkingType, WorkingTypeResponse } from './working-type.model';
 import { HttpClient } from '@angular/common/http';
 import * as myGlobalVar from '../global';
 import { catchError } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class WorkingTypeService {
 
   refreshworkingTypeList(pageIndex:number, pageSize:number, searchTerm:string){
 
-    this.http.get<any>(myGlobalVar.getAllProductType + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
+    this.http.get<any>(myGlobalVar.getAllWorkingType + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
         
         return throwError(()=>error);
   
@@ -50,34 +50,20 @@ export class WorkingTypeService {
 
   }
 
-  getWorkingType(workingTypeId : number):Observable<any>{
-    
-
-    return this.http.get<any>(myGlobalVar.getProductTypeById + '?WorkingTypeId=' + workingTypeId);
-
+  getWorkingType(workingTypeId : string):Observable<WorkingTypeResponse>{
+    return this.http.get<WorkingTypeResponse>(myGlobalVar.getWorkingTypeById + '?WorkingTypeId=' + workingTypeId);
   }
 
-  deleteWorkingType(workingTypeId : number):Observable<any>{
-
-    return this.http.delete<any>(myGlobalVar.DeleteProductType + '?WorkingTypeId=' + workingTypeId);
-
-
+  deleteWorkingType(workingTypeId : string):Observable<WorkingTypeResponse>{
+    return this.http.delete<WorkingTypeResponse>(myGlobalVar.DeleteWorkingType + '?WorkingTypeId=' + workingTypeId);
    }
 
-   AddWorkingType(prodTypeData : any):Observable<any>{
-    
-
-    return this.http.post<any>(myGlobalVar.AddProductType,prodTypeData);
-
-
+   AddWorkingType(prodTypeData : WorkingType):Observable<WorkingTypeResponse>{
+    return this.http.post<WorkingTypeResponse>(myGlobalVar.AddWorkingType,prodTypeData);
    }
 
-   updateWorkingType(workingTypeId : number,prodTypeData : any):Observable<any>{
-    
-    
-    return this.http.put<any>(myGlobalVar.UpdateProductType + '?WorkingTypeId=' + workingTypeId,prodTypeData);
-
-
+   updateWorkingType(workingTypeId : string,prodTypeData : WorkingType):Observable<WorkingTypeResponse>{
+    return this.http.patch<WorkingTypeResponse>(myGlobalVar.UpdateWorkingType + '?WorkingTypeId=' + workingTypeId,prodTypeData);
    }
 
 

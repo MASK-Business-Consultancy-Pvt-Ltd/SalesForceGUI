@@ -33,12 +33,12 @@
  
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item  *ngFor="let workingType of workingTypeService.workingTypeList" [routerLink]="['/working-type',workingType.id]">
+  <ion-item  *ngFor="let workingType of workingTypeService.workingTypeList" [routerLink]="['/working-type',workingType.code]">
     <ion-label>
-      <strong>{{workingType.typeName}}</strong>
+      <strong>{{workingType.code}}</strong>
       <br />
       <ion-note color="medium" class="ion-text-wrap">
-        {{workingType.typeName}}
+        {{workingType.name}}
       </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">

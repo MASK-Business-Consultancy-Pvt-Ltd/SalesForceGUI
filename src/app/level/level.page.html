@@ -33,12 +33,12 @@
 
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item *ngFor="let level of levelService.levelList" [routerLink]="['/level',level.id]">
+  <ion-item *ngFor="let level of levelService.employeelevelList" [routerLink]="['/level',level.positionID]">
     <ion-label>
-      <strong>{{level.levelCode}}</strong>
+      <strong>{{level.name}}</strong>
       <br />
       <ion-note color="medium" class="ion-text-wrap">
-        {{level.levelName}}
+        {{level.description}}
       </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">
