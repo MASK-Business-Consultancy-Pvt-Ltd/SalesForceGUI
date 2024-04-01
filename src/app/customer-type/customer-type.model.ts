@@ -2,9 +2,15 @@ import { Action } from "rxjs/internal/scheduler/Action";
 
 export interface CustomerType{
 
-    id? : number;
-    customerTypeCode? : string;
-    customerTypeName?:string;
-    active?:string;
+    code?:number,
+    name?:string,
+    totalCount?:number
+    type?:string
       
+ }
+
+ export interface CustomerTypeResponse{
+    responseData:CustomerType[],
+    errCode: number,
+    message: string
  }

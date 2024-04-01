@@ -40,6 +40,12 @@ export class ProductTypePage implements OnInit {
     
   }
 
+  ionViewWillEnter() {
+    this.fetchProductTypeList(this.productTypeService.pageIndex, this.productTypeService.pageSize, this.productTypeService.searchTerm);
+    console.log(this.fetchProductTypeList);
+    this.productTypeService.pageIndex += 1;
+  }
+
   public async onScrollLoadData(ev){
     
     if(this.productTypeService.productTypeList.length !== this.productTypeService.totalCount){

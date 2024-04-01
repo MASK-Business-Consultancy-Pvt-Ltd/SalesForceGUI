@@ -3,3 +3,16 @@ export interface ProductType{
     groupCode?: number;
     groupName?: string;  
  }
+
+
+ export interface responseData{
+    groupCode: number,
+    groupName: string,
+    totalCount: number
+ }
+
+ export interface productTypeResponse{
+    responseData?:responseData[],
+    errCode: number,
+    message: string
+ }

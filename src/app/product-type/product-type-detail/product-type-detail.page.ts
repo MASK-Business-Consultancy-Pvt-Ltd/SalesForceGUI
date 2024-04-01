@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
 import { ProductTypeService } from '../product-type.service';
@@ -27,15 +27,16 @@ export class ProductTypeDetailPage implements OnInit {
 
   loadedProductType: ProductType = {};
   ViewDataFlag = false;
-  public productTypeForm!: FormGroup;
+  public productTypeForm = new FormGroup({
+    groupCode: new FormControl(0),
+    groupName:new FormControl('', Validators.required),
+  });
 
   constructor(private _fb: FormBuilder, private activatedRoute: ActivatedRoute,
     private productTypeService: ProductTypeService, private router: Router, private alertCtrl: AlertController,
     private toastCtrl: ToastController, private loader: LoaderService) { }
 
   ngOnInit() {
-    this.initProductTypeForm();
-
     this.activatedRoute.paramMap.subscribe(paramMap => {
 
       if (!paramMap.has('productTypeId')) {
@@ -55,41 +56,30 @@ export class ProductTypeDetailPage implements OnInit {
 
     });
   }
- 
-  initProductTypeForm() {
 
-    this.productTypeForm = this._fb.group({
-      id: [0],
-    // typeCode: ['', Validators.required],
-      groupName: ['', Validators.required],
-    // active: ['', Validators.required],
-    });
-    //this.productTypeForm.controls['active'].setValue('Y');
-  }
+
 
 
   enableFormControl(EditFlag) {
 
     if (EditFlag == true) {
-     
+
       //this.productTypeForm.get('typeCode').enable();
       this.productTypeForm.get('groupName').enable();
-     // this.productTypeForm.get('active').enable();
+      // this.productTypeForm.get('active').enable();
     }
     else {
-    
+
       // this.productTypeForm.get('typeCode').disable();
       this.productTypeForm.get('groupName').disable();
-     // this.productTypeForm.get('active').disable();
+      // this.productTypeForm.get('active').disable();
 
-    } 
+    }
   }
 
-  loadProductTypeDetails(prodTypeId = -1) {
+  loadProductTypeDetails(prodTypeId?: number) {
 
-    if (prodTypeId == -1) {
-    }
-    else {
+    if (prodTypeId) {
 
       this.productTypeService.getProductType(prodTypeId).pipe(catchError(error => {
 
@@ -97,14 +87,14 @@ export class ProductTypeDetailPage implements OnInit {
         return throwError(() => error);
 
       })).subscribe(data => {
-        
+
         if (data.responseData) {
           this.loadedProductType = data.responseData[0];
           this.productTypeForm.patchValue({
-            id: this.loadedProductType.id,
-          // typeCode: this.loadedProductType.typeCode!,
-            typeName: this.loadedProductType.groupName!,
-           // active: this.loadedProductType.active!
+            groupCode: this.loadedProductType.groupCode,
+            // typeCode: this.loadedProductType.typeCode!,
+            groupName: this.loadedProductType.groupName,
+            // active: this.loadedProductType.active!
 
           })
         }
@@ -126,7 +116,7 @@ export class ProductTypeDetailPage implements OnInit {
   DeleteProductType() {
 
 
-    const prodTypeId = this.loadedProductType.id!;
+    const prodTypeId = this.loadedProductType.groupCode!;
 
     this.alertCtrl.create({
       header: 'Are you sure?',
@@ -149,7 +139,7 @@ export class ProductTypeDetailPage implements OnInit {
             this.loader.dismiss();
 
             if (data.responseData) {
-              if (data.responseData.id == this.loadedProductType.id && data.errCode == 0) {
+              if (data.responseData.groupCode == this.loadedProductType.groupCode && data.errCode == 0) {
                 this.showToast('Product Type Deleted Successfully', 'secondary');
                 this.productTypeService.resetValues();
                 this.fetchProductTypeList(this.productTypeService.pageIndex, this.productTypeService.pageSize, this.productTypeService.searchTerm);
@@ -175,54 +165,46 @@ export class ProductTypeDetailPage implements OnInit {
   }
 
 
-  onSubmit({ value }: { value: ProductType }) {
-    debugger;
-    if (!value.id) {
+  onSubmit() {
+    let value = { ...this.productTypeForm.value }
+
+    if (!value.groupCode) {
       this.loader.present();
-      this.productTypeService.AddProductType(value).pipe(catchError(error => {
-        this.loader.dismiss(); 
+
+      this.productTypeService.AddProductType({groupName: value.groupName}).pipe(catchError(error => {
+        this.loader.dismiss();
         console.log(value)
         this.showToast('Some error has been occured', 'danger');
         return throwError(() => error);
 
       })).subscribe(data => {
-        this.loader.dismiss(); 
-        console.log(data)
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
+        this.loader.dismiss();
+          if (data.errCode == 0) {
             console.log(value)
             this.showToast('Product Type Added Successfully', 'secondary');
             this.productTypeService.resetValues();
-                this.fetchProductTypeList(this.productTypeService.pageIndex, this.productTypeService.pageSize, this.productTypeService.searchTerm);
+            //this.fetchProductTypeList(this.productTypeService.pageIndex, this.productTypeService.pageSize, this.productTypeService.searchTerm);
             this.router.navigate(['/product-type']);
-
           }
 
-        }
       })
     }
     else {
 
       this.loader.present();
-      this.productTypeService.updateProductType(value.id, value).pipe(catchError(error => {
-        this.loader.dismiss(); 
+      this.productTypeService.updateProductType(value.groupCode, value).pipe(catchError(error => {
+        this.loader.dismiss();
         this.showToast('Some error has been occured', 'danger');
         return throwError(() => error);
 
       })).subscribe(data => {
-        this.loader.dismiss(); 
-
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
+        this.loader.dismiss();
+          if (data.errCode == 0) {
             this.showToast('Product Type updated Successfully', 'secondary');
             this.productTypeService.resetValues();
-                this.fetchProductTypeList(this.productTypeService.pageIndex, this.productTypeService.pageSize, this.productTypeService.searchTerm);
+            //this.fetchProductTypeList(this.productTypeService.pageIndex, this.productTypeService.pageSize, this.productTypeService.searchTerm);
             this.router.navigate(['/product-type']);
-
           }
-
-        }
-
       })
 
     }
@@ -230,16 +212,16 @@ export class ProductTypeDetailPage implements OnInit {
 
   }
 
-  public async fetchProductTypeList(pageIndex,pageSize,searchTerm){
+  public async fetchProductTypeList(pageIndex, pageSize, searchTerm) {
 
     //this.loader.present();
-    
-  
-    await this.productTypeService.refreshProductType(pageIndex,pageSize,searchTerm);
-      
-    
+
+
+    await this.productTypeService.refreshProductType(pageIndex, pageSize, searchTerm);
+
+
   }
-  
+
 
   async showToast(ToastMsg, colorType) {
     await this.toastCtrl.create({

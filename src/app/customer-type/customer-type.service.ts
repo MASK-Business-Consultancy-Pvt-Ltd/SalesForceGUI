@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CustomerType } from './customer-type.model';
+import { CustomerType, CustomerTypeResponse } from './customer-type.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class CustomerTypeService {
         if(data.responseData.length > 0){
 
           this.customerTypeList = [...this.customerTypeList,...data.responseData];
-          this.totalCount = data.responseData[0].totalCount;
+          this.totalCount = this.customerTypeList[0].totalCount;
 
          }
   
@@ -50,10 +50,10 @@ export class CustomerTypeService {
 
   }
 
-  getCustomerType(customerTypeId : number):Observable<any>{
+  getCustomerType(customerTypeId : number):Observable<CustomerTypeResponse>{
     
 
-    return this.http.get<any>(myGlobalVar.getCustomerTypeById + '?CustomerTypeId=' + customerTypeId);
+    return this.http.get<CustomerTypeResponse>(myGlobalVar.getCustomerTypeById + '?CustomerGroupId=' + customerTypeId);
 
   }
 
@@ -64,18 +64,18 @@ export class CustomerTypeService {
 
    }
 
-   AddCustomerType(customerTypeData : any):Observable<any>{
+   AddCustomerType(customerTypeData : CustomerType):Observable<CustomerTypeResponse>{
     
 
-    return this.http.post<any>(myGlobalVar.AddCustomerType,customerTypeData);
+    return this.http.post<CustomerTypeResponse>(myGlobalVar.AddCustomerType,customerTypeData);
 
 
    }
 
-   updateCustomerType(customerTypeId : number,customerTypeData : any):Observable<any>{
+   updateCustomerType(customerTypeId : number,customerTypeData : CustomerType):Observable<CustomerTypeResponse>{
     
     
-    return this.http.put<any>(myGlobalVar.UpdateCustomerType + '?CustomerTypeId=' + customerTypeId,customerTypeData);
+    return this.http.patch<CustomerTypeResponse>(myGlobalVar.UpdateCustomerType + '?CustomerGroupId=' + customerTypeId,customerTypeData);
 
 
    }
