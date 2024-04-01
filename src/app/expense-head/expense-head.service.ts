@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ExpenseHead } from './expense-head.model';
+import { ExpenseHead, ExpenseHeadResponse } from './expense-head.model';
 import { HttpClient } from '@angular/common/http';
 import * as myGlobalVar from '../global';
 import { catchError } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class ExpenseHeadService {
 
   refreshexpenseheadList(pageIndex:number, pageSize:number, searchTerm:string){
 
-    this.http.get<any>(myGlobalVar.getAllExpenseHead + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
+    this.http.get<ExpenseHeadResponse>(myGlobalVar.getAllExpenseHead + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
         
         return throwError(()=>error);
   
@@ -48,32 +48,32 @@ export class ExpenseHeadService {
 
   }
 
-  getExpenseHead(expenseheadId : number):Observable<any>{
+  getExpenseHead(expenseheadId : string):Observable<ExpenseHeadResponse>{
     
 
-    return this.http.get<any>(myGlobalVar.getExpenseHeadById + '?ExpenseHeadId=' + expenseheadId);
+    return this.http.get<ExpenseHeadResponse>(myGlobalVar.getExpenseHeadById + '?ExpenseHeadId=' + expenseheadId);
 
   }
 
-  deleteExpenseHead(expenseheadId : number):Observable<any>{
+  deleteExpenseHead(expenseheadId : number):Observable<ExpenseHeadResponse>{
 
-    return this.http.delete<any>(myGlobalVar.DeleteExpenseHead + '?ExpenseHeadId=' + expenseheadId);
-
-
-   }
-
-   AddExpenseHead(ExpnHeadData : any):Observable<any>{
-    
-
-    return this.http.post<any>(myGlobalVar.AddExpenseHead,ExpnHeadData);
+    return this.http.delete<ExpenseHeadResponse>(myGlobalVar.DeleteExpenseHead + '?ExpenseHeadId=' + expenseheadId);
 
 
    }
 
-   updateExpenseHead(expenseheadId : number,ExpnHeadData : any):Observable<any>{
+   AddExpenseHead(ExpnHeadData : ExpenseHead):Observable<ExpenseHeadResponse>{
+    
+
+    return this.http.post<ExpenseHeadResponse>(myGlobalVar.AddExpenseHead,ExpnHeadData);
+
+
+   }
+
+   updateExpenseHead(expenseheadId : string,ExpnHeadData : ExpenseHead):Observable<ExpenseHeadResponse>{
     
     
-    return this.http.put<any>(myGlobalVar.UpdateExpenseHead + '?ExpenseHeadId=' + expenseheadId,ExpnHeadData);
+    return this.http.patch<ExpenseHeadResponse>(myGlobalVar.UpdateExpenseHead + '?ExpenseHeadId=' + expenseheadId,ExpnHeadData);
 
 
    }
