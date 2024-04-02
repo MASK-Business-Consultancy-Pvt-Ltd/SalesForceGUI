@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Area } from './area.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
-import { Region } from '../region/region.model';
 import { CustomerType } from '../customer-type/customer-type.model';
+import { Territory, TerritoryResponse } from '../zone/zone.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AreaService {
 
-  areaList:Area[]= [];
-  regionList:Region[]= [];
+  areaList:Territory[]= [];
+  regionList:Territory[]= [];
   customerTypeList: CustomerType[]=[];
   public totalCount=0;
   public pageIndex=1;
@@ -24,9 +23,9 @@ export class AreaService {
   constructor(private http: HttpClient) { }
   
 
-  refreshAreaList(pageIndex:number, pageSize:number, searchTerm:string){
+  refreshAreaList(pageIndex:number, pageSize:number, searchTerm:string,type:string){
 
-    this.http.get<any>(myGlobalVar.getAllArea + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
+    this.http.get<TerritoryResponse>(myGlobalVar.getAllTerritory + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&Type=' + type + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
         
         return throwError(()=>error);
   
@@ -57,46 +56,48 @@ export class AreaService {
 
   getRegionList(){
 
-    this.http.get<any>(myGlobalVar.getAllRegionWithoutPagination).pipe(catchError(error=>{
+    this.http.get<TerritoryResponse>(myGlobalVar.getAllTerritory + '?pageIndex=1&pageSize=10000&Type=' + myGlobalVar.TypeCodeRegion + '&SearchTerm=').pipe(catchError(error=>{
         
-        return throwError(()=>error);
-  
-      })).subscribe(data=>{
+      return throwError(()=>error);
 
-          if(data.responseData)
-          {             
-              this.regionList = data.responseData;
-          }
-  
-      })
+    })).subscribe(data=>{
+
+      if(data.responseData.length > 0){
+
+        this.regionList = data.responseData;
+
+       }
+
+    })
+
   }
 
-  getArea(areaId : number):Observable<any>{
+  getArea(areaId : number):Observable<TerritoryResponse>{
     
 
-    return this.http.get<any>(myGlobalVar.getAreaById + '?AreaId=' + areaId);
+    return this.http.get<TerritoryResponse>(myGlobalVar.getTerritoryById + '?TerritoryId=' + areaId);
 
   }
 
-  deleteArea(areaId : number):Observable<any>{
+  deleteArea(areaId : number):Observable<TerritoryResponse>{
 
-    return this.http.delete<any>(myGlobalVar.DeleteArea + '?AreaId=' + areaId);
+    return this.http.delete<TerritoryResponse>(myGlobalVar.DeleteArea + '?TerritoryId=' + areaId);
 
 
    }
 
-   AddArea(areaData : any):Observable<any>{
+   AddArea(areaData : Territory):Observable<TerritoryResponse>{
     
 
-    return this.http.post<any>(myGlobalVar.AddArea,areaData);
+    return this.http.post<TerritoryResponse>(myGlobalVar.AddTerritory,areaData);
 
 
    }
 
-   updateArea(areaId : number,areaData : any):Observable<any>{
+   updateArea(areaId : number,areaData : Territory):Observable<TerritoryResponse>{
     
     
-    return this.http.put<any>(myGlobalVar.UpdateArea + '?AreaId=' + areaId,areaData);
+    return this.http.patch<TerritoryResponse>(myGlobalVar.UpdateTerritory + '?TerritoryId=' + areaId,areaData);
 
 
    }

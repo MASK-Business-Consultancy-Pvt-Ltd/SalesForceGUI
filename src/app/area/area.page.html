@@ -33,12 +33,12 @@
 
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item  *ngFor="let area of areaService.areaList" [routerLink]="['/area',area.id]">
+  <ion-item  *ngFor="let area of areaService.areaList" [routerLink]="['/area',area.territoryId]">
     <ion-label>
-      <strong>{{area.areaCode}}</strong>
+      <strong>{{area.territoryId}}</strong>
       <br />
       <ion-note color="medium" class="ion-text-wrap">
-        {{area.areaName}}
+        {{area.description}}
       </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">
@@ -46,7 +46,11 @@
       <ion-icon color="medium" name="chevron-forward"></ion-icon>
     </div>
   </ion-item>
- 
+
 </ion-list>
 
+<ion-infinite-scroll (ionInfinite)="onScrollLoadData($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
+</ion-content>
 

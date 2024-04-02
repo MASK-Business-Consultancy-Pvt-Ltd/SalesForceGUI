@@ -22,12 +22,16 @@ export class WorkingTypePage implements OnInit {
   constructor(public workingTypeService : WorkingTypeService, private toastCtrl:ToastController) { }
 
   ngOnInit() {
+    console.log('called WT ng oninit ');
+
     this.workingTypeService.searchTerm = "";
     this.fetchworkingTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
     this.workingTypeService.pageIndex += 1;
   }
 
   ionViewWillEnter(){
+    console.log('called WT ion view');
+
     this.workingTypeService.searchTerm = "";
     this.fetchworkingTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
     this.workingTypeService.pageIndex += 1;

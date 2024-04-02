@@ -47,7 +47,7 @@
           <ion-item>
             <ion-select aria-label="Active" interface="popover" placeholder="Area Id" formControlName="areaId">
               <ion-select-option *ngFor="let area of territoryService.areaList" [value]="area.id">
-                {{area.areaCode}}
+                {{area.territoryName}}
               </ion-select-option>
             </ion-select>
           </ion-item>

@@ -4,7 +4,6 @@ import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
-import { Area } from '../area/area.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +11,7 @@ import { Area } from '../area/area.model';
 export class TerritoryService {
 
   territoryList:Territory[]= [];
-  areaList:Area[]= [];
+  areaList:Territory[]= [];
   public totalCount=0;
   public pageIndex=1;
   public pageSize=10;

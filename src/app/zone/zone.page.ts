@@ -5,8 +5,10 @@ import { InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/
 import { ZoneService } from './zone.service';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { Zone } from './zone.model';
+import { Territory } from './zone.model';
 import { FormsModule } from '@angular/forms';
+import * as myGlobalVar from '../global';
+
 
 @Component({
   selector: 'app-zone',
@@ -26,18 +28,23 @@ export class ZonePage implements OnInit {
   constructor(public zoneService : ZoneService, private toastCtrl:ToastController) { }
 
   ngOnInit() {
-    debugger
+    
     this.zoneService.resetValues();
     this.fetchZoneList(this.zoneService.pageIndex, this.zoneService.pageSize, this.zoneService.searchTerm);
     this.zoneService.pageIndex += 1;
+  }
 
+  ionViewWillEnter(){
+    this.zoneService.resetValues();
+    this.fetchZoneList(this.zoneService.pageIndex, this.zoneService.pageSize, this.zoneService.searchTerm);
+    this.zoneService.pageIndex += 1;
   }
 
   public async fetchZoneList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();
     
-    await this.zoneService.refreshZoneList(pageIndex,pageSize,searchTerm);
+    await this.zoneService.refreshZoneList(pageIndex,pageSize,searchTerm,myGlobalVar.TypeCodeZone);
 
   }
 

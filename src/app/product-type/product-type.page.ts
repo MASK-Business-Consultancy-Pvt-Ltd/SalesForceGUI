@@ -26,7 +26,6 @@ export class ProductTypePage implements OnInit {
   constructor(public productTypeService : ProductTypeService, private toastCtrl:ToastController) { }
 
   ngOnInit() { 
-    debugger;
     this.productTypeService.searchTerm = "";
     this.fetchProductTypeList(this.productTypeService.pageIndex, this.productTypeService.pageSize, this.productTypeService.searchTerm);
     console.log(this.fetchProductTypeList);
@@ -34,7 +33,6 @@ export class ProductTypePage implements OnInit {
   }
 
   public async fetchProductTypeList(pageIndex,pageSize,searchTerm){
-     debugger;
     //this.loader.present();
     await this.productTypeService.refreshProductType(pageIndex,pageSize,searchTerm);
     
