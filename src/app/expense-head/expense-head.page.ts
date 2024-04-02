@@ -27,6 +27,12 @@ export class ExpenseHeadPage implements OnInit {
     this.expenseHeadService.pageIndex += 1;
   }
 
+  ionViewWillEnter(){
+    this.expenseHeadService.searchTerm = "";
+    this.fetchexpenseHeadList(this.expenseHeadService.pageIndex, this.expenseHeadService.pageSize, this.expenseHeadService.searchTerm);
+    this.expenseHeadService.pageIndex += 1;
+  }
+
   public async fetchexpenseHeadList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();

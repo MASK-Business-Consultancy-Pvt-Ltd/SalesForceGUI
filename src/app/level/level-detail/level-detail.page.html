@@ -1,4 +1,4 @@
-<form [formGroup]="levelForm" (ngSubmit)="onSubmit(levelForm)">
+<form [formGroup]="levelForm" (ngSubmit)="onSubmit()">
 
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
@@ -31,14 +31,14 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Level Code" labelPlacement="floating" formControlName="levelCode"></ion-input>
+            <ion-input label="Level Code" labelPlacement="floating" formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Level Name" labelPlacement="floating" formControlName="levelName"></ion-input>
+            <ion-input label="Level Name" labelPlacement="floating" formControlName="description"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>

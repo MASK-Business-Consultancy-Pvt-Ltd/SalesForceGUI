@@ -33,12 +33,12 @@
  
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item  *ngFor="let expensehead of expenseHeadService.expenseHeadList" [routerLink]="['/expense-head',expensehead.id]">
+  <ion-item  *ngFor="let expensehead of expenseHeadService.expenseHeadList" [routerLink]="['/expense-head',expensehead.code]">
     <ion-label>
-      <strong>{{expensehead.typeName}}</strong>
+      <strong>{{expensehead.code}}</strong>
       <br />
       <ion-note color="medium" class="ion-text-wrap">
-        {{expensehead.typeName}}
+        {{expensehead.name}}
       </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">

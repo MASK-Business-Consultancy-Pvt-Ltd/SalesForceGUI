@@ -74,12 +74,12 @@ export const UpdateCustomerType = BaseURL + 'CustomerGroup/UpdateCustomerGroup'
 export const CustomerTypeCode = 'bbpgt_CustomerGroup'
 
 //#region Level Type Master API link
-export const getAllLevel = BaseURL + 'Level/GetAllLevel'
-export const getAllLevelWithoutPagination = BaseURL + 'Level/GetAllLevelWithoutPagination'
-export const getLevelById = BaseURL + 'Level/GetLevelById'
-export const DeleteLevel = BaseURL + 'Level/DeleteLevel'
-export const AddLevel = BaseURL + 'Level/AddLevel'
-export const UpdateLevel = BaseURL + 'Level/UpdateLevel' 
+export const getAllLevel = BaseURL + 'EmployeeLevel/GetAllEmployeeLevel'
+export const getAllLevelWithoutPagination = BaseURL + 'EmployeeLevel/GetAllEmployeeLevelWithoutPagination'
+export const getLevelById = BaseURL + 'EmployeeLevel/GetEmployeeLevelById'
+export const DeleteLevel = BaseURL + 'EmployeeLevel/DeleteEmployeeLevel'
+export const AddLevel = BaseURL + 'EmployeeLevel/AddEmployeeLevel'
+export const UpdateLevel = BaseURL + 'EmployeeLevel/UpdateEmployeeLevel' 
 
 //#region Level Type Master API link
 export const getAllEmployee = BaseURL + 'Employee/GetAllEmployee'

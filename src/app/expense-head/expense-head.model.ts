@@ -1,7 +1,12 @@
-export interface ExpenseHead{
-    id? : number;
-    typeCode?:string;
-    typeName?:string;
-    active?:string;
-      
- }
+export interface ExpenseHead {
+    code?: string,
+    name?: string,
+    u_Active?: string,
+    totalCount?: number
+}
+
+export interface ExpenseHeadResponse {
+    responseData: ExpenseHead[],
+    errCode: number,
+    message: string
+}

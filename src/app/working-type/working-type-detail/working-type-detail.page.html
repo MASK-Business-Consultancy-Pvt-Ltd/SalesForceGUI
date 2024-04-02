@@ -1,4 +1,4 @@
-<form [formGroup]="workingTypeForm" (ngSubmit)="onSubmit(workingTypeForm)">
+<form [formGroup]="workingTypeForm" (ngSubmit)="onSubmit()">
 
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
@@ -27,24 +27,24 @@
   
   <ion-content [fullscreen]="true">
     <ion-grid no-padding>
-       <!-- <ion-row>
+      <ion-row>
         <ion-col no-padding>
           <ion-item> 
-            <ion-input id="ionInputTypeCode" label="Product Type Code" labelPlacement="floating" formControlName="typeCode"></ion-input>
+            <ion-input id="ionInputTypeCode" label="Working Type Code" labelPlacement="floating" formControlName="code"></ion-input>
           </ion-item>
         </ion-col>
-      </ion-row>   -->
+      </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input id="ionInputTypeName" label="Working Type Name" labelPlacement="floating" formControlName="typeName"></ion-input>
+            <ion-input id="ionInputTypeName" label="Working Type Name" labelPlacement="floating" formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding>
          <ion-item>
-            <ion-select aria-label="Active" interface="popover" value="Y" placeholder="Active" formControlName="active">
+            <ion-select aria-label="Active" interface="popover" value="Y" placeholder="Active" formControlName="u_active">
               <ion-select-option value="Y">Yes</ion-select-option>
               <ion-select-option value="N">No</ion-select-option>
             </ion-select>

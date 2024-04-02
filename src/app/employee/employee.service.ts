@@ -5,7 +5,7 @@ import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
-import { Level } from '../level/level.model';
+import { EmployeeLevel } from '../level/level.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ import { Level } from '../level/level.model';
 export class EmployeeService {
 
   employeeList: Employee[] = [];
-  levelList: Level[] = [];
+  levelList: EmployeeLevel[] = [];
   territoryList: Territory[] = [];
   public totalCount=0;
   public pageIndex=1;

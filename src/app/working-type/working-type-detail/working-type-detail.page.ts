@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
 import { WorkingTypeService } from '../working-type.service';
@@ -23,15 +23,21 @@ import { LoaderService } from 'src/app/common/loader.service';
   ],
 })
 export class WorkingTypeDetailPage implements OnInit {
-  loadedWorkingType: WorkingType = {};
+  loadedWorkingType: WorkingType;
   ViewDataFlag = false;
-  public workingTypeForm!: FormGroup;
+  public workingTypeForm = new FormGroup({
+    code: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required]),
+    u_active: new FormControl('', [Validators.required]),
+  });
   constructor(private _fb: FormBuilder, private activatedRoute: ActivatedRoute,
     private workingTypeService: WorkingTypeService, private router: Router, private alertCtrl: AlertController,
     private toastCtrl: ToastController, private loader: LoaderService) { }
 
   ngOnInit() {
-    this.initWorkingTypeForm();
+    this.workingTypeForm.patchValue({
+      u_active: 'Y'
+    })
 
     this.activatedRoute.paramMap.subscribe(paramMap => {
 
@@ -42,67 +48,61 @@ export class WorkingTypeDetailPage implements OnInit {
       }
 
       if (paramMap.get('WorkingTypeId')) {
-        const productTypeId = JSON.parse(paramMap.get('WorkingTypeId')!);
+        const workingTypecode = paramMap.get('WorkingTypeId');
         this.ViewDataFlag = true;
-        this.loadProductTypeDetails(productTypeId);
+        this.loadWorkingTypeDetails(workingTypecode);
+        this.workingTypeForm.get('code').disable();
       }
       else {
-        this.loadProductTypeDetails();
+        this.loadWorkingTypeDetails();
       }
 
     });
   }
 
 
-  initWorkingTypeForm() {
-
-    this.workingTypeForm = this._fb.group({
-      id: [0],
-     typeCode: ['', Validators.required],
-      typeName: ['', Validators.required],
-      active: ['', Validators.required],
-    });
-    this.workingTypeForm.controls['active'].setValue('Y');
-  }
 
 
   enableFormControl(EditFlag) {
 
     if (EditFlag == true) {
-     
-      this.workingTypeForm.get('typeCode').enable();
-      this.workingTypeForm.get('typeName').enable();
-      this.workingTypeForm.get('active').enable();
+
+      this.activatedRoute.paramMap.subscribe(paramMap => {
+
+        if (!paramMap.has('WorkingTypeId')) {
+          this.workingTypeForm.get('code').enable();
+        }
+      })
+
+      this.workingTypeForm.get('name').enable();
+      this.workingTypeForm.get('u_active').enable();
     }
     else {
-    
-      this.workingTypeForm.get('typeCode').disable();
-      this.workingTypeForm.get('typeName').disable();
-      this.workingTypeForm.get('active').disable();
 
-    } 
+      this.workingTypeForm.get('code').disable();
+      this.workingTypeForm.get('name').disable();
+      this.workingTypeForm.get('u_active').disable();
+
+    }
   }
 
-  loadProductTypeDetails(prodTypeId = -1) {
+  loadWorkingTypeDetails(workingTypeCode?: string) {
 
-    if (prodTypeId == -1) {
-    }
-    else {
+    if (workingTypeCode) {
 
-      this.workingTypeService.getWorkingType(prodTypeId).pipe(catchError(error => {
+      this.workingTypeService.getWorkingType(workingTypeCode).pipe(catchError(error => {
 
         this.showToast('Some error has been occured', 'danger');
         return throwError(() => error);
 
       })).subscribe(data => {
-        
+
         if (data.responseData) {
           this.loadedWorkingType = data.responseData[0];
           this.workingTypeForm.patchValue({
-            id: this.loadedWorkingType.id,
-            typeCode: this.loadedWorkingType.typeCode!,
-            typeName: this.loadedWorkingType.typeName!,
-            active: this.loadedWorkingType.active!,
+            code: this.loadedWorkingType.code,
+            name: this.loadedWorkingType.name,
+            u_active: this.loadedWorkingType.u_Active,
 
           })
         }
@@ -124,7 +124,7 @@ export class WorkingTypeDetailPage implements OnInit {
   DeleteProductType() {
 
 
-    const workingTypeId = this.loadedWorkingType.id!;
+    const workingTypeId = this.loadedWorkingType.code;
 
     this.alertCtrl.create({
       header: 'Are you sure?',
@@ -147,7 +147,7 @@ export class WorkingTypeDetailPage implements OnInit {
             this.loader.dismiss();
 
             if (data.responseData) {
-              if (data.responseData.id == this.loadedWorkingType.id && data.errCode == 0) {
+              if (data.responseData[0].code == this.loadedWorkingType.code && data.errCode == 0) {
                 this.showToast('Working Type Deleted Successfully', 'secondary');
                 this.workingTypeService.resetValues();
                 this.fetchProductTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
@@ -173,70 +173,61 @@ export class WorkingTypeDetailPage implements OnInit {
   }
 
 
-  onSubmit({ value }: { value: WorkingType }) {
-    
-    if (!value.id) {
-      this.loader.present();
-      this.workingTypeService.AddWorkingType(value).pipe(catchError(error => {
-        this.loader.dismiss(); 
+  onSubmit() {
+    let value = { ...this.workingTypeForm.value }
 
-        this.showToast('Some error has been occured', 'danger');
-        return throwError(() => error);
+    this.activatedRoute.paramMap.subscribe(paramMap => {
+      if (paramMap.get('WorkingTypeId') != '') {
+        let workTypeCode = paramMap.get('WorkingTypeId')
+        this.loader.present();
+        this.workingTypeService.updateWorkingType(workTypeCode, value).pipe(catchError(error => {
+          this.loader.dismiss();
+          this.showToast('Some error has been occured', 'danger');
+          return throwError(() => error);
 
-      })).subscribe(data => {
-        this.loader.dismiss(); 
-
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
-            this.showToast('Working Type Added Successfully', 'secondary');
-            this.workingTypeService.resetValues();
-                this.fetchProductTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
-            this.router.navigate(['/working-type']);
-
-          }
-
-        }
-      })
-    }
-    else {
-
-      this.loader.present();
-      this.workingTypeService.updateWorkingType(value.id, value).pipe(catchError(error => {
-        this.loader.dismiss(); 
-        this.showToast('Some error has been occured', 'danger');
-        return throwError(() => error);
-
-      })).subscribe(data => {
-        this.loader.dismiss(); 
-
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
+        })).subscribe(data => {
+          this.loader.dismiss();
+          if (data.errCode == 0) {
             this.showToast('Product Type updated Successfully', 'secondary');
             this.workingTypeService.resetValues();
-                this.fetchProductTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
+            //this.fetchProductTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
             this.router.navigate(['/working-type']);
 
           }
+        })
+      }
+      else {
+        this.loader.present();
+        this.workingTypeService.AddWorkingType(value).pipe(catchError(error => {
+          this.loader.dismiss();
 
-        }
+          this.showToast('Some error has been occured', 'danger');
+          return throwError(() => error);
 
-      })
+        })).subscribe(data => {
+          this.loader.dismiss();
 
-    }
-
-
+          if (data.errCode == 0) {
+            this.showToast('Working Type Added Successfully', 'secondary');
+            this.workingTypeService.resetValues();
+            //this.fetchProductTypeList(this.workingTypeService.pageIndex, this.workingTypeService.pageSize, this.workingTypeService.searchTerm);
+            this.router.navigate(['/working-type']);
+          }
+        })
+      }
+    })
   }
 
-  public async fetchProductTypeList(pageIndex,pageSize,searchTerm){
+  public async fetchProductTypeList(pageIndex, pageSize, searchTerm) {
 
     //this.loader.present();
-    
-  
-    await this.workingTypeService.refreshworkingTypeList(pageIndex,pageSize,searchTerm);
-      
-    
+
+
+    await this.workingTypeService.refreshworkingTypeList(pageIndex, pageSize, searchTerm);
+
+
   }
-  
+
 
   async showToast(ToastMsg, colorType) {
     await this.toastCtrl.create({

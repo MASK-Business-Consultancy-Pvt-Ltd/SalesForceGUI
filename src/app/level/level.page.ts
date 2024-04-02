@@ -31,6 +31,12 @@ export class LevelPage implements OnInit {
 
   }
 
+  ionViewWillEnter(){
+    this.levelService.searchTerm = "";
+    this.fetchLevelList(this.levelService.pageIndex, this.levelService.pageSize, this.levelService.searchTerm);
+    this.levelService.pageIndex += 1;
+  }
+
   
   public async fetchLevelList(pageIndex,pageSize,searchTerm){
 
@@ -42,7 +48,7 @@ export class LevelPage implements OnInit {
 
   public async onScrollLoadData(ev){
     
-    if(this.levelService.levelList.length !== this.levelService.totalCount){
+    if(this.levelService.employeelevelList.length !== this.levelService.totalCount){
 
        this.fetchLevelList(this.levelService.pageIndex, this.levelService.pageSize, this.levelService.searchTerm);
        this.levelService.pageIndex += 1;
@@ -64,14 +70,14 @@ export class LevelPage implements OnInit {
         this.levelService.showSearchBar = false;
         this.levelService.searchTerm = "";
         this.levelService.pageIndex = 1;
-        this.levelService.levelList = [];
+        this.levelService.employeelevelList = [];
         await this.fetchLevelList(this.levelService.pageIndex, this.levelService.pageSize, this.levelService.searchTerm);
         this.levelService.pageIndex+=1;
       }
 
     public async search(searchTerm){
         this.levelService.pageIndex=1;
-        this.levelService.levelList = [];
+        this.levelService.employeelevelList = [];
         await this.fetchLevelList(this.levelService.pageIndex, this.levelService.pageSize, this.levelService.searchTerm);
         this.levelService.pageIndex+=1;
 

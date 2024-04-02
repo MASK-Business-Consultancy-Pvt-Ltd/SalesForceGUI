@@ -108,8 +108,8 @@
         <ion-col size="10" size-md="10" size-lg="11"  no-padding>
           <ion-item>
             <ion-select aria-label="WorkingTypeId" interface="popover" placeholder="Select Working Type" formControlName="WorkingTypeId">
-              < <ion-select-option *ngFor="let workingtype of dailyActivityService.WorkingTypeList" [value]="workingtype.id">
-                {{workingtype.typeCode}}
+              < <ion-select-option *ngFor="let workingtype of dailyActivityService.WorkingTypeList" [value]="workingtype.code">
+                {{workingtype.code}}
               </ion-select-option> 
             </ion-select>
           </ion-item>
