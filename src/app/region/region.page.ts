@@ -1,10 +1,11 @@
-import { Region } from './region.model';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
 import { RegionService } from './region.service';
 import { FormsModule } from '@angular/forms';
+import * as myGlobalVar from '../global';
+
 
 @Component({
   selector: 'app-region',
@@ -31,11 +32,17 @@ export class RegionPage implements OnInit {
     
   }
 
+  ionViewWillEnter(){
+    this.regionService.searchTerm = "";
+    this.fetchRegionList(this.regionService.pageIndex, this.regionService.pageSize, this.regionService.searchTerm);
+    this.regionService.pageIndex += 1;
+  }
+
   public async fetchRegionList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();
     
-    await this.regionService.refreshRegionList(pageIndex,pageSize,searchTerm);
+    await this.regionService.refreshRegionList(pageIndex,pageSize,searchTerm,myGlobalVar.TypeCodeRegion);
 
   }
 

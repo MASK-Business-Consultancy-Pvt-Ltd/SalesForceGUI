@@ -89,7 +89,7 @@ const routes: Routes = [
       }]
   },
 
-  
+
   {
     path: 'territory',
     children: [
@@ -110,7 +110,7 @@ const routes: Routes = [
     path: 'customer',
     children: [
       {
-        
+
         path: '',
         loadComponent: () => import('./customer/customer.page').then(x => x.CustomerPage)
 
@@ -119,7 +119,7 @@ const routes: Routes = [
         path: ':customerId',
         loadComponent: () => import('./customer/customer-detail/customer-detail.page').then(m => m.CustomerDetailPage),
       },
-     
+
     ]
   },
 
@@ -129,12 +129,12 @@ const routes: Routes = [
       {
 
         path: '',
-        loadComponent: () => import('./customer-type/customer-type.page').then( x => x.CustomerTypePage)
+        loadComponent: () => import('./customer-type/customer-type.page').then(x => x.CustomerTypePage)
 
       },
       {
         path: ':customerTypeId',
-        loadComponent: () => import('./customer-type/customer-type-detail/customer-type-detail.page').then( m => m.CustomerTypeDetailPage)
+        loadComponent: () => import('./customer-type/customer-type-detail/customer-type-detail.page').then(m => m.CustomerTypeDetailPage)
 
       }]
   },
@@ -145,12 +145,12 @@ const routes: Routes = [
       {
 
         path: '',
-        loadComponent: () => import('./level/level.page').then( x => x.LevelPage)
+        loadComponent: () => import('./level/level.page').then(x => x.LevelPage)
 
       },
       {
         path: ':levelId',
-        loadComponent: () => import('./level/level-detail/level-detail.page').then( m => m.LevelDetailPage)
+        loadComponent: () => import('./level/level-detail/level-detail.page').then(m => m.LevelDetailPage)
 
       }]
   },
@@ -187,7 +187,7 @@ const routes: Routes = [
 
       }]
   },
-  
+
 
   {
     path: 'expense-head',
@@ -206,8 +206,8 @@ const routes: Routes = [
       }
     ]
   },
-  
-  
+
+
   {
     path: 'dailyactivity',
 
@@ -247,15 +247,15 @@ const routes: Routes = [
   {
     path: 'billToAddress',
     children: [
-      {      
+      {
         path: '',
         loadComponent: () => import('./billto-address/billto-address.page').then(x => x.BilltoAddressPage)
-      }, 
+      },
       {
         path: ':billtoform',
-        loadComponent: () => import('./billto-address/billtoform/billtoform.page').then( m => m.BilltoAddressPage)
+        loadComponent: () => import('./billto-address/billtoform/billtoform.page').then(m => m.BilltoAddressPage)
       }
-     
+
     ]
   },
 
@@ -285,12 +285,12 @@ const routes: Routes = [
 
   {
     path: 'master',
-    loadComponent: () => import('./master/master.page').then( m => m.MasterPage)
+    loadComponent: () => import('./master/master.page').then(m => m.MasterPage)
   },
- {
-     path: 'transaction',
-     loadComponent: () => import('./transaction/transaction.page').then( m => m.TransactionPage)
-   }
+  {
+    path: 'transaction',
+    loadComponent: () => import('./transaction/transaction.page').then(m => m.TransactionPage)
+  }
 
 ];
 

@@ -5,6 +5,8 @@ import { RouterLink } from '@angular/router';
 import { InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
 import { AreaService } from './area.service';
 import { FormsModule } from '@angular/forms';
+import * as myGlobalVar from '../global';
+
 
 @Component({
   selector: 'app-area',
@@ -31,11 +33,17 @@ export class AreaPage implements OnInit {
     this.areaService.pageIndex += 1;
   }
 
+  ionViewWillEnter(){
+    this.areaService.searchTerm = "";
+    this.fetchAreaList(this.areaService.pageIndex, this.areaService.pageSize, this.areaService.searchTerm);
+    this.areaService.pageIndex += 1;
+  }
+
   public async fetchAreaList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();
     
-    await this.areaService.refreshAreaList(pageIndex,pageSize,searchTerm);
+    await this.areaService.refreshAreaList(pageIndex,pageSize,searchTerm,myGlobalVar.TypeCodeArea);
 
   }
 

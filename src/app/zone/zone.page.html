@@ -33,12 +33,12 @@
  
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item *ngFor="let zone of zoneService.zoneList" [routerLink]="['/zone',zone.id]">
+  <ion-item *ngFor="let zone of zoneService.zoneList" [routerLink]="['/zone',zone.territoryId]">
     <ion-label>
-      <strong>{{zone.zoneCode}}</strong>
+      <strong>{{zone.territoryId}}</strong>
       <br />
       <ion-note color="medium" class="ion-text-wrap">
-        {{zone.zoneName}}
+        {{zone.description}}
       </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">

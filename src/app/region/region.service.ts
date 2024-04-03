@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Region } from './region.model';
-import { Zone } from '../zone/zone.model';
+import { AddTerritory, Territory, TerritoryResponse } from '../zone/zone.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
@@ -11,9 +10,9 @@ import { Observable, throwError } from 'rxjs';
 })
 export class RegionService {
 
-  regionList:Region[]= [];
+  regionList:Territory[]= [];
 
-  zoneList:Zone[]=[];
+  zoneList:Territory[]=[];
 
   public totalCount=0;
   public pageIndex=1;
@@ -23,9 +22,9 @@ export class RegionService {
 
   constructor(private http: HttpClient) { }
 
-  refreshRegionList(pageIndex:number, pageSize:number, searchTerm:string){
+  refreshRegionList(pageIndex:number, pageSize:number, searchTerm:string,type:string){
 
-    this.http.get<any>(myGlobalVar.getAllRegion + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
+    this.http.get<TerritoryResponse>(myGlobalVar.getAllTerritory + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize +'&Type=' + type + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
         
         return throwError(()=>error);
   
@@ -43,26 +42,26 @@ export class RegionService {
   }
 
   getZoneList(){
-   debugger;
-    this.http.get<any>(myGlobalVar.getAllZoneWithoutPagination).pipe(catchError(error=>{
+
+    this.http.get<TerritoryResponse>(myGlobalVar.getAllTerritory + '?pageIndex=1&pageSize=10000&Type=' + myGlobalVar.TypeCodeZone + '&SearchTerm=').pipe(catchError(error=>{
         
-        return throwError(()=>error); 
-  
-      })).subscribe(data=>{
-  
-          if(data.responseData)
-          {
-             
-              this.zoneList = data.responseData;
-          }
-  
-      })
+      return throwError(()=>error);
+
+    })).subscribe(data=>{
+
+      if(data.responseData.length > 0){
+
+        this.zoneList = data.responseData;
+
+       }
+
+    })
 
   }
 
   resetValues(){
 
-    this.zoneList = [];
+    this.regionList = [];
     this.pageIndex = 1;
     this.pageSize = 10;
     this.searchTerm = '';
@@ -71,32 +70,32 @@ export class RegionService {
 
   }
 
-  getRegion(regionId : number):Observable<any>{
+  getRegion(regionId : number):Observable<TerritoryResponse>{
     
 
-    return this.http.get<any>(myGlobalVar.getRegionById + '?RegionId=' + regionId);
+    return this.http.get<TerritoryResponse>(myGlobalVar.getTerritoryById + '?TerritoryId=' + regionId);
 
   }
 
-  deleteRegion(regionId : number):Observable<any>{
+  deleteRegion(regionId : number):Observable<TerritoryResponse>{
 
-    return this.http.delete<any>(myGlobalVar.DeleteRegion + '?RegionId=' + regionId);
+    return this.http.delete<TerritoryResponse>(myGlobalVar.DeleteRegion + '?TerritoryId=' + regionId);
 
 
    }
    
-   AddRegion(regionData : any):Observable<any>{
+   AddRegion(regionData : AddTerritory):Observable<TerritoryResponse>{
     
 
-    return this.http.post<any>(myGlobalVar.AddRegion,regionData);
+    return this.http.post<TerritoryResponse>(myGlobalVar.AddTerritory,regionData);
 
 
    }
 
-   updateRegion(regionId : number,regionData : any):Observable<any>{
+   updateRegion(regionId : number,regionData : AddTerritory):Observable<TerritoryResponse>{
     
     
-    return this.http.put<any>(myGlobalVar.UpdateRegion + '?RegionId=' + regionId,regionData);
+    return this.http.patch<TerritoryResponse>(myGlobalVar.UpdateTerritory + '?TerritoryId=' + regionId,regionData);
 
 
    }

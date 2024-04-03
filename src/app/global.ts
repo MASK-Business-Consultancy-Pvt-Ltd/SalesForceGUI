@@ -152,4 +152,11 @@ export const UpdateShipToAddrs = BaseURL + 'ShipToAddrs/UpdateShipToAddrs'
 //#endregion
 
 
+export const parentIdForZone = -1
+export const TypeCodeZone = 'Z'
+export const TypeCodeRegion = 'R'
+export const TypeCodeArea = 'A'
+export const TypeCodeTerritory = 'T'
+
+
 
