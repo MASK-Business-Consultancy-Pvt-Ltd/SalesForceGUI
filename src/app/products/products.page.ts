@@ -33,6 +33,12 @@ export class ProductsPage implements OnInit {
 
   }
 
+  ionViewWillEnter(){
+    this.productService.searchTerm = "";
+    this.fetchProductList(this.productService.pageIndex, this.productService.pageSize, this.productService.searchTerm);
+    this.productService.pageIndex += 1;
+  }
+
   public async fetchProductList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();

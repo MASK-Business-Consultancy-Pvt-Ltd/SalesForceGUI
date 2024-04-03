@@ -1,18 +1,13 @@
 export interface ProductType{
     id? : number;
     groupCode?: number;
-    groupName?: string;  
+    groupName?: string; 
+    totalCount?: number 
  }
 
-
- export interface responseData{
-    groupCode: number,
-    groupName: string,
-    totalCount: number
- }
 
  export interface productTypeResponse{
-    responseData?:responseData[],
+    responseData?:ProductType[],
     errCode: number,
     message: string
  }

@@ -39,7 +39,7 @@ export class ProductTypeService {
 
   refreshProductType(pageIndex: number, pageSize: number, searchTerm: string) {
     debugger;
-    this.http.get<any>(myGlobalVar.getAllProductType + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error => {
+    this.http.get<productTypeResponse>(myGlobalVar.getAllProductType + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error => {
 
       return throwError(() => error);
 

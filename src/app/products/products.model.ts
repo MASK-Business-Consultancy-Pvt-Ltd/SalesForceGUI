@@ -1,11 +1,15 @@
 
- export interface Product{
-   id? : number;
-   productCode?:string;
-   productName?:string;
-   type?: string;
-   qtyInStock?: number;
-   active?: number;
-     
-} 
+export interface Product {
+  itemCode?: string,
+  itemName: string,
+  itemsGroupCode: number,
+  valid: string,
+  totalCount?: number
 
+}
+
+export interface ProductResponse {
+  responseData: Product[],
+  errCode: number,
+  message: string
+}

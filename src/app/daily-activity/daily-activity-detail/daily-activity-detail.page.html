@@ -38,8 +38,8 @@
         <ion-col  size="10" size-md="10" size-lg="11" no-padding>
           <ion-item>
             <ion-select aria-label="Active" interface="popover" placeholder="Select Territory" formControlName="TerritoryId">
-              <ion-select-option *ngFor="let territory of dailyActivityService.TerritoryList" [value]="territory.id">
-                {{territory.territoryCode}}
+              <ion-select-option *ngFor="let territory of dailyActivityService.TerritoryList" [value]="territory.territoryId">
+                {{territory.description}}
               </ion-select-option>
             </ion-select>
           </ion-item>

@@ -159,4 +159,9 @@ export const TypeCodeArea = 'A'
 export const TypeCodeTerritory = 'T'
 
 
+export const AuthenticateUser = BaseURL + 'Login/AuthenticateUser'
+
+export const TokenKey = 'MaskBCSFGui'
+
+
 

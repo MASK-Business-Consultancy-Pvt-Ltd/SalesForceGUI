@@ -30,6 +30,12 @@ export class TerritoryPage implements OnInit {
 
   }
 
+  ionViewWillEnter(){
+    this.territoryService.searchTerm = "";
+    this.fetchTerritoryList(this.territoryService.pageIndex, this.territoryService.pageSize, this.territoryService.searchTerm);
+    this.territoryService.pageIndex += 1;
+  }
+
   public async fetchTerritoryList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();

@@ -6,282 +6,253 @@ import { NgFor, NgIf } from '@angular/common';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { FormBuilder,FormGroup,ReactiveFormsModule,Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoaderService } from 'src/app/common/loader.service';
 
 @Component({
-    selector: 'app-product-detail',
-    templateUrl: './product-detail.page.html',
-    styleUrls: ['./product-detail.page.scss'],
-    standalone: true,
-    imports: [
-        IonicModule,
-        NgIf,
-        NgFor,
-        RouterLink,
-        ReactiveFormsModule
-        
-    ]
-    
+  selector: 'app-product-detail',
+  templateUrl: './product-detail.page.html',
+  styleUrls: ['./product-detail.page.scss'],
+  standalone: true,
+  imports: [
+    IonicModule,
+    NgIf,
+    NgFor,
+    RouterLink,
+    ReactiveFormsModule
+
+  ]
+
 })
 export class ProductDetailPage implements OnInit {
 
-  loadedProduct:Product = {};
-  ViewDataFlag=false;
-  public productForm! : FormGroup;
+  loadedProduct: Product;
+  ViewDataFlag = false;
+  public productForm = new FormGroup({
+    itemCode : new FormControl(''),
+    itemName: new FormControl('',[Validators.required]),
+    itemsGroupCode: new FormControl(0,[Validators.required]),
+    valid: new FormControl('Y',[Validators.required])
+  });
 
-  constructor(private activatedRoute : ActivatedRoute,
-    public productService: ProductsService,private router:Router,
-    private _fb: FormBuilder,private alertCtrl : AlertController,
-    private toastCtrl: ToastController, private loader: LoaderService){ 
+  constructor(private activatedRoute: ActivatedRoute,
+    public productService: ProductsService, private router: Router,
+    private _fb: FormBuilder, private alertCtrl: AlertController,
+    private toastCtrl: ToastController, private loader: LoaderService) {
 
   }
 
   ngOnInit() {
+    this.productService.getProductTypeList()
+    this.activatedRoute.paramMap.subscribe(paramMap => {
 
-    this.initProductForm();
+      if (!paramMap.has('productId')) {
 
-    this.activatedRoute.paramMap.subscribe(paramMap=>{
-       
-      if(!paramMap.has('productId')){
-        
         this.router.navigate(['/products']);
         return;
       }
 
-      if(paramMap.get('productId'))
-      {
-         const productId = JSON.parse(paramMap.get('productId')!);
-         this.ViewDataFlag = true;
-         this.loadProductDetails(productId);
+      if (paramMap.get('productId')) {
+        const productId = paramMap.get('productId');
+        this.ViewDataFlag = true;
+        this.productForm.patchValue({
+          itemCode : productId
+        })
+        this.loadProductDetails(productId);
       }
-      else
-      {
-         this.loadProductDetails();
+      else {
+        this.loadProductDetails();
       }
 
     });
   }
 
 
+  enableFormControl(EditFlag) {
 
-  initProductForm() {
-    
-    this.productForm = this._fb.group({
-        id: [0],
-        productCode: ['',Validators.required],
-        productName: ['',Validators.required],
-        type:  ['', Validators.required],
-        qtyInStock:  [0, Validators.required],
-        active:  ['0', Validators.required]
-    });
-    this.productForm.controls['active'].setValue('Y');
-    this.productService.getProductTypeList();
-  }
+    if (EditFlag == true) {
+      this.productForm.get('itemCode').disable();
+      this.productForm.get('itemName').enable();
+      this.productForm.get('itemsGroupCode').enable();
+      this.productForm.get('valid').enable();
 
-   enableFormControl(EditFlag){
-
-       if(EditFlag == true)
-       {
-          this.productForm.get('productCode').disable();
-          this.productForm.get('productName').enable();
-          this.productForm.get('type').enable();
-          this.productForm.get('qtyInStock').enable();
-          this.productForm.get('active').enable();
-
-       } 
-       else 
-       {
-          this.productForm.get('productCode').disable();
-          this.productForm.get('productName').disable();
-          this.productForm.get('type').disable();
-          this.productForm.get('qtyInStock').disable();
-          this.productForm.get('active').disable();
-       }
-
-
-   }
-
-  loadProductDetails(prodId=-1){
-    
-    if(prodId == -1)
-    {
     }
-    else
-    {
+    else {
+      this.productForm.get('itemCode').disable();
+      this.productForm.get('itemName').disable();
+      this.productForm.get('itemsGroupCode').disable();
+      this.productForm.get('valid').disable();
+    }
 
-      this.productService.getProduct(prodId).pipe(catchError(error=>{
-          
-        this.showToast('Some error has been occured','danger');
-        return throwError(()=>error);
-  
-      })).subscribe(data=>{
-          
-          if(data.responseData)
-          {
-              this.loadedProduct = data.responseData[0];
-              this.productForm.patchValue({
-                id: this.loadedProduct.id,
-                productCode: this.loadedProduct.productCode!,
-                productName: this.loadedProduct.productName!,
-                type: this.loadedProduct.type!,
-                qtyInStock: this.loadedProduct.qtyInStock!,
-                active: this.loadedProduct.active!
 
-              })
-          }
-  
+  }
+
+  loadProductDetails(prodId?:string) {
+
+    if (prodId) {
+
+      this.productService.getProduct(prodId).pipe(catchError(error => {
+
+        this.showToast('Some error has been occured', 'danger');
+        return throwError(() => error);
+
+      })).subscribe(data => {
+
+        if (data.responseData) {
+          this.loadedProduct = data.responseData[0];
+          this.productForm.patchValue({
+            itemCode: this.loadedProduct.itemCode,
+            itemName: this.loadedProduct.itemName,
+            itemsGroupCode: this.loadedProduct.itemsGroupCode,
+            valid: this.loadedProduct.valid,
+
+          })
+        }
+
       })
 
       this.enableFormControl(false);
-        
+
     }
   }
- 
-  ChangeViewDataFlag(){
-    
+
+  ChangeViewDataFlag() {
+
     this.ViewDataFlag = false;
     this.enableFormControl(true);
 
   }
 
-  DeleteProduct(){
-      
-
-      const prodId = this.loadedProduct.id!;
-
-        this.alertCtrl.create({
-             header:'Are you sure?',
-             message:'Do you really want to delete the product?',
-             buttons:[{
-                text:'Cancel',
-                role:'cancel'
-
-             },{
-                text:'Delete',
-                handler:() =>{
-
-                  this.loader.present();
-                  this.productService.deleteProduct(prodId).pipe(catchError(error=>{
-                    this.loader.dismiss();
-                    this.showToast('Some error has been occured','danger');
-                    return throwError(()=>error);
-              
-                  })).subscribe(data=>{
-                    this.loader.dismiss();
-                    
-                    if(data.responseData)
-                    {
-                      if(data.responseData.id == this.loadedProduct.id && data.errCode == 0)
-                      {
-                          this.showToast('Product Deleted Successfully','secondary');
-                          this.productService.resetValues();
-                          this.fetchProductList(this.productService.pageIndex, this.productService.pageSize, this.productService.searchTerm);
-                          this.router.navigate(['/products']);
-            
-                      }
-                    }
-                    
-              
-                  })
-
-                }
+  // DeleteProduct() {
 
 
-             }
-            ]
+  //   const prodId = this.loadedProduct.id!;
 
-             }).then(alertElement =>{
+  //   this.alertCtrl.create({
+  //     header: 'Are you sure?',
+  //     message: 'Do you really want to delete the product?',
+  //     buttons: [{
+  //       text: 'Cancel',
+  //       role: 'cancel'
 
-                alertElement.present();
-             })
+  //     }, {
+  //       text: 'Delete',
+  //       handler: () => {
+
+  //         this.loader.present();
+  //         this.productService.deleteProduct(prodId).pipe(catchError(error => {
+  //           this.loader.dismiss();
+  //           this.showToast('Some error has been occured', 'danger');
+  //           return throwError(() => error);
+
+  //         })).subscribe(data => {
+  //           this.loader.dismiss();
+
+  //           if (data.responseData) {
+  //             if (data.responseData.id == this.loadedProduct.id && data.errCode == 0) {
+  //               this.showToast('Product Deleted Successfully', 'secondary');
+  //               this.productService.resetValues();
+  //               this.fetchProductList(this.productService.pageIndex, this.productService.pageSize, this.productService.searchTerm);
+  //               this.router.navigate(['/products']);
+
+  //             }
+  //           }
+
+
+  //         })
+
+  //       }
+
+
+  //     }
+  //     ]
+
+  //   }).then(alertElement => {
+
+  //     alertElement.present();
+  //   })
+
+  // }
+
+  onSubmit() {
+    
+    this.activatedRoute.paramMap.subscribe(paramMap => {
+      let value = {...this.productForm.value}
+      let productId = paramMap.get('productId')
+
+      if (productId == '') {
+        this.loader.present();
+        this.productService.AddProduct(value as Product).pipe(catchError(error => {
+          this.loader.dismiss();
+  
+          this.showToast('Some error has been occured', 'danger');
+          return throwError(() => error);
+  
+        })).subscribe(data => {
+          this.loader.dismiss();
+  
+            if (data.errCode == 0) {
+              this.showToast('Product Added Successfully', 'secondary');
+              this.productService.resetValues();
+              //this.fetchProductList(this.productService.pageIndex, this.productService.pageSize, this.productService.searchTerm);
+              this.router.navigate(['/products']);
+  
+            }
+  
+        })
+      }
+      else {
+  
+        this.loader.present();
+        this.productService.updateProduct(productId, value as Product).pipe(catchError(error => {
+          this.loader.dismiss();
+          this.showToast('Some error has been occured', 'danger');
+          return throwError(() => error);
+  
+        })).subscribe(data => {
+          this.loader.dismiss();
+  
+            if (data.errCode == 0) {
+              this.showToast('Product updated Successfully', 'secondary');
+              this.productService.resetValues();
+              //this.fetchProductList(this.productService.pageIndex, this.productService.pageSize, this.productService.searchTerm);
+              this.router.navigate(['/products']);
+  
+            }
+  
+  
+        })
+  
+      }
+    })
+
 
   }
 
-  onSubmit({value} : {value : Product}){
-   
-   if(!value.id)
-   {
-    this.loader.present();
-      this.productService.AddProduct(value).pipe(catchError(error=>{
-        this.loader.dismiss();
+  public async fetchProductList(pageIndex, pageSize, searchTerm) {
 
-      this.showToast('Some error has been occured','danger');
-      return throwError(()=>error);
+    //this.loader.present();
 
-    })).subscribe(data=>{
-       this.loader.dismiss();
-      
-      if(data.responseData)
-      {
-        if(data.responseData.id && data.errCode == 0)
-        {
-              this.showToast('Product Added Successfully','secondary');
-              this.productService.resetValues();
-              this.fetchProductList(this.productService.pageIndex, this.productService.pageSize, this.productService.searchTerm);
-              this.router.navigate(['/products']);
 
+    await this.productService.refreshProductList(pageIndex, pageSize, searchTerm);
+    this.productService.pageIndex += 1;
+
+  }
+
+
+  async showToast(ToastMsg, colorType) {
+    await this.toastCtrl.create({
+      message: ToastMsg,
+      duration: 2000,
+      position: 'top',
+      color: colorType,
+      buttons: [{
+        text: 'ok',
+        handler: () => {
+          //console.log("ok clicked");
         }
-
-      }
-    })
-   }
-   else
-   {
-
-    this.loader.present();
-    this.productService.updateProduct(value.id,value).pipe(catchError(error=>{
-      this.loader.dismiss();   
-      this.showToast('Some error has been occured','danger');
-      return throwError(()=>error);
-
-    })).subscribe(data=>{
-      this.loader.dismiss();
-      
-      if(data.responseData)
-      {
-        if(data.responseData.id && data.errCode == 0)
-        {
-              this.showToast('Product updated Successfully','secondary');
-              this.productService.resetValues();
-              this.fetchProductList(this.productService.pageIndex, this.productService.pageSize, this.productService.searchTerm);
-              this.router.navigate(['/products']);
-
-        }
-
-      }
-
-    })
-
-   }
-
-  
-}
-
-public async fetchProductList(pageIndex,pageSize,searchTerm){
-
-  //this.loader.present();
-  
-
-  await this.productService.refreshProductList(pageIndex,pageSize,searchTerm);
-  this.productService.pageIndex += 1;
-  
-}
-
-
-async showToast(ToastMsg,colorType) {
-  await this.toastCtrl.create({
-    message: ToastMsg,
-    duration: 2000,
-    position: 'top',
-    color:colorType,
-    buttons: [{
-      text: 'ok',
-      handler: () => {
-        //console.log("ok clicked");
-      }
-    }]
-  }).then(res => res.present());
-}
+      }]
+    }).then(res => res.present());
+  }
 
 }
