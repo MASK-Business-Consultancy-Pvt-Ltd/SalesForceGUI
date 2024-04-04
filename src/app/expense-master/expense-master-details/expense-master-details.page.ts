@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
 import { ExpenseMasterService } from '../expense-master.service';
@@ -23,16 +23,23 @@ import { LoaderService } from 'src/app/common/loader.service';
   ],
 })
 export class ExpenseMasterDetailsPage implements OnInit {
-  loadedExpenseMaster: ExpenseMaster = {};
+  loadedExpenseMaster: ExpenseMaster;
   ViewDataFlag = false;
-  public expenseMasterForm!: FormGroup;
+  public expenseMasterForm = new FormGroup({
+    code: new FormControl('',[Validators.required]),
+    u_Desgn: new FormControl('',[Validators.required]),
+    u_DA_Local: new FormControl(0,[Validators.required]),
+    u_DA_Outstn: new FormControl(0,[Validators.required]),
+    u_TA_Local: new FormControl(0,[Validators.required]),
+    u_TA_Outstn: new FormControl(0,[Validators.required]),
+  });
   constructor(private _fb: FormBuilder, private activatedRoute: ActivatedRoute,
-    private expensemasterService: ExpenseMasterService, private router: Router, private alertCtrl: AlertController,
+    public expensemasterService: ExpenseMasterService, private router: Router, private alertCtrl: AlertController,
     private toastCtrl: ToastController, private loader: LoaderService) { }
 
   ngOnInit() {
-    this.initExpenseForm();
 
+    this.expensemasterService.getEmployeeLevel()
     this.activatedRoute.paramMap.subscribe(paramMap => {
 
       if (!paramMap.has('expensemasterId')) {
@@ -42,8 +49,11 @@ export class ExpenseMasterDetailsPage implements OnInit {
       }
 
       if (paramMap.get('expensemasterId')) {
-        const expensemasterId = JSON.parse(paramMap.get('expensemasterId')!);
+        const expensemasterId = paramMap.get('expensemasterId');
         this.ViewDataFlag = true;
+        this.expenseMasterForm.patchValue({
+          code : expensemasterId
+        })
         this.loadExpenseMasterDetails(expensemasterId);
       }
       else {
@@ -53,42 +63,27 @@ export class ExpenseMasterDetailsPage implements OnInit {
     });
   }
 
-
-  initExpenseForm() {
-
-    this.expenseMasterForm = this._fb.group({
-      id: [0],
-      DesignationId: ['', Validators.required],
-      DailyAllowanceLocal: ['', Validators.required],
-      DailyAllowanceOutStation: ['', Validators.required],
-      TravelingAllowanceLocal: ['', Validators.required],
-      TravelingAllowanceOutStation:['', Validators.required]
-    });
-  }
-
-
   enableFormControl(EditFlag) {
     if (EditFlag == true) {   
-      this.expenseMasterForm.get('DesignationId').enable();
-      this.expenseMasterForm.get('DailyAllowanceLocal').enable();
-      this.expenseMasterForm.get('DailyAllowanceOutStation').enable();
-      this.expenseMasterForm.get('TravelingAllowanceLocal').enable();
-      this.expenseMasterForm.get('TravelingAllowanceOutStation').enable();
+      this.expenseMasterForm.get('u_Desgn').enable();
+      this.expenseMasterForm.get('u_DA_Local').enable();
+      this.expenseMasterForm.get('u_DA_Outstn').enable();
+      this.expenseMasterForm.get('u_TA_Local').enable();
+      this.expenseMasterForm.get('u_TA_Outstn').enable();
     }
     else {
-      this.expenseMasterForm.get('DesignationId').disable();
-      this.expenseMasterForm.get('DailyAllowanceLocal').disable();
-      this.expenseMasterForm.get('DailyAllowanceOutStation').disable();
-      this.expenseMasterForm.get('TravelingAllowanceLocal').disable();
-      this.expenseMasterForm.get('TravelingAllowanceOutStation').disable();
+      this.expenseMasterForm.get('u_Desgn').disable();
+      this.expenseMasterForm.get('u_DA_Local').disable();
+      this.expenseMasterForm.get('u_DA_Outstn').disable();
+      this.expenseMasterForm.get('u_TA_Local').disable();
+      this.expenseMasterForm.get('u_TA_Outstn').disable();
   }
 }
 
-  loadExpenseMasterDetails(DesignationId = -1) {
+  loadExpenseMasterDetails(DesignationId?:string) {
 
-    if (DesignationId == -1) {
-    }
-    else {
+    if (DesignationId) {
+    
       this.expensemasterService.getExpenseMaster(DesignationId).pipe(catchError(error => {
 
         this.showToast('Some error has been occured', 'danger');
@@ -99,12 +94,12 @@ export class ExpenseMasterDetailsPage implements OnInit {
         if (data.responseData) {
           this.loadedExpenseMaster = data.responseData[0];
           this.expenseMasterForm.patchValue({
-            id: this.loadedExpenseMaster.id,
-            DesignationId: this.loadedExpenseMaster.DesignationId!,
-            DailyAllowanceLocal: this.loadedExpenseMaster.DailyAllowanceLocal!,
-            DailyAllowanceOutStation: this.loadedExpenseMaster.DailyAllowanceOutStation!,
-            TravelingAllowanceLocal: this.loadedExpenseMaster.TravelingAllowanceLocal!,
-            TravelingAllowanceOutStation: this.loadedExpenseMaster.TravelingAllowanceOutStation!,
+            code: this.loadedExpenseMaster.code,
+            u_Desgn: this.loadedExpenseMaster.u_Desgn,
+            u_DA_Local: this.loadedExpenseMaster.u_DA_Local,
+            u_DA_Outstn: this.loadedExpenseMaster.u_DA_Outstn,
+            u_TA_Local: this.loadedExpenseMaster.u_TA_Local,
+            u_TA_Outstn: this.loadedExpenseMaster.u_TA_Outstn,
 
           })
         }
@@ -123,108 +118,108 @@ export class ExpenseMasterDetailsPage implements OnInit {
 
   }
 
-  DeleteExpenseMaster() {
+  // DeleteExpenseMaster() {
 
 
-    const expensemasterId = this.loadedExpenseMaster.id!;
+  //   const expensemasterId = this.loadedExpenseMaster.code!;
 
-    this.alertCtrl.create({
-      header: 'Are you sure?',
-      message: 'Do you really want to delete the Expense Head ?',
-      buttons: [{
-        text: 'Cancel',
-        role: 'cancel'
+  //   this.alertCtrl.create({
+  //     header: 'Are you sure?',
+  //     message: 'Do you really want to delete the Expense Head ?',
+  //     buttons: [{
+  //       text: 'Cancel',
+  //       role: 'cancel'
 
-      }, {
-        text: 'Delete',
-        handler: () => {
+  //     }, {
+  //       text: 'Delete',
+  //       handler: () => {
 
-          this.loader.present();
-          this.expensemasterService.deleteExpenseMaster(expensemasterId).pipe(catchError(error => {
-            this.loader.dismiss();
-            this.showToast('Some error has been occured', 'danger');
-            return throwError(() => error);
+  //         this.loader.present();
+  //         this.expensemasterService.deleteExpenseMaster(expensemasterId).pipe(catchError(error => {
+  //           this.loader.dismiss();
+  //           this.showToast('Some error has been occured', 'danger');
+  //           return throwError(() => error);
 
-          })).subscribe(data => {
-            this.loader.dismiss();
+  //         })).subscribe(data => {
+  //           this.loader.dismiss();
 
-            if (data.responseData) {
-              if (data.responseData.id == this.loadedExpenseMaster.id && data.errCode == 0) {
-                this.showToast('Expense Master  Deleted Successfully', 'secondary');
-                this.expensemasterService.resetValues();
-                this.fetchProductTypeList(this.expensemasterService.pageIndex, this.expensemasterService.pageSize, this.expensemasterService.searchTerm);
-                this.router.navigate(['/expensemaster']);
+  //           if (data.responseData) {
+  //             if (data.responseData.id == this.loadedExpenseMaster.id && data.errCode == 0) {
+  //               this.showToast('Expense Master  Deleted Successfully', 'secondary');
+  //               this.expensemasterService.resetValues();
+  //               this.fetchProductTypeList(this.expensemasterService.pageIndex, this.expensemasterService.pageSize, this.expensemasterService.searchTerm);
+  //               this.router.navigate(['/expensemaster']);
 
-              }
+  //             }
+  //           }
+
+
+  //         })
+
+  //       }
+
+
+  //     }
+  //     ]
+
+  //   }).then(alertElement => {
+
+  //     alertElement.present();
+  //   })
+
+  // }
+
+
+  onSubmit() {
+    this.activatedRoute.paramMap.subscribe(paramMap => {
+
+      let value = {...this.expenseMasterForm.value}
+      if (paramMap.get('expensemasterId') =='') {
+        this.loader.present();
+        this.expensemasterService.AddExpenseMaster(value as ExpenseMaster).pipe(catchError(error => {
+          this.loader.dismiss(); 
+  
+          this.showToast('Some error has been occured', 'danger');
+          return throwError(() => error);
+  
+        })).subscribe(data => {
+          this.loader.dismiss(); 
+            if (data.errCode == 0) {
+              this.showToast('Expense Head  Added Successfully', 'secondary');
+              this.expensemasterService.resetValues();
+              //this.fetchProductTypeList(this.expensemasterService.pageIndex, this.expensemasterService.pageSize, this.expensemasterService.searchTerm);
+              this.router.navigate(['/expensemaster']);
             }
-
-
-          })
-
-        }
-
-
+        })
       }
-      ]
+      else {
+  
+        this.loader.present();
+        this.expensemasterService.updateExpenseMaster(paramMap.get('expensemasterId'), value as ExpenseMaster).pipe(catchError(error => {
+          this.loader.dismiss(); 
+          this.showToast('Some error has been occured', 'danger');
+          return throwError(() => error);
+  
+        })).subscribe(data => {
+          this.loader.dismiss(); 
+  
+            if (data.errCode == 0) {
+              this.showToast('Expense Head updated Successfully', 'secondary');
+              this.expensemasterService.resetValues();
+              //this.fetchProductTypeList(this.expensemasterService.pageIndex, this.expensemasterService.pageSize, this.expensemasterService.searchTerm);
+              this.router.navigate(['/expensemaster']);
+  
+            }
+  
+  
+        })
+  
+      }
 
-    }).then(alertElement => {
 
-      alertElement.present();
     })
 
-  }
-
-
-  onSubmit({ value }: { value: ExpenseMaster }) {
-    
-    if (!value.id) {
-      this.loader.present();
-      this.expensemasterService.AddExpenseMaster(value).pipe(catchError(error => {
-        this.loader.dismiss(); 
-
-        this.showToast('Some error has been occured', 'danger');
-        return throwError(() => error);
-
-      })).subscribe(data => {
-        this.loader.dismiss(); 
-
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
-            this.showToast('Expense Head  Added Successfully', 'secondary');
-            this.expensemasterService.resetValues();
-                this.fetchProductTypeList(this.expensemasterService.pageIndex, this.expensemasterService.pageSize, this.expensemasterService.searchTerm);
-            this.router.navigate(['/expensemaster']);
-
-          }
-
-        }
-      })
-    }
-    else {
-
-      this.loader.present();
-      this.expensemasterService.updateExpenseMaster(value.id, value).pipe(catchError(error => {
-        this.loader.dismiss(); 
-        this.showToast('Some error has been occured', 'danger');
-        return throwError(() => error);
-
-      })).subscribe(data => {
-        this.loader.dismiss(); 
-
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
-            this.showToast('Expense Head updated Successfully', 'secondary');
-            this.expensemasterService.resetValues();
-                this.fetchProductTypeList(this.expensemasterService.pageIndex, this.expensemasterService.pageSize, this.expensemasterService.searchTerm);
-            this.router.navigate(['/expensemaster']);
-
-          }
-
-        }
-
-      })
-
-    }
+      
 
 
   }

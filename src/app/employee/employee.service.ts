@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Employee } from './employee.model';
+import { Employee, GeoResource, GeoResourceResponse } from './employee.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
-import { EmployeeLevel } from '../level/level.model';
-import { Territory } from '../zone/zone.model';
+import { EmployeeLevel, EmployeeLevelResponse } from '../level/level.model';
+import { Territory, TerritoryResponse } from '../zone/zone.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,11 @@ import { Territory } from '../zone/zone.model';
 export class EmployeeService {
 
   employeeList: Employee[] = [];
+  fullEmployeeList: Employee[]=[]
   levelList: EmployeeLevel[] = [];
-  territoryList: Territory[] = [];
+  stateList: GeoResource[] = [];
+  countryList: GeoResource[] = [];
+  territoryList:Territory[]=[]
   public totalCount=0;
   public pageIndex=1;
   public pageSize=10;
@@ -56,26 +59,44 @@ export class EmployeeService {
 
   getEmployeeList(){
 
-    this.http.get<any>(myGlobalVar.getAllEmployeeWithoutPagination).pipe(catchError(error=>{
+    this.http.get<any>(myGlobalVar.getAllEmployee + '?pageIndex=1&pageSize=10000&SearchTerm=').pipe(catchError(error=>{
         
-        return throwError(()=>error);
-  
-      })).subscribe(data=>{
-  
-          if(data.responseData)
-          {
-             
-              this.employeeList = data.responseData;
-          }
-  
-      })
+      return throwError(()=>error);
+
+    })).subscribe(data=>{
+
+      if(data.responseData.length > 0){
+
+        this.fullEmployeeList = data.responseData
+
+       }
+
+    })
 
   }
 
 
   getLevelList(){
 
-    this.http.get<any>(myGlobalVar.getAllLevelWithoutPagination).pipe(catchError(error=>{
+    this.http.get<EmployeeLevelResponse>(myGlobalVar.getAllLevel + '?pageIndex=1&pageSize=1000&SearchTerm=').pipe(catchError(error => {
+
+      return throwError(() => error);
+
+    })).subscribe(data => {
+
+      if (data.responseData.length > 0) {
+
+        this.levelList = data.responseData
+
+      }
+
+    })
+
+  }
+
+  getStateList(){
+
+    this.http.get<GeoResourceResponse>(myGlobalVar.getStateList).pipe(catchError(error=>{
         
         return throwError(()=>error);
   
@@ -84,33 +105,52 @@ export class EmployeeService {
           if(data.responseData)
           {
              
-              this.levelList = data.responseData;
+              this.stateList = data.responseData;
           }
   
       })
 
   }
+
+  getCountryList(){
+
+    this.http.get<GeoResourceResponse>(myGlobalVar.getCountryList).pipe(catchError(error=>{
+        
+        return throwError(()=>error);
+  
+      })).subscribe(data=>{
+  
+          if(data.responseData)
+          {
+             
+              this.countryList = data.responseData;
+          }
+  
+      })
+
+  }
+
 
   getTerritoryList(){
 
-    this.http.get<any>(myGlobalVar.getAllTerritoryWithoutPagination).pipe(catchError(error=>{
-        
-        return throwError(()=>error);
-  
-      })).subscribe(data=>{
-  
-          if(data.responseData)
-          {
-             
-              this.territoryList = data.responseData;
-          }
-  
-      })
+    this.http.get<TerritoryResponse>(myGlobalVar.getAllTerritory + '?pageIndex=1&pageSize=1000&Type=' + myGlobalVar.TypeCodeTerritory + '&SearchTerm=').pipe(catchError(error => {
+
+      return throwError(() => error);
+
+    })).subscribe(data => {
+
+      if (data.responseData.length > 0) {
+
+        this.territoryList = data.responseData
+
+      }
+
+    })
 
   }
 
 
-  getEmployee(employeeId : number):Observable<any>{
+  getEmployee(employeeId : string):Observable<any>{
     
 
     return this.http.get<any>(myGlobalVar.getEmployeeById + '?EmployeeId=' + employeeId);
@@ -130,7 +170,7 @@ export class EmployeeService {
 
    }
 
-   updateEmployee(employeeId : number,employeeData : any):Observable<any>{
+   updateEmployee(employeeId : string,employeeData : any):Observable<any>{
        
     return this.http.put<any>(myGlobalVar.UpdateEmployee+ '?EmployeeId=' + employeeId,employeeData);
 

@@ -1,13 +1,14 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
-import { Employee } from '../employee.model';
+import { addEmployee, Employee, Territories } from '../employee.model';
 import { EmployeeService } from '../employee.service';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { LoaderService } from 'src/app/common/loader.service';
+import { Territory } from 'src/app/zone/zone.model';
 @Component({
   selector: 'app-employee-detail',
   templateUrl: './employee-detail.page.html',
@@ -24,9 +25,34 @@ import { LoaderService } from 'src/app/common/loader.service';
 })
 export class EmployeeDetailPage implements OnInit {
 
-  loadedEmployee: Employee = {};
+  loadedEmployee: Employee;
   ViewDataFlag = false;
-  public employeeForm!: FormGroup;
+  public employeeForm = new FormGroup({
+
+    empId: new FormControl(0, Validators.required),
+    employeeCode: new FormControl('', Validators.required),
+    firstName: new FormControl('', Validators.required),
+    lastName: new FormControl('', Validators.required),
+    position: new FormControl(0, Validators.required), // Assuming position is a number
+    manager: new FormControl(0, Validators.required), // Assuming manager is a number
+    mobilePhone: new FormControl('', Validators.required),
+    workStreet: new FormControl('', Validators.required),
+    workBlock: new FormControl('', Validators.required),
+    workZipCode: new FormControl('', Validators.required),
+    workCity: new FormControl('', Validators.required),
+    workCountryCode: new FormControl('', Validators.required),
+    workStateCode: new FormControl('', Validators.required),
+    active: new FormControl('', Validators.required),
+    u_Pwd: new FormControl('', Validators.required)
+    ,
+    territories: new FormArray([new FormGroup({
+      code: new FormControl('', Validators.required),
+      name: new FormControl('', Validators.required),
+      u_TerrId: new FormControl('', Validators.required),
+      u_Active: new FormControl('', Validators.required)
+    })])
+  });
+
 
   constructor(private activatedRoute: ActivatedRoute,
     public employeeService: EmployeeService, private router: Router,
@@ -35,6 +61,7 @@ export class EmployeeDetailPage implements OnInit {
 
   ngOnInit() {
     this.initemployeeForm();
+
 
     this.activatedRoute.paramMap.subscribe(paramMap => {
 
@@ -61,81 +88,67 @@ export class EmployeeDetailPage implements OnInit {
 
   initemployeeForm() {
 
-    this.employeeForm = this._fb.group({
-      id: [0],
-      employeeCode: ['', Validators.required],
-      firstname: ['', Validators.required],
-      lastname: ['', Validators.required],
-      levelID: ['', Validators.required],
-      reportingManagerId: ['', Validators.required],
-      contactNo: ['', Validators.required],
-      building: ['', Validators.required],
-      block: ['', Validators.required],
-      city: ['', Validators.required],
-      zipcode: ['', Validators.required],
-      state: ['', Validators.required],
-      country: ['', Validators.required],
-      active: ['', Validators.required],
-      emailId: ['', Validators.required],
-      login: ['', Validators.required],
-      password: ['', Validators.required],
-      territoryID: ['', Validators.required],
-    });
 
     this.employeeService.getLevelList();
-    this.employeeService.getTerritoryList();
+    this.employeeService.getStateList();
+    this.employeeService.getCountryList();
     this.employeeService.getEmployeeList();
-    this.employeeForm.controls['active'].setValue('Y');
+    this.employeeService.getTerritoryList();
+
+
+    this.employeeForm.patchValue({
+      workCountryCode: 'IN',
+      active: 'Y'
+    })
   }
 
   enableFormControl(EditFlag) {
 
     if (EditFlag == true) {
-      this.employeeForm.get('employeeCode').enable();
-      this.employeeForm.get('firstname').enable();
-      this.employeeForm.get('lastname').enable();
-      this.employeeForm.get('levelID').enable();
-      this.employeeForm.get('reportingManagerId').enable();
-      this.employeeForm.get('contactNo').enable();
-      this.employeeForm.get('building').enable();
-      this.employeeForm.get('block').enable();
-      this.employeeForm.get('city').enable();
-      this.employeeForm.get('zipcode').enable();
-      this.employeeForm.get('state').enable();
-      this.employeeForm.get('country').enable();
-      this.employeeForm.get('active').enable();
-      this.employeeForm.get('emailId').enable();
-      this.employeeForm.get('login').enable();
-      this.employeeForm.get('password').enable();
-      this.employeeForm.get('territoryID').enable();
+      // this.employeeForm.get('employeeCode').enable();
+      // this.employeeForm.get('firstname').enable();
+      // this.employeeForm.get('lastname').enable();
+      // this.employeeForm.get('levelID').enable();
+      // this.employeeForm.get('reportingManagerId').enable();
+      // this.employeeForm.get('contactNo').enable();
+      // this.employeeForm.get('building').enable();
+      // this.employeeForm.get('block').enable();
+      // this.employeeForm.get('city').enable();
+      // this.employeeForm.get('zipcode').enable();
+      // this.employeeForm.get('state').enable();
+      // this.employeeForm.get('country').enable();
+      // this.employeeForm.get('active').enable();
+      // this.employeeForm.get('emailId').enable();
+      // this.employeeForm.get('login').enable();
+      // this.employeeForm.get('password').enable();
+      // this.employeeForm.get('territoryID').enable();
     }
     else {
-      this.employeeForm.get('employeeCode').disable();
-      this.employeeForm.get('firstname').disable();
-      this.employeeForm.get('lastname').disable();
-      this.employeeForm.get('levelID').disable();
-      this.employeeForm.get('reportingManagerId').disable();
-      this.employeeForm.get('contactNo').disable();
-      this.employeeForm.get('building').disable();
-      this.employeeForm.get('block').disable();
-      this.employeeForm.get('city').disable();
-      this.employeeForm.get('zipcode').disable();
-      this.employeeForm.get('state').disable();
-      this.employeeForm.get('country').disable();
-      this.employeeForm.get('active').disable();
-      this.employeeForm.get('emailId').disable();
-      this.employeeForm.get('login').disable();
-      this.employeeForm.get('password').disable();
-      this.employeeForm.get('territoryID').disable();
+      // this.employeeForm.get('employeeCode').disable();
+      // this.employeeForm.get('firstname').disable();
+      // this.employeeForm.get('lastname').disable();
+      // this.employeeForm.get('levelID').disable();
+      // this.employeeForm.get('reportingManagerId').disable();
+      // this.employeeForm.get('contactNo').disable();
+      // this.employeeForm.get('building').disable();
+      // this.employeeForm.get('block').disable();
+      // this.employeeForm.get('city').disable();
+      // this.employeeForm.get('zipcode').disable();
+      // this.employeeForm.get('state').disable();
+      // this.employeeForm.get('country').disable();
+      // this.employeeForm.get('active').disable();
+      // this.employeeForm.get('emailId').disable();
+      // this.employeeForm.get('login').disable();
+      // this.employeeForm.get('password').disable();
+      // this.employeeForm.get('territoryID').disable();
 
     }
   }
 
-  loadEmployeeDetails(employeeId = -1) {
+  loadEmployeeDetails(employeeId?:string) {
 
-    if (employeeId == -1) {
-    }
-    else {
+    if (employeeId) {
+
 
       this.employeeService.getEmployee(employeeId).pipe(catchError(error => {
 
@@ -143,28 +156,28 @@ export class EmployeeDetailPage implements OnInit {
         return throwError(() => error);
 
       })).subscribe(data => {
-        
+
         if (data.responseData) {
           this.loadedEmployee = data.responseData[0];
           this.employeeForm.patchValue({
-            id: this.loadedEmployee.id,
-            employeeCode: this.loadedEmployee.employeeCode!,
-            firstname:this.loadedEmployee.firstName!,
-            lastname:this.loadedEmployee.lastName!,
-            levelID: this.loadedEmployee.levelID!,
-            reportingManagerId: this.loadedEmployee.reportingManagerId!,
-            contactNo: this.loadedEmployee.contactNo!,
-            building: this.loadedEmployee.building!,
-            block:this.loadedEmployee.block!,
-            city:this.loadedEmployee.city!,
-            zipcode:this.loadedEmployee.zipcode!,
-            state:this.loadedEmployee.state!,
-            country:this.loadedEmployee.country!,
-            active: this.loadedEmployee.active!,
-            emailId: this.loadedEmployee.emailId!,
-            login: this.loadedEmployee.login!,
-            password: this.loadedEmployee.password!,
-            territoryID: this.loadedEmployee.territoryID!,
+
+
+            employeeCode: this.loadedEmployee.employeeCode,
+            firstName: this.loadedEmployee.firstName,
+            lastName: this.loadedEmployee.lastName,
+            position: this.loadedEmployee.position,
+            manager: this.loadedEmployee.manager,
+            mobilePhone: this.loadedEmployee.mobilePhone,
+            workStreet: this.loadedEmployee.workStreet,
+            workBlock: this.loadedEmployee.workBlock,
+            workZipCode: this.loadedEmployee.workZipCode,
+            workCity: this.loadedEmployee.workCity,
+            workCountryCode: this.loadedEmployee.workCountryCode,
+            workStateCode: this.loadedEmployee.workStateCode,
+            active: this.loadedEmployee.active,
+            u_Pwd: this.loadedEmployee.u_Pwd,
+
+            territories: this.loadedEmployee.territories,
           })
         }
 
@@ -175,153 +188,192 @@ export class EmployeeDetailPage implements OnInit {
     }
   }
 
-  ChangeViewDataFlag(){
-    
+  ChangeViewDataFlag() {
+
     this.ViewDataFlag = false;
     this.enableFormControl(true);
 
   }
 
-  DeleteEmployee(){
-      
-
-    const employeeId = this.loadedEmployee.id!;
-
-      this.alertCtrl.create({
-           header:'Are you sure?',
-           message:'Do you really want to delete the Employee?',
-           buttons:[{
-              text:'Cancel',
-              role:'cancel'
-
-           },{
-              text:'Delete',
-              handler:() =>{
-
-                this.loader.present();
-                this.employeeService.deleteEmployee(employeeId).pipe(catchError(error=>{
-                  this.loader.dismiss();
-        
-                  this.showToast('Some error has been occured','danger');
-                  return throwError(()=>error);
-            
-                })).subscribe(data=>{
-                  this.loader.dismiss();
-                  
-                  if(data.responseData)
-                  {
-                    if(data.responseData.id == this.loadedEmployee.id && data.errCode == 0)
-                    {
-                        this.showToast('Employee Deleted Successfully','secondary');
-                        this.employeeService.resetValues();
-                        this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);
-                        this.router.navigate(['/employee']);
-          
-                    }
-                  }
-                  
-            
-                })
-
-              }
+  DeleteEmployee() {
 
 
-           }
-          ]
+    const employeeId = this.loadedEmployee.empId;
 
-           }).then(alertElement =>{
+    this.alertCtrl.create({
+      header: 'Are you sure?',
+      message: 'Do you really want to delete the Employee?',
+      buttons: [{
+        text: 'Cancel',
+        role: 'cancel'
 
-              alertElement.present();
-           })
+      }, {
+        text: 'Delete',
+        handler: () => {
 
-}
+          this.loader.present();
+          this.employeeService.deleteEmployee(employeeId).pipe(catchError(error => {
+            this.loader.dismiss();
 
-onSubmit({value} : {value : Employee}){
-  
-  if(!value.id)
-  {
-    this.loader.present();
-     this.employeeService.AddEmployee(value).pipe(catchError(error=>{
+            this.showToast('Some error has been occured', 'danger');
+            return throwError(() => error);
+
+          })).subscribe(data => {
+            this.loader.dismiss();
+
+            if (data.errCode == 0) {
+              this.showToast('Employee Deleted Successfully', 'secondary');
+              this.employeeService.resetValues();
+              this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);
+              this.router.navigate(['/employee']);
+
+            }
+
+
+          })
+
+        }
+
+
+      }
+      ]
+
+    }).then(alertElement => {
+
+      alertElement.present();
+    })
+
+  }
+
+  onSubmit() {
+
+    let FormData = { ...this.employeeForm.value }
+
+    let value: addEmployee = {
+      wrapperStandardRequest: {
+        employeeCode: FormData.employeeCode,
+        firstName: FormData.firstName,
+        lastName: FormData.lastName,
+        position: FormData.position,
+        manager: FormData.manager,
+        mobilePhone: FormData.mobilePhone,
+        workStreet: FormData.workStreet,
+        workBlock: FormData.workBlock,
+        workZipCode: FormData.workZipCode,
+        workCity: FormData.workCity,
+        workCountryCode: FormData.workCountryCode,
+        workStateCode: FormData.workStateCode,
+        active: FormData.active,
+        u_Pwd: FormData.u_Pwd,
+        empId: 0
+      },
+      territories: FormData.territories as Territories[]
+    }
+
+    if(value.wrapperStandardRequest.empId == 0)
+    {
+      this.loader.present();
+       this.employeeService.AddEmployee(value).pipe(catchError(error=>{
+        this.loader.dismiss();
+
+       this.showToast('Some error has been occured','danger');
+       return throwError(()=>error);
+
+     })).subscribe(data=>{
       this.loader.dismiss();
 
-     this.showToast('Some error has been occured','danger');
-     return throwError(()=>error);
-
-   })).subscribe(data=>{
-    this.loader.dismiss();
-     
-     if(data.responseData)
-     {
-       if(data.responseData.id && data.errCode == 0)
-       {
-             this.showToast('Employee Added Successfully','secondary');
-             this.employeeService.resetValues();
-             this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);;
-             this.router.navigate(['/employee']);
-
-       }
-
-     }
-   })
-  }
-  else
-  {
-
-    this.loader.present();
-   this.employeeService.updateEmployee(value.id,value).pipe(catchError(error=>{
-    this.loader.dismiss(); 
-     this.showToast('Some error has been occured','danger');
-     return throwError(()=>error);
-
-   })).subscribe(data=>{
-    this.loader.dismiss(); 
-     
-     if(data.responseData)
-     {
-       if(data.responseData.id && data.errCode == 0)
-       {
-             this.showToast('Employee updated Successfully','secondary');
-             this.employeeService.resetValues();
-             this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);
-             this.router.navigate(['/employee']);
-
-       }
-
-     }
-
-   })
-
-  }
-
- 
-}
-
-public async fetchEmployeeList(pageIndex,pageSize,searchTerm){
-
-  //this.loader.present();
-  
-
-  await this.employeeService.refreshEmployeeList(pageIndex,pageSize,searchTerm);
-  this.employeeService.pageIndex += 1;
     
-  
-}
+         if(data.errCode == 0)
+         {
+               this.showToast('Employee Added Successfully','secondary');
+               this.employeeService.resetValues();
+               this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);;
+               this.router.navigate(['/employee']);
+
+         }
+
+      
+     })
+    }
+    else
+    {
+
+      this.loader.present();
+     this.employeeService.updateEmployee(value.wrapperStandardRequest.employeeCode,value).pipe(catchError(error=>{
+      this.loader.dismiss(); 
+       this.showToast('Some error has been occured','danger');
+       return throwError(()=>error);
+
+     })).subscribe(data=>{
+      this.loader.dismiss(); 
+
+      
+         if(data.errCode == 0)
+         {
+               this.showToast('Employee updated Successfully','secondary');
+               this.employeeService.resetValues();
+               this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);
+               this.router.navigate(['/employee']);
+
+         }
+
+       
+
+     })
+
+    }
 
 
-async showToast(ToastMsg,colorType) {
-  await this.toastCtrl.create({
-    message: ToastMsg,
-    duration: 2000,
-    position: 'top',
-    color:colorType,
-    buttons: [{
-      text: 'ok',
-      handler: () => {
-        //console.log("ok clicked");
-      }
-    }]
-  }).then(res => res.present());
-}
+  }
 
+  public async fetchEmployeeList(pageIndex, pageSize, searchTerm) {
+
+    //this.loader.present();
+
+
+    await this.employeeService.refreshEmployeeList(pageIndex, pageSize, searchTerm);
+    this.employeeService.pageIndex += 1;
+
+
+  }
+
+
+  async showToast(ToastMsg, colorType) {
+    await this.toastCtrl.create({
+      message: ToastMsg,
+      duration: 2000,
+      position: 'top',
+      color: colorType,
+      buttons: [{
+        text: 'ok',
+        handler: () => {
+          //console.log("ok clicked");
+        }
+      }]
+    }).then(res => res.present());
+  }
+
+  addTerritory() {
+    this.employeeForm.controls.territories.push(new FormGroup({
+      code: new FormControl(''),
+      name: new FormControl(''),
+      u_TerrId: new FormControl(''),
+      u_Active: new FormControl('')
+    }))
+
+  }
+  setTerritory(event: any, form: FormGroup) {
+    console.log(form);
+    let territoryData: Territory = { ...event.target.value }
+
+    form.patchValue({
+      code: territoryData.territoryId,
+      name: territoryData.description,
+      u_TerrId: territoryData.territoryId,
+      u_Active: territoryData.inactive
+    })
+    console.log(event.target.value);
+
+  }
 
 }

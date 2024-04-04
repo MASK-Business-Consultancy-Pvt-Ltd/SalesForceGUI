@@ -34,13 +34,10 @@
 
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item *ngFor="let expenseMaster of expenseMasterService.expensemasterList" [routerLink]="['/expensemaster',expenseMaster.id]">
+  <ion-item *ngFor="let expenseMaster of expenseMasterService.expensemasterList" [routerLink]="['/expensemaster',expenseMaster.code]">
     <ion-label>
-      <strong>{{expenseMaster.DailyAllowanceLocal}}</strong>
+      <strong>{{expenseMaster.u_Desgn}}</strong>
       <br />
-      <ion-note color="medium" class="ion-text-wrap">
-        {{expenseMaster.DesignationId}}
-      </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">
       <ion-icon color="medium" name="chevron-forward"></ion-icon>

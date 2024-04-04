@@ -32,12 +32,12 @@
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-item *ngFor="let employee of employeeService.employeeList" [routerLink]="['/employee',employee.id]">
+    <ion-item *ngFor="let employee of employeeService.employeeList" [routerLink]="['/employee',employee.empId]">
       <ion-label>
         <strong>{{employee.employeeCode}}</strong>
         <br />
         <ion-note color="medium" class="ion-text-wrap">
-          {{employee.employeeName}}
+          {{employee.firstName + ' ' + employee.lastName}}
         </ion-note>
       </ion-label>
       <div class="metadata-end-wrapper" slot="end">
