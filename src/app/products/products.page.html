@@ -33,16 +33,16 @@
 
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item *ngFor="let product of productService.productList" [routerLink]="['/products',product.id]">
+  <ion-item *ngFor="let product of productService.productList" [routerLink]="['/products',product.itemCode]">
     <ion-label>
-      <strong>{{product.productCode}}</strong>
+      <strong>{{product.itemCode}}</strong>
       <br />
       <ion-note color="medium" class="ion-text-wrap">
-        {{product.productName}}
+        {{product.itemName}}
       </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">
-      <ion-note color="medium">{{product.qtyInStock}}</ion-note>
+      <!-- <ion-note color="medium">{{product.qtyInStock}}</ion-note> -->
       <ion-icon color="medium" name="chevron-forward"></ion-icon>
     </div>
   </ion-item>

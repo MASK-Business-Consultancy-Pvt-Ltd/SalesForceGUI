@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoginService } from './login.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Login } from './login.model';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -8,22 +12,55 @@ import { Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private router:Router) { }
+  constructor(private router: Router, private loginService: LoginService,private toastCtrl: ToastController) { }
 
   ngOnInit() {
 
   }
 
-  onSubmit(){
-    
+  loginForm = new FormGroup({
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
+    token : new FormControl('')
+  });
 
-    localStorage.setItem('UserId','abc');
-    this.router.navigate(['/dashboard']);
+  onSubmit() {
+    if (this.loginForm.valid) {
+      let loginData = this.loginForm.value;
+      this.loginService.loginUser(loginData as Login).subscribe({
+        next : (res) => {
+        if(res.errCode == -1){
+          this.showToast(res.message,'danger')
+        }else if (res.errCode == 0){
+          this.loginService.setToken(res.responseData[0].token)
+          this.router.navigate(['/dashboard']);
+        }
+      },
+    });
+    } else {
+      // Handle form validation errors
+    }
   }
 
-  onPassSubmit(){
-    localStorage.setItem('UserId','abc');
+  onPassSubmit() {
     this.router.navigate(['/']);
+  }
+
+
+
+  async showToast(ToastMsg, colorType) {
+    await this.toastCtrl.create({
+      message: ToastMsg,
+      duration: 2000,
+      position: 'top',
+      color: colorType,
+      buttons: [{
+        text: 'ok',
+        handler: () => {
+          //console.log("ok clicked");
+        }
+      }]
+    }).then(res => res.present());
   }
 
 }

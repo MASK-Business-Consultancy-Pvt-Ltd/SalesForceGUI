@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
 
@@ -7,21 +8,12 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
   },
-  { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage) },
+  { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.page').then(m => m.DashboardPage),canActivate:[AuthGuard] },
   {
-    path: 'products',
-    children: [
-      {
-
-        path: '',
-        loadComponent: () => import('./products/products.page').then(x => x.ProductsPage)
-
-      },
-      {
-        path: ':productId',
-        loadComponent: () => import('./products/product-detail/product-detail.page').then(m => m.ProductDetailPage)
-
-      }]
+    path: 'products', children: [
+      { path: '', loadComponent: () => import('./products/products.page').then(x => x.ProductsPage) },
+      { path: ':productId', loadComponent: () => import('./products/product-detail/product-detail.page').then(m => m.ProductDetailPage) }
+    ],canActivate:[AuthGuard]
   },
 
   {
@@ -38,7 +30,7 @@ const routes: Routes = [
         path: ':productTypeId',
         loadComponent: () => import('./product-type/product-type-detail/product-type-detail.page').then(m => m.ProductTypeDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
   {
@@ -54,7 +46,7 @@ const routes: Routes = [
         path: ':zoneId',
         loadComponent: () => import('./zone/zone-detail/zone-detail.page').then(m => m.ZoneDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
   {
@@ -70,7 +62,7 @@ const routes: Routes = [
         path: ':regionId',
         loadComponent: () => import('./region/region-detail/region-detail.page').then(m => m.RegionDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
   {
@@ -86,7 +78,7 @@ const routes: Routes = [
         path: ':areaId',
         loadComponent: () => import('./area/area-detail/area-detail.page').then(m => m.AreaDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
 
@@ -103,7 +95,7 @@ const routes: Routes = [
         path: ':territoryId',
         loadComponent: () => import('./territory/territory-detail/territory-detail.page').then(m => m.TerritoryDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
   {
@@ -120,7 +112,7 @@ const routes: Routes = [
         loadComponent: () => import('./customer/customer-detail/customer-detail.page').then(m => m.CustomerDetailPage),
       },
 
-    ]
+    ],canActivate:[AuthGuard]
   },
 
   {
@@ -136,7 +128,7 @@ const routes: Routes = [
         path: ':customerTypeId',
         loadComponent: () => import('./customer-type/customer-type-detail/customer-type-detail.page').then(m => m.CustomerTypeDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
   {
@@ -152,7 +144,7 @@ const routes: Routes = [
         path: ':levelId',
         loadComponent: () => import('./level/level-detail/level-detail.page').then(m => m.LevelDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
   {
@@ -168,7 +160,7 @@ const routes: Routes = [
         path: ':employeeId',
         loadComponent: () => import('./employee/employee-detail/employee-detail.page').then(m => m.EmployeeDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
   {
@@ -185,7 +177,7 @@ const routes: Routes = [
         path: ':WorkingTypeId',
         loadComponent: () => import('./working-type/working-type-detail/working-type-detail.page').then(m => m.WorkingTypeDetailPage)
 
-      }]
+      }],canActivate:[AuthGuard]
   },
 
 
@@ -204,7 +196,7 @@ const routes: Routes = [
         loadComponent: () => import('./expense-head/expense-head-details.page/expense-head-details.page.page').then(m => m.ExpenseHeadDetailsPagePage)
 
       }
-    ]
+    ],canActivate:[AuthGuard]
   },
 
 
@@ -223,7 +215,7 @@ const routes: Routes = [
         loadComponent: () => import('./daily-activity/daily-activity-detail/daily-activity-detail.page').then(m => m.DailyActivityDetailPage)
 
       }
-    ]
+    ],canActivate:[AuthGuard]
   },
 
   {
@@ -241,7 +233,7 @@ const routes: Routes = [
         loadComponent: () => import('./expense-master/expense-master-details/expense-master-details.page').then(m => m.ExpenseMasterDetailsPage)
 
       }
-    ]
+    ],canActivate:[AuthGuard]
   },
 
   {
@@ -256,7 +248,7 @@ const routes: Routes = [
         loadComponent: () => import('./billto-address/billtoform/billtoform.page').then(m => m.BilltoAddressPage)
       }
 
-    ]
+    ],canActivate:[AuthGuard]
   },
 
   {
@@ -271,7 +263,7 @@ const routes: Routes = [
         path: ':shiptoaddressId',
         loadComponent: () => import('./shipto-address/shiptoform/shiptoform.page').then(m => m.ShipToAddrsForm)
       }
-    ]
+    ],canActivate:[AuthGuard]
   },
 
   // {
@@ -285,11 +277,11 @@ const routes: Routes = [
 
   {
     path: 'master',
-    loadComponent: () => import('./master/master.page').then(m => m.MasterPage)
+    loadComponent: () => import('./master/master.page').then(m => m.MasterPage),canActivate:[AuthGuard]
   },
   {
     path: 'transaction',
-    loadComponent: () => import('./transaction/transaction.page').then(m => m.TransactionPage)
+    loadComponent: () => import('./transaction/transaction.page').then(m => m.TransactionPage),canActivate:[AuthGuard]
   }
 
 ];

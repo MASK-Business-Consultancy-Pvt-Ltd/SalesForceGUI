@@ -5,8 +5,8 @@ import * as myGlobalVar from '../global';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { ProductType } from '../product-type/product-type.model';
-import { Territory } from './../territory/territory.model';
 import { WorkingType } from '../working-type/working-type.model';
+import { Territory } from '../zone/zone.model';
 
 @Injectable({
   providedIn: 'root'

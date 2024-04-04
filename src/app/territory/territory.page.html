@@ -33,12 +33,12 @@
 
 <ion-content [fullscreen]="true">
 <ion-list>
-  <ion-item *ngFor="let territory of territoryService.territoryList" [routerLink]="['/territory',territory.id]">
+  <ion-item *ngFor="let territory of territoryService.territoryList" [routerLink]="['/territory',territory.territoryId]">
     <ion-label>
-      <strong>{{territory.territoryCode}}</strong>
+      <strong>{{territory.territoryId}}</strong>
       <br />
       <ion-note color="medium" class="ion-text-wrap">
-        {{territory.territoryName}}
+        {{territory.description}}
       </ion-note>
     </ion-label>
     <div class="metadata-end-wrapper" slot="end">

@@ -1,4 +1,3 @@
-import { Territory } from './../territory/territory.model';
 import { Injectable } from '@angular/core';
 import { Employee } from './employee.model';
 import * as myGlobalVar from '../global';
@@ -6,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { EmployeeLevel } from '../level/level.model';
+import { Territory } from '../zone/zone.model';
 
 @Injectable({
   providedIn: 'root'

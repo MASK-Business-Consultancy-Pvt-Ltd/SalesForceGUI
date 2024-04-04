@@ -1,4 +1,4 @@
-<form [formGroup]="territoryForm" (ngSubmit)="onSubmit(territoryForm)">
+<form [formGroup]="territoryForm" (ngSubmit)="onSubmit()">
 
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
@@ -38,16 +38,16 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Territory Name" labelPlacement="floating" formControlName="territoryName"></ion-input>
+            <ion-input label="Territory Name" labelPlacement="floating" formControlName="description"></ion-input>
           </ion-item>
         </ion-col> 
       </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-select aria-label="Active" interface="popover" placeholder="Area Id" formControlName="areaId">
-              <ion-select-option *ngFor="let area of territoryService.areaList" [value]="area.id">
-                {{area.territoryName}}
+            <ion-select aria-label="Active" interface="popover" placeholder="Area Id" formControlName="parent">
+              <ion-select-option *ngFor="let area of territoryService.areaList" [value]="area.territoryId">
+                {{area.description}}
               </ion-select-option>
             </ion-select>
           </ion-item>
@@ -56,9 +56,9 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-select aria-label="Active" interface="popover" placeholder="Active" formControlName="active">
-              <ion-select-option value=Y>Yes</ion-select-option>
-              <ion-select-option value=N>No</ion-select-option>
+            <ion-select aria-label="Active" interface="popover" placeholder="Active" formControlName="inactive">
+              <ion-select-option value=Y>Inactive</ion-select-option>
+              <ion-select-option value=N>Active</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>

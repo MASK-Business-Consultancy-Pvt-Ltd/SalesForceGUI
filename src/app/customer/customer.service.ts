@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Customer } from './customer.model';
-import { Territory } from '../territory/territory.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { CustomerType } from '../customer-type/customer-type.model';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
+import { Territory } from '../zone/zone.model';
 
 @Injectable({
   providedIn: 'root'

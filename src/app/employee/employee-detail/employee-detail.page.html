@@ -110,8 +110,8 @@
         <ion-col no-padding> 
           <ion-item>
             <ion-select aria-label="Active" interface="popover" placeholder="State" formControlName="State">
-              <ion-select-option *ngFor="let State of employeeService.territoryList" [value]="State.id">
-                {{State.territoryCode}}
+              <ion-select-option *ngFor="let State of employeeService.territoryList" [value]="State.territoryId">
+                {{State.description}}
               </ion-select-option>
             </ion-select>
           </ion-item> 
@@ -121,8 +121,8 @@
         <ion-col no-padding> 
           <ion-item>
             <ion-select aria-label="Active" interface="popover" placeholder="Country" formControlName="Country">
-              <ion-select-option *ngFor="let country of employeeService.territoryList" [value]="country.id">
-                {{country.territoryCode}}
+              <ion-select-option *ngFor="let country of employeeService.territoryList" [value]="country.territoryId">
+                {{country.description}}
               </ion-select-option>
             </ion-select>
           </ion-item> 
@@ -163,8 +163,8 @@
         <ion-col no-padding>
           <ion-item>
             <ion-select aria-label="Active" interface="popover" placeholder="Territory Id" formControlName="territoryID">
-              <ion-select-option *ngFor="let territory of employeeService.territoryList" [value]="territory.id">
-                {{territory.territoryCode}}
+              <ion-select-option *ngFor="let territory of employeeService.territoryList" [value]="territory.territoryId">
+                {{territory.description}}
               </ion-select-option>
             </ion-select>
           </ion-item>
