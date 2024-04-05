@@ -145,6 +145,10 @@
           </ion-item>
         </ion-col>
       </ion-row>
+      <!-- <ion-row *ngif=" employeeForm.controls.territories.value.length > 0">
+        territory
+      </ion-row>
+      {{employeeForm.controls.territories.value | json}} -->
       <div>
         <ion-row *ngFor="let territory of employeeForm.controls.territories.controls; let i = index">
           <ion-col no-padding>
@@ -157,8 +161,8 @@
             </ion-item>
           </ion-col>
         </ion-row>
+        <ion-button (click)="addTerritory()"><ion-icon name="add-outline" slot="icon-only"></ion-icon></ion-button>
       </div>
-      <ion-button (click)="addTerritory()"> Add Territory</ion-button>
     </ion-grid>
   </ion-content>
   

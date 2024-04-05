@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Employee, GeoResource, GeoResourceResponse } from './employee.model';
+import { Employee, EmployeeResponse, GeoResource, GeoResourceResponse, addEmployee } from './employee.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
@@ -150,29 +150,29 @@ export class EmployeeService {
   }
 
 
-  getEmployee(employeeId : string):Observable<any>{
+  getEmployee(employeeId : string):Observable<EmployeeResponse>{
     
 
-    return this.http.get<any>(myGlobalVar.getEmployeeById + '?EmployeeId=' + employeeId);
+    return this.http.get<EmployeeResponse>(myGlobalVar.getEmployeeById + '?EmpId=' + employeeId);
 
   }
 
-  deleteEmployee(employeeId : number):Observable<any>{
+  deleteEmployee(employeeId : number):Observable<EmployeeResponse>{
 
-    return this.http.delete<any>(myGlobalVar.DeleteEmployee + '?EmployeeId=' + employeeId);
+    return this.http.delete<EmployeeResponse>(myGlobalVar.DeleteEmployee + '?EmployeeId=' + employeeId);
 
    }
 
 
-   AddEmployee(employeeData : any):Observable<any>{
+   AddEmployee(employeeData : addEmployee):Observable<EmployeeResponse>{
     
-    return this.http.post<any>(myGlobalVar.AddEmployee,employeeData);
+    return this.http.post<EmployeeResponse>(myGlobalVar.AddEmployee,employeeData);
 
    }
 
-   updateEmployee(employeeId : string,employeeData : any):Observable<any>{
+   updateEmployee(EmployeeCode : string,employeeData : addEmployee):Observable<EmployeeResponse>{
        
-    return this.http.put<any>(myGlobalVar.UpdateEmployee+ '?EmployeeId=' + employeeId,employeeData);
+    return this.http.patch<EmployeeResponse>(myGlobalVar.UpdateEmployee+ '?EmployeeCode=' + EmployeeCode,employeeData);
 
    }
 
