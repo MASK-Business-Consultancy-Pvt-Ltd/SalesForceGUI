@@ -164,4 +164,8 @@ export const AuthenticateUser = BaseURL + 'Login/AuthenticateUser'
 export const TokenKey = 'MaskBCSFGui'
 
 
+export const getStateList = BaseURL + 'BusinessPartner/GetStateList'
+export const getCountryList = BaseURL + 'BusinessPartner/GetCountryList'
+
+
 

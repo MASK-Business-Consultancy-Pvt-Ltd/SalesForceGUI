@@ -1,4 +1,4 @@
-<form [formGroup]="employeeForm" (ngSubmit)="onSubmit(employeeForm)">
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
 
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
@@ -31,30 +31,23 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Employee Code" labelPlacement="floating" formControlName="employeeCode"></ion-input>
+            <ion-input label="First Name" labelPlacement="floating" formControlName="firstName"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="First Name" labelPlacement="floating" formControlName="firstname"></ion-input>
+            <ion-input label="Last Name" labelPlacement="floating" formControlName="lastName"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Last Name" labelPlacement="floating" formControlName="lastname"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col no-padding>
-          <ion-item>
-            <ion-select aria-label="levelId" interface="popover" placeholder="Level" formControlName="levelID">
+            <ion-select aria-label="levelId" interface="popover" placeholder="Level" formControlName="position">
               <ion-select-option *ngFor="let level of employeeService.levelList" [value]="level.positionID">
-                {{level.positionID}}
+                {{level.name}}
               </ion-select-option>
             </ion-select>
           </ion-item>
@@ -63,9 +56,9 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-select aria-label="reportingManagerId" interface="popover" placeholder="Reporting Manager" formControlName="reportingManagerId">
-              <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
-                {{employee.employeeName}}
+            <ion-select aria-label="reportingManagerId" interface="popover" placeholder="Reporting Manager" formControlName="manager">
+              <ion-select-option *ngFor="let employee of employeeService.fullEmployeeList" [value]="employee.empId">
+                {{employee.firstName}}
               </ion-select-option>
             </ion-select>
           </ion-item>
@@ -74,44 +67,44 @@
       <ion-row> 
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Contact No" labelPlacement="floating" formControlName="contactNo"></ion-input>
+            <ion-input label="Contact No" labelPlacement="floating" formControlName="mobilePhone"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding> 
           <ion-item>
-            <ion-textarea labelPlacement="floating" label="Building" formControlName="building"></ion-textarea>
+            <ion-textarea labelPlacement="floating" label="Building" formControlName="workStreet"></ion-textarea>
           </ion-item> 
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding> 
           <ion-item>
-            <ion-textarea labelPlacement="floating" label="Block" formControlName="block"></ion-textarea>
+            <ion-textarea labelPlacement="floating" label="Block" formControlName="workBlock"></ion-textarea>
           </ion-item> 
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding> 
           <ion-item>
-            <ion-textarea labelPlacement="floating" label="City" formControlName="city"></ion-textarea>
+            <ion-textarea labelPlacement="floating" label="City" formControlName="workCity"></ion-textarea>
           </ion-item> 
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding> 
           <ion-item>
-            <ion-textarea labelPlacement="floating" label="Zip Code" formControlName="zipcode"></ion-textarea>
+            <ion-textarea labelPlacement="floating" label="Zip Code" formControlName="workZipCode"></ion-textarea>
           </ion-item> 
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding> 
           <ion-item>
-            <ion-select aria-label="Active" interface="popover" placeholder="State" formControlName="State">
-              <ion-select-option *ngFor="let State of employeeService.territoryList" [value]="State.territoryId">
-                {{State.description}}
+            <ion-select aria-label="Active" interface="popover" placeholder="State" formControlName="workStateCode">
+              <ion-select-option *ngFor="let State of employeeService.stateList" [value]="State.code">
+                {{State.name}}
               </ion-select-option>
             </ion-select>
           </ion-item> 
@@ -120,9 +113,9 @@
       <ion-row>
         <ion-col no-padding> 
           <ion-item>
-            <ion-select aria-label="Active" interface="popover" placeholder="Country" formControlName="Country">
-              <ion-select-option *ngFor="let country of employeeService.territoryList" [value]="country.territoryId">
-                {{country.description}}
+            <ion-select aria-label="Active" interface="popover" placeholder="Country" formControlName="workCountryCode">
+              <ion-select-option *ngFor="let country of employeeService.countryList" [value]="country.code">
+                {{country.name}}
               </ion-select-option>
             </ion-select>
           </ion-item> 
@@ -132,8 +125,8 @@
         <ion-col no-padding>
           <ion-item>
             <ion-select aria-label="Active" interface="popover" placeholder="Active" formControlName="active">
-              <ion-select-option value=Y>Yes</ion-select-option>
-              <ion-select-option value=N>No</ion-select-option>
+              <ion-select-option value=Y>Active</ion-select-option>
+              <ion-select-option value=N>Inactive</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>
@@ -141,35 +134,35 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Emai Id" labelPlacement="floating" formControlName="emailId"></ion-input>
+            <ion-input label="Login" labelPlacement="floating" formControlName="employeeCode"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Login" labelPlacement="floating" formControlName="login"></ion-input>
+            <ion-input label="Password" type="password" labelPlacement="floating" formControlName="u_Pwd"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col no-padding>
-          <ion-item>
-            <ion-input label="Password" type="password" labelPlacement="floating" formControlName="password"></ion-input>
-          </ion-item>
-        </ion-col>
+      <!-- <ion-row *ngif=" employeeForm.controls.territories.value.length > 0">
+        territory
       </ion-row>
-      <ion-row>
-        <ion-col no-padding>
-          <ion-item>
-            <ion-select aria-label="Active" interface="popover" placeholder="Territory Id" formControlName="territoryID">
-              <ion-select-option *ngFor="let territory of employeeService.territoryList" [value]="territory.territoryId">
-                {{territory.description}}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-        </ion-col>
-      </ion-row>
+      {{employeeForm.controls.territories.value | json}} -->
+      <div>
+        <ion-row *ngFor="let territory of employeeForm.controls.territories.controls; let i = index">
+          <ion-col no-padding>
+            <ion-item>
+              <ion-select aria-label="Active" interface="popover" placeholder="Territory Id" (ionChange)="setTerritory($event,territory)">
+                <ion-select-option *ngFor="let territoryOption of employeeService.territoryList" [value]="territoryOption">
+                  {{ territoryOption.description }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-button (click)="addTerritory()"><ion-icon name="add-outline" slot="icon-only"></ion-icon></ion-button>
+      </div>
     </ion-grid>
   </ion-content>
   

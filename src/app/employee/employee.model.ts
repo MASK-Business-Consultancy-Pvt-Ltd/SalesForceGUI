@@ -1,25 +1,67 @@
-export interface Employee{
+export interface Employee {
+    empId: number,
+    employeeCode: string,
+    firstName: string,
+    lastName: string,
+    position: number,
+    manager: number,
+    mobilePhone: string,
+    workStreet: string,
+    workBlock: string,
+    workZipCode: string,
+    workCity: string,
+    workCountryCode: string,
+    workStateCode: string,
+    active: string,
+    u_Pwd: string,
+    territories: Territories[],
+    totalCount: number
+}
 
-    id? : number;
-    employeeCode?:string;
-    employeeName?:string;
-    firstName?:string;
-    lastName?:string;
-    levelID?: number;
-    reportingManagerId? : number;
-    contactNo?: string;
-    address?: string;
-    building?: string;
-    block?: string;
-    city?: string;
-    zipcode?: number;
-    state?: string;
-    country?: string;
-    gender?: number;
-    active?: number;
-    emailId?: string;
-    login? : string;
-    password? : string
-    territoryID?: string;
-      
- }
+
+export interface EmployeeResponse {
+    responseData: Employee[],
+    errCode: number,
+    message: string
+}
+
+export interface Territories {
+    code: string,
+    name: string,
+    u_TerrId: string,
+    u_Active: string
+}
+
+
+export interface addEmployee {
+    wrapperStandardRequest: {
+        empId:number,
+        employeeCode: string,
+        firstName: string,
+        lastName: string,
+        position: number,
+        manager: number,
+        mobilePhone: string,
+        workStreet: string,
+        workBlock: string,
+        workZipCode: string,
+        workCity: string,
+        workCountryCode: string,
+        workStateCode: string,
+        active: string,
+        u_Pwd: string
+    },
+    territories: Territories[]
+}
+
+export interface GeoResource {
+    code: string,
+    name: string
+
+}
+
+export interface GeoResourceResponse {
+    responseData: GeoResource[],
+    errCode: number,
+    message: string
+}
