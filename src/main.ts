@@ -8,16 +8,22 @@ import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { IonicRouteStrategy, IonicModule } from '@ionic/angular';
 import { RouteReuseStrategy } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ValidationInterceptor } from './app/validation.interceptor';
 
 if (environment.production) {
   enableProdMode();
 }
 
 bootstrapApplication(AppComponent, {
-    providers: [provideHttpClient(),
-        importProvidersFrom(BrowserModule, IonicModule.forRoot(), AppRoutingModule),
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-    ]
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ValidationInterceptor,
+      multi: true // Use multi: true since ValidationInterceptor is one of possibly many interceptors
+    },
+    importProvidersFrom(BrowserModule, IonicModule.forRoot(), AppRoutingModule),
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+  ]
 })
   .catch(err => console.log(err));

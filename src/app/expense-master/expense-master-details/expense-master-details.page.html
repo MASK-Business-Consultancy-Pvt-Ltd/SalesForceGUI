@@ -1,4 +1,4 @@
-<form [formGroup]="expenseMasterForm" (ngSubmit)="onSubmit(expenseMasterForm)">
+<form [formGroup]="expenseMasterForm" (ngSubmit)="onSubmit()">
 
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
@@ -29,10 +29,10 @@
     <ion-grid no-padding>
       <ion-col  size="10" size-md="10" size-lg="11"  no-padding>
         <ion-item>
-          <ion-select aria-label="DesignationId"  interface="popover" placeholder="Select Designation" formControlName="DesignationId">
-            <!-- <ion-select-option *ngFor="let employee of employeeService.employeeList" [value]="employee.id">
-              {{employee.employeeName}}
-            </ion-select-option> -->
+          <ion-select aria-label="DesignationId"  interface="popover" placeholder="Select Designation" formControlName="u_Desgn">
+            <ion-select-option *ngFor="let level of expensemasterService.levelList" [value]="level.name">
+              {{level.name}}
+            </ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
@@ -40,7 +40,7 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Daily Allowance Local" type="number" labelPlacement="floating" formControlName="DailyAllowanceLocal"></ion-input>
+            <ion-input label="Daily Allowance Local" type="number" labelPlacement="floating" formControlName="u_DA_Local"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -48,21 +48,21 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Daily Allowance out Station" type="number" labelPlacement="floating" formControlName="DailyAllowanceOutStation"></ion-input>
+            <ion-input label="Daily Allowance out Station" type="number" labelPlacement="floating" formControlName="u_DA_Outstn"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Traveling Allowance Local" type="number" labelPlacement="floating" formControlName="TravelingAllowanceLocal"></ion-input>
+            <ion-input label="Traveling Allowance Local" type="number" labelPlacement="floating" formControlName="u_TA_Local"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Traveling Allowance out Station" labelPlacement="floating" formControlName="TravelingAllowanceOutStation"></ion-input>
+            <ion-input label="Traveling Allowance out Station" labelPlacement="floating" formControlName="u_TA_Outstn"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
