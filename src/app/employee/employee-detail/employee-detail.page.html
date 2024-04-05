@@ -102,6 +102,17 @@
       <ion-row>
         <ion-col no-padding> 
           <ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Country" formControlName="workCountryCode" (ionChange)="fetchStateList($event)">
+              <ion-select-option *ngFor="let country of employeeService.countryList" [value]="country.code">
+                {{country.name}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item> 
+        </ion-col>
+      </ion-row> 
+      <ion-row>
+        <ion-col no-padding> 
+          <ion-item>
             <ion-select aria-label="Active" interface="popover" placeholder="State" formControlName="workStateCode">
               <ion-select-option *ngFor="let State of employeeService.stateList" [value]="State.code">
                 {{State.name}}
@@ -110,17 +121,7 @@
           </ion-item> 
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col no-padding> 
-          <ion-item>
-            <ion-select aria-label="Active" interface="popover" placeholder="Country" formControlName="workCountryCode">
-              <ion-select-option *ngFor="let country of employeeService.countryList" [value]="country.code">
-                {{country.name}}
-              </ion-select-option>
-            </ion-select>
-          </ion-item> 
-        </ion-col>
-      </ion-row>    
+   
       <ion-row>
         <ion-col no-padding>
           <ion-item>
@@ -145,24 +146,26 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <!-- <ion-row *ngif=" employeeForm.controls.territories.value.length > 0">
-        territory
-      </ion-row>
-      {{employeeForm.controls.territories.value | json}} -->
-      <div>
-        <ion-row *ngFor="let territory of employeeForm.controls.territories.controls; let i = index">
+      
+        <ion-row>
           <ion-col no-padding>
             <ion-item>
-              <ion-select aria-label="Active" interface="popover" placeholder="Territory Id" (ionChange)="setTerritory($event,territory)">
-                <ion-select-option *ngFor="let territoryOption of employeeService.territoryList" [value]="territoryOption">
+              <ion-select multiple="true" interface="popover" placeholder="Territory" [disabled]="ViewDataFlag" (ionChange)="handleCheckboxChange($event)">
+                <ion-select-option *ngFor="let territoryOption of employeeService.territoryList" [value]="territoryOption" >
+                  <ion-checkbox slot="start" (ionChange)="setTerritory($event)"></ion-checkbox>
                   {{ territoryOption.description }}
                 </ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
         </ion-row>
-        <ion-button (click)="addTerritory()"><ion-icon name="add-outline" slot="icon-only"></ion-icon></ion-button>
-      </div>
+        <ion-row *ngIf=" loadedEmployee && loadedEmployee.territories.length > 0;">
+          <ion-col no-padding> 
+              <ion-item *ngFor="let territory of loadedEmployee.territories; let i = index" (click)="deleteUserTerritory(territory.u_TerrId)">
+                {{ getTerritoryName(territory.u_TerrId)}} <ion-icon name="close-outline" style="cursor:pointer;"></ion-icon>
+              </ion-item>
+          </ion-col>
+        </ion-row>
     </ion-grid>
   </ion-content>
   

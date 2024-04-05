@@ -4,6 +4,7 @@ import { LoginService } from './login.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Login } from './login.model';
 import { ToastController } from '@ionic/angular';
+import { LoaderService } from '../common/loader.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { ToastController } from '@ionic/angular';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private router: Router, private loginService: LoginService,private toastCtrl: ToastController) { }
+  constructor(private router: Router, private loginService: LoginService,private toastCtrl: ToastController,private loader: LoaderService) { }
 
   ngOnInit() {
 
@@ -26,12 +27,17 @@ export class LoginPage implements OnInit {
 
   onSubmit() {
     if (this.loginForm.valid) {
+      this.loader.present()
       let loginData = this.loginForm.value;
       this.loginService.loginUser(loginData as Login).subscribe({
         next : (res) => {
+          this.loader.dismiss()
         if(res.errCode == -1){
+          
           this.showToast(res.message,'danger')
         }else if (res.errCode == 0){
+          this.loader.dismiss()
+
           this.loginService.setToken(res.responseData[0].token)
           this.router.navigate(['/dashboard']);
         }

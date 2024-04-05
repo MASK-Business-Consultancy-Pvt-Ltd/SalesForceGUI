@@ -29,7 +29,13 @@ export class EmployeePage implements OnInit {
     this.employeeService.pageIndex += 1;
 
   }
-  
+  ionViewWillEnter() {
+
+    this.employeeService.searchTerm = "";
+    this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);
+    this.employeeService.pageIndex += 1;
+
+  }
   public async fetchEmployeeList(pageIndex,pageSize,searchTerm){
 
     //this.loader.present();
