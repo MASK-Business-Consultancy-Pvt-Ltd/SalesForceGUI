@@ -17,6 +17,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ValidationInterceptor,
