@@ -21,7 +21,7 @@ export class CustomerTypeService {
 
   refreshCustomerTypeList(pageIndex:number, pageSize:number, searchTerm:string){
 
-    this.http.get<any>(myGlobalVar.getAllCustomerType+ '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
+    this.http.get<CustomerTypeResponse>(myGlobalVar.getAllCustomerType+ '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
         
         return throwError(()=>error);
   

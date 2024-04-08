@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
-import { Customer } from '../customer.model';
+import { CardInfo } from '../customer.model';
 import { CustomerService } from '../customer.service';
 import { LoaderService } from 'src/app/common/loader.service';
 import { catchError } from 'rxjs/operators';
@@ -24,7 +24,7 @@ import { throwError } from 'rxjs';
 })
 export class CustomerDetailPage implements OnInit { 
   
-  loadedCustomer: Customer = {};
+  loadedCustomer: CardInfo;
   ViewDataFlag=false;
   public customerForm! : FormGroup;
 
@@ -45,7 +45,7 @@ export class CustomerDetailPage implements OnInit {
       }
 
       if (paramMap.get('customerId')) {
-        const customerId = JSON.parse(paramMap.get('customerId')!);
+        const customerId = paramMap.get('customerId');
         this.ViewDataFlag = true;
         this.loadCustomerDetails(customerId);
       }
@@ -106,11 +106,9 @@ export class CustomerDetailPage implements OnInit {
 
 }
 
-loadCustomerDetails(customerId = -1) {
+loadCustomerDetails(customerId?:string) {
 
-  if (customerId == -1) {
-  }
-  else {
+  if (customerId) {
 
     this.customerService.getCustomer(customerId).pipe(catchError(error => {
 
@@ -122,17 +120,7 @@ loadCustomerDetails(customerId = -1) {
       if (data.responseData) {
         this.loadedCustomer = data.responseData[0];
         this.customerForm.patchValue({
-          id: this.loadedCustomer.id,
-        //  customerCode: this.loadedCustomer.customerCode!,
-          customerName: this.loadedCustomer.customerName!,
-          customerType: this.loadedCustomer.customerType!,
-          contactNo: this.loadedCustomer.contactNo!,
-        //  gender: this.loadedCustomer.gender!,
-          active: this.loadedCustomer.active!,
-          emailId: this.loadedCustomer.emailId!,
-          territoryID: this.loadedCustomer.territoryID!,
-          billToAddress: this.loadedCustomer.billToAddress!,
-          shipToAddress: this.loadedCustomer.shipToAddress!,
+
         })
       }
 
@@ -150,63 +138,63 @@ ChangeViewDataFlag(){
 
 }
 
-DeleteCustomer(){
+// DeleteCustomer(){
       
 
-  const customerId = this.loadedCustomer.id!;
+//   const customerId = this.loadedCustomer.cardCode!;
 
-    this.alertCtrl.create({
-         header:'Are you sure?',
-         message:'Do you really want to delete the Customer?',
-         buttons:[{
-            text:'Cancel',
-            role:'cancel'
+//     this.alertCtrl.create({
+//          header:'Are you sure?',
+//          message:'Do you really want to delete the Customer?',
+//          buttons:[{
+//             text:'Cancel',
+//             role:'cancel'
 
-         },{
-            text:'Delete',
-            handler:() =>{
+//          },{
+//             text:'Delete',
+//             handler:() =>{
 
-              this.loader.present();
-              this.customerService.deleteCustomer(customerId).pipe(catchError(error=>{
-                this.loader.dismiss();
+//               this.loader.present();
+//               this.customerService.deleteCustomer(customerId).pipe(catchError(error=>{
+//                 this.loader.dismiss();
       
-                this.showToast('Some error has been occured','danger');
-                return throwError(()=>error);
+//                 this.showToast('Some error has been occured','danger');
+//                 return throwError(()=>error);
           
-              })).subscribe(data=>{
-                this.loader.dismiss();
+//               })).subscribe(data=>{
+//                 this.loader.dismiss();
                 
-                if(data.responseData)
-                {
-                  if(data.responseData.id == this.loadedCustomer.id && data.errCode == 0)
-                  {
-                      this.showToast('Customer Deleted Successfully','secondary');
-                      this.customerService.resetValues();
-                      this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
-                      this.router.navigate(['/customer']);
+//                 if(data.responseData)
+//                 {
+//                   if(data.responseData[0].cardCode == this.loadedCustomer.id && data.errCode == 0)
+//                   {
+//                       this.showToast('Customer Deleted Successfully','secondary');
+//                       this.customerService.resetValues();
+//                       this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
+//                       this.router.navigate(['/customer']);
         
-                  }
-                }
+//                   }
+//                 }
                 
           
-              })
+//               })
 
-            }
+//             }
 
 
-         }
-        ]
+//          }
+//         ]
 
-         }).then(alertElement =>{
+//          }).then(alertElement =>{
 
-            alertElement.present();
-         })
+//             alertElement.present();
+//          })
 
-}
+// }
 
-onSubmit({value} : {value : Customer}){
+onSubmit({value} : {value : CardInfo}){
   
-  if(!value.id)
+  if(!value.cardCode)
   {
     this.loader.present();
      this.customerService.AddCustomer(value).pipe(catchError(error=>{
@@ -218,9 +206,8 @@ onSubmit({value} : {value : Customer}){
    })).subscribe(data=>{
     this.loader.dismiss();
      
-     if(data.responseData)
-     {
-       if(data.responseData.id && data.errCode == 0)
+ 
+       if(data.errCode == 0)
        {
              this.showToast('Customer Added Successfully','secondary');
              this.customerService.resetValues();
@@ -229,14 +216,13 @@ onSubmit({value} : {value : Customer}){
 
        }
 
-     }
    })
   }
   else
   {
 
     this.loader.present();
-   this.customerService.updateCustomer(value.id,value).pipe(catchError(error=>{
+   this.customerService.updateCustomer(value.cardCode,value).pipe(catchError(error=>{
     this.loader.dismiss(); 
      this.showToast('Some error has been occured','danger');
      return throwError(()=>error);
@@ -244,9 +230,8 @@ onSubmit({value} : {value : Customer}){
    })).subscribe(data=>{
     this.loader.dismiss(); 
      
-     if(data.responseData)
-     {
-       if(data.responseData.id && data.errCode == 0)
+
+       if(data.errCode == 0)
        {
              this.showToast('Customer updated Successfully','secondary');
              this.customerService.resetValues();
@@ -255,7 +240,6 @@ onSubmit({value} : {value : Customer}){
 
        }
 
-     }
 
    })
 

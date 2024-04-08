@@ -34,12 +34,12 @@
 <ion-content [fullscreen]="true">
   <ion-content [fullscreen]="true">
     <ion-list>
-      <ion-item *ngFor="let customer of customerService.customerList" [routerLink]="['/customer',customer.id]">
+      <ion-item *ngFor="let customer of customerService.customerList" [routerLink]="['/customer',customer.cardCode]">
         <ion-label>
-          <strong>{{customer.customerCode}}</strong>
+          <strong>{{customer.cardCode}}</strong>
           <br />
           <ion-note color="medium" class="ion-text-wrap">
-            {{customer.customerName}}
+            {{customer.cardName}}
           </ion-note>
         </ion-label>
         <div class="metadata-end-wrapper" slot="end">

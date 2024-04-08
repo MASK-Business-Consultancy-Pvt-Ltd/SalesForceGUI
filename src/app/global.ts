@@ -57,9 +57,9 @@ export const AddTerritory = BaseURL + 'Territory/AddTerritory'
 export const UpdateTerritory = BaseURL + 'Territory/UpdateTerritory' 
 
 //#region CustomerType Type Master API link
-export const getAllCustomer = BaseURL + 'Customer/GetAllCustomer'
+export const getAllCustomer = BaseURL + 'BusinessPartner/GetAllBusinessPartner'
 export const getAllCustomerWithoutPagination = BaseURL + 'Customer/GetAllCustomerWithoutPagination'
-export const getCustomerById = BaseURL + 'Customer/GetCustomerById'
+export const getCustomerById = BaseURL + 'BusinessPartner/GetBusinessPartnerById'
 export const DeleteCustomer = BaseURL + 'Customer/DeleteCustomer'
 export const AddCustomer = BaseURL + 'Customer/AddCustomer'
 export const UpdateCustomer = BaseURL + 'Customer/UpdateCustomer' 
@@ -164,7 +164,7 @@ export const AuthenticateUser = BaseURL + 'Login/AuthenticateUser'
 export const TokenKey = 'MaskBCSFGui'
 
 
-export const getStateList = BaseURL + 'BusinessPartner/GetStateList'
+export const getCountryWiseStateList = BaseURL + 'BusinessPartner/GetCountryWiseStateList'
 export const getCountryList = BaseURL + 'BusinessPartner/GetCountryList'
 
 

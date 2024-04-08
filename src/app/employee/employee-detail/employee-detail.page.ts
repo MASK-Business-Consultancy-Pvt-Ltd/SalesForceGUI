@@ -46,12 +46,7 @@ export class EmployeeDetailPage implements OnInit {
     active: new FormControl('', Validators.required),
     u_Pwd: new FormControl('', Validators.required)
     ,
-    territories: new FormArray([new FormGroup({
-      code: new FormControl('', Validators.required),
-      name: new FormControl('', Validators.required),
-      u_TerrId: new FormControl('', Validators.required),
-      u_Active: new FormControl('', Validators.required)
-    })])
+    territories: new FormArray([])
   });
 
 
@@ -94,7 +89,6 @@ export class EmployeeDetailPage implements OnInit {
 
 
     this.employeeService.getLevelList();
-    this.employeeService.getStateList();
     this.employeeService.getCountryList();
     this.employeeService.getEmployeeList();
     this.employeeService.getTerritoryList();
@@ -104,6 +98,10 @@ export class EmployeeDetailPage implements OnInit {
       workCountryCode: 'IN',
       active: 'Y'
     })
+  }
+
+  fetchStateList(event:any){
+    this.employeeService.getStateList(event.detail.value);
   }
 
   enableFormControl(EditFlag) {
@@ -133,8 +131,6 @@ export class EmployeeDetailPage implements OnInit {
           console.log(this.loadedEmployee.territories);
 
           this.employeeForm.patchValue({
-
-
             employeeCode: this.loadedEmployee.employeeCode,
             firstName: this.loadedEmployee.firstName,
             lastName: this.loadedEmployee.lastName,
@@ -260,7 +256,7 @@ export class EmployeeDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Employee Added Successfully', 'secondary');
           this.employeeService.resetValues();
-          this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);;
+          //this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);;
           this.router.navigate(['/employee']);
 
         }
@@ -271,7 +267,7 @@ export class EmployeeDetailPage implements OnInit {
     else {
 
       this.loader.present();
-      this.employeeService.updateEmployee(value.wrapperStandardRequest.employeeCode, value).pipe(catchError(error => {
+      this.employeeService.updateEmployee(value.wrapperStandardRequest.empId, value).pipe(catchError(error => {
         this.loader.dismiss();
         this.showToast('Some error has been occured', 'danger');
         return throwError(() => error);
@@ -283,7 +279,7 @@ export class EmployeeDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Employee updated Successfully', 'secondary');
           this.employeeService.resetValues();
-          this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);
+          //this.fetchEmployeeList(this.employeeService.pageIndex, this.employeeService.pageSize, this.employeeService.searchTerm);
           this.router.navigate(['/employee']);
 
         }
@@ -324,27 +320,118 @@ export class EmployeeDetailPage implements OnInit {
     }).then(res => res.present());
   }
 
-  addTerritory() {
-    this.employeeForm.controls.territories.push(new FormGroup({
-      code: new FormControl(''),
-      name: new FormControl(''),
-      u_TerrId: new FormControl(''),
-      u_Active: new FormControl('')
-    }))
+
+
+  // handleCheckboxChange(event: any) {
+  //   this.employeeForm.controls.territories.clear()
+
+  //   let selectedTerritories: Territory[] = event.detail.value
+
+  //     if (!this.ViewDataFlag) {
+
+  //       selectedTerritories.forEach(territory => {
+  //         console.log(territory);
+  //         this.employeeForm.controls.territories.push(new FormGroup({
+  //           code: new FormControl(""),
+  //           name: new FormControl(territory.description),
+  //           u_TerrId: new FormControl(),
+  //           u_Active: new FormControl('Y')
+  //         }).patchValue({
+  //           code: "",
+  //           name: territory.description,
+  //           u_TerrId: territory.territoryId.toString(),
+  //           u_Active: "Y"
+  //         }))
+  //       });
+
+  //       console.log(this.employeeForm.controls.territories.value);
+
+  //     }
+
+  // }
+  handleCheckboxChange(event: any) {
+    let selectedTerritories: Territory[] = event.detail.value;
+
+    const territoriesArray = this.employeeForm.get('territories') as FormArray;
+
+    if (!this.ViewDataFlag) {
+      territoriesArray.clear(); // Clear existing items
+
+      selectedTerritories.forEach(territory => {
+        const territoryFormGroup = this.createTerritoryFormGroup(territory);
+        territoriesArray.push(territoryFormGroup);
+      });
+    } else {
+      //Remove unchecked territories from the FormArray
+      const updatedTerritories = territoriesArray.controls.filter(control =>
+        selectedTerritories.some(territory => control.value.u_TerrId === territory.territoryId.toString())
+      );
+      territoriesArray.controls = updatedTerritories;
+      console.log('update on territory');
+
+    }
+
+    console.log(this.employeeForm.controls.territories.value);
+  }
+
+  public createTerritoryFormGroup(territory: Territory): FormGroup {
+    return this._fb.group({
+      code: [''], // Assuming 'code' is a string, adjust as needed
+      name: [this.employeeForm.controls.employeeCode.value], // Set initial value to territory description
+      u_TerrId: [territory.territoryId.toString()], // Convert to string if necessary
+      u_Active: ['Y'] // Assuming 'u_Active' is a string with initial value 'Y'
+    });
+  }
+
+
+  setTerritory(event: any) {
+    console.log(event);
+    //let territoryData: Territory = { ...event.target.value }
+
+    // form.patchValue({
+    //   code: "",
+    //   name: territoryData.description,
+    //   u_TerrId: territoryData.territoryId.toString(),
+    //   u_Active: territoryData.inactive == 'Y' ? 'N' : 'Y'
+    // })
 
   }
-  setTerritory(event: any, form: FormGroup) {
-    console.log(form);
-    let territoryData: Territory = { ...event.target.value }
 
-    form.patchValue({
-      code: territoryData.territoryId.toString(),
-      name: territoryData.description,
-      u_TerrId: territoryData.territoryId.toString(),
-      u_Active: territoryData.inactive
+  getTerritoryName(id: string):string{
+    let Tid = parseInt(id)
+    return this.employeeService.territoryList.filter(i => {
+       return i.territoryId == Tid
+    }).map(i=>{
+      return i.description
+    })[0]
+  }
+  deleteUserTerritory(tid:string){
+    this.loader.present();
+    this.loadedEmployee.territories.filter(i=>{
+      return i.u_TerrId == tid
+    }).map(i=>{
+      i.u_Active = 'N'
     })
-    console.log(event.target.value);
+    let data: addEmployee = {
+      wrapperStandardRequest: this.loadedEmployee,
+      territories: this.loadedEmployee.territories
+    }
+    this.employeeService.updateEmployee(this.loadedEmployee.empId, data).pipe(catchError(error => {
+      this.loader.dismiss();
+      this.showToast('Some error has been occured', 'danger');
+      return throwError(() => error);
 
+    })).subscribe(data => {
+      this.loader.dismiss();
+
+
+      if (data.errCode == 0) {
+        this.showToast('Employee updated Successfully', 'secondary');
+        this.employeeService.resetValues();
+        this.loadEmployeeDetails(this.loadedEmployee.empId.toString())
+      }
+    })
+    
   }
 
 }

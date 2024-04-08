@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Customer } from './customer.model';
+import { BusinessResponseData, CardInfo } from './customer.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
-import { CustomerType } from '../customer-type/customer-type.model';
+import { CustomerType, CustomerTypeResponse } from '../customer-type/customer-type.model';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Territory } from '../zone/zone.model';
@@ -12,7 +12,7 @@ import { Territory } from '../zone/zone.model';
 })
 export class CustomerService {
 
-  customerList: Customer[] = [];
+  customerList: CardInfo[] = [];
   customerTypeList: CustomerType[]=[];
   territoryList: Territory[] = [];
   public totalCount=0;
@@ -25,7 +25,7 @@ export class CustomerService {
 
   refreshCustomerList(pageIndex:number, pageSize:number, searchTerm:string){
 
-    this.http.get<any>(myGlobalVar.getAllCustomer + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
+    this.http.get<BusinessResponseData>(myGlobalVar.getAllCustomer + '?pageIndex=' + pageIndex + '&pageSize=' + pageSize + '&SearchTerm=' + searchTerm).pipe(catchError(error=>{
         
         return throwError(()=>error);
   
@@ -55,7 +55,7 @@ export class CustomerService {
 
   getCustomerTypeList(){
 
-    this.http.get<any>(myGlobalVar.getAllCustomerTypeWithoutPagination).pipe(catchError(error=>{
+    this.http.get<CustomerTypeResponse>(myGlobalVar.getAllCustomerType+ '?pageIndex=1&pageSize=1000&SearchTerm=').pipe(catchError(error=>{
         
         return throwError(()=>error);
   
@@ -74,12 +74,11 @@ export class CustomerService {
 
   getTerritoryList(){
 
-    this.http.get<any>(myGlobalVar.getAllTerritoryWithoutPagination).pipe(catchError(error=>{
+    this.http.get<any>(myGlobalVar.getAllTerritory+ '?pageIndex=1&pageSize=1000&Type='+ myGlobalVar.TypeCodeTerritory).pipe(catchError(error=>{
         
         return throwError(()=>error);
   
       })).subscribe(data=>{
-          debugger
           if(data.responseData)
           {
              
@@ -90,27 +89,27 @@ export class CustomerService {
 
   }
 
-  getCustomer(customerId : number):Observable<any>{
+  getCustomer(customerId : string):Observable<BusinessResponseData>{
     
 
-    return this.http.get<any>(myGlobalVar.getCustomerById + '?CustomerId=' + customerId);
+    return this.http.get<BusinessResponseData>(myGlobalVar.getCustomerById + '?BPID=' + customerId);
 
   }
 
-  deleteCustomer(customerId : number):Observable<any>{
+  deleteCustomer(customerId : number):Observable<BusinessResponseData>{
 
-    return this.http.delete<any>(myGlobalVar.DeleteCustomer + '?CustomerId=' + customerId);
+    return this.http.delete<BusinessResponseData>(myGlobalVar.DeleteCustomer + '?CustomerId=' + customerId);
 
    }
 
 
-   AddCustomer(customerData : any):Observable<any>{
+   AddCustomer(customerData : CardInfo):Observable<BusinessResponseData>{
     
-    return this.http.post<any>(myGlobalVar.AddCustomer,customerData);
+    return this.http.post<BusinessResponseData>(myGlobalVar.AddCustomer,customerData);
 
    }
 
-   updateCustomer(customerId : number,customerData : any):Observable<any>{
+   updateCustomer(customerId : string,customerData : CardInfo):Observable<BusinessResponseData>{
        
     return this.http.put<any>(myGlobalVar.UpdateCustomer+ '?CustomerId=' + customerId,customerData);
 
