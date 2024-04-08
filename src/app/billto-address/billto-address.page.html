@@ -3,17 +3,34 @@
 
 
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+      <ion-back-button [defaultHref]="'/'"></ion-back-button>
+
     </ion-buttons>
     <ion-title>Bill To Address</ion-title>
 
-    <ion-buttons slot="primary">
-      <!-- <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button> -->
+    <ion-buttons [collapse]="true" slot="end">
+      <ion-button type="submit" [routerLink]="['/customer',customerService.customerForm.controls.cardCode.value]">Save</ion-button>
     </ion-buttons>
+    <!-- <ion-buttons slot="end">
+      <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button>
+    </ion-buttons> -->
   </ion-toolbar>
 
 </ion-header>
+
+
   <ion-content [fullscreen]="true">
+    <ion-list>
+      <ion-item *ngFor="let address of billToAddrsService.availableAddressList">
+        <strong>{{address.addressName}}</strong>
+        <br />
+        <ion-note color="medium" class="ion-text-wrap">
+          {{address.city}}
+        </ion-note>
+        <ion-checkbox slot="start" [checked]="checkAvailableAddress(address)" (ionChange)="addAddressToCustomer($event,address)"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+    
   <ion-list class="btns" [routerLink]="['/billToAddress','']">
     Add Bill To Address
   </ion-list>    

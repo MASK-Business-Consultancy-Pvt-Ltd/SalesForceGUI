@@ -1,4 +1,4 @@
-<form [formGroup]="billtoForm" (ngSubmit)="onSubmit(billtoForm)">
+<form [formGroup]="billtoForm" (ngSubmit)="onSubmit()">
 
   <ion-header [translucent]="true">
     <ion-toolbar color="primary">
@@ -30,10 +30,17 @@
        <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Address Id" labelPlacement="floating" formControlName="addressId"></ion-input>
+            <ion-input label="Address Name" labelPlacement="floating" formControlName="addressName"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row> 
+      <ion-row>
+        <ion-col no-padding>
+          <ion-item>
+            <ion-input label="Street" labelPlacement="floating" formControlName="street"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
       <ion-row>
         <ion-col no-padding>
           <ion-item>
@@ -41,7 +48,6 @@
           </ion-item>
         </ion-col>
       </ion-row>
-
       <ion-row>
         <ion-col no-padding>
           <ion-item>
@@ -72,15 +78,6 @@
           </ion-item>
         </ion-col>
       </ion-row>
-    
-      <ion-row>
-        <ion-col no-padding>
-          <ion-item>
-            <ion-input label="GST No" labelPlacement="floating" formControlName="gstNo"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-
     </ion-grid>
   </ion-content>  
 </form>

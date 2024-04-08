@@ -1,16 +1,37 @@
 import { Injectable } from '@angular/core';
-import { BusinessResponseData, CardInfo } from './customer.model';
+import { AddCustomerCard, AddressInfo, BusinessResponseData, CardInfo } from './customer.model';
 import * as myGlobalVar from '../global';
 import { HttpClient } from '@angular/common/http';
 import { CustomerType, CustomerTypeResponse } from '../customer-type/customer-type.model';
 import { catchError } from 'rxjs/operators';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { Territory } from '../zone/zone.model';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
+
+  //public addCustomerObject: BehaviorSubject<AddCustomerCard> = new BehaviorSubject<AddCustomerCard>(this.data);
+  public customerForm = new FormGroup({
+    cardCode: new FormControl(''),
+    cardName: new FormControl(''),
+    cardType: new FormControl(''),
+    groupCode: new FormControl(0),
+    cellular: new FormControl(''),
+    emailAddress: new FormControl(''),
+    valid: new FormControl(''),
+    territory: new FormControl(0),
+    series: new FormControl(89),
+    taxId0: new FormControl(''),
+    bpFiscalTaxIDCollection: new FormArray([new FormGroup({
+      taxId0 : new FormControl('')
+    })]),
+    bpAddresses: new FormArray([]),
+    shiptoBPAddresses:new FormArray([])
+  });
+
 
   customerList: CardInfo[] = [];
   customerTypeList: CustomerType[]=[];
@@ -22,6 +43,11 @@ export class CustomerService {
   searchTerm: string = '';
 
   constructor(private http: HttpClient) { }
+
+
+
+
+
 
   refreshCustomerList(pageIndex:number, pageSize:number, searchTerm:string){
 
@@ -103,15 +129,15 @@ export class CustomerService {
    }
 
 
-   AddCustomer(customerData : CardInfo):Observable<BusinessResponseData>{
+   AddCustomer(customerData : AddCustomerCard):Observable<BusinessResponseData>{
     
     return this.http.post<BusinessResponseData>(myGlobalVar.AddCustomer,customerData);
 
    }
 
-   updateCustomer(customerId : string,customerData : CardInfo):Observable<BusinessResponseData>{
+   updateCustomer(customerId : string,customerData : AddCustomerCard):Observable<BusinessResponseData>{
        
-    return this.http.put<any>(myGlobalVar.UpdateCustomer+ '?CustomerId=' + customerId,customerData);
+    return this.http.patch<BusinessResponseData>(myGlobalVar.UpdateCustomer+ '?BusinessPartnerId=' + customerId,customerData);
 
    }
 
