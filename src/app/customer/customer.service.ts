@@ -17,20 +17,38 @@ export class CustomerService {
   public customerForm = new FormGroup({
     cardCode: new FormControl(''),
     cardName: new FormControl(''),
-    cardType: new FormControl(''),
+    cardType: new FormControl("C"),
     groupCode: new FormControl(0),
     cellular: new FormControl(''),
     emailAddress: new FormControl(''),
-    valid: new FormControl(''),
+    valid: new FormControl("Y"),
     territory: new FormControl(0),
     series: new FormControl(89),
-    taxId0: new FormControl(''),
     bpFiscalTaxIDCollection: new FormArray([new FormGroup({
       taxId0 : new FormControl('')
     })]),
     bpAddresses: new FormArray([]),
     shiptoBPAddresses:new FormArray([])
   });
+
+  public customerFormReset(){
+    this.customerForm = new FormGroup({
+      cardCode: new FormControl(''),
+      cardName: new FormControl(''),
+      cardType: new FormControl("C"),
+      groupCode: new FormControl(0),
+      cellular: new FormControl(''),
+      emailAddress: new FormControl(''),
+      valid: new FormControl("Y"),
+      territory: new FormControl(0),
+      series: new FormControl(89),
+      bpFiscalTaxIDCollection: new FormArray([new FormGroup({
+        taxId0 : new FormControl('')
+      })]),
+      bpAddresses: new FormArray([]),
+      shiptoBPAddresses:new FormArray([])
+    });
+  }
 
 
   customerList: CardInfo[] = [];

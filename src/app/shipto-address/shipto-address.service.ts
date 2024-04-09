@@ -4,13 +4,15 @@ import { HttpClient } from '@angular/common/http';
 import * as myGlobalVar from '../global';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
+import { AddressInfo } from '../customer/customer.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShiptoAddressService {
 
-  ShipToAddrsList:ShipToAddrs[] = [];
+  availableAddressList: AddressInfo[] = []
+    ShipToAddrsList:ShipToAddrs[] = [];
   public totalCount=0;
   public pageIndex=1;
   public pageSize=10;

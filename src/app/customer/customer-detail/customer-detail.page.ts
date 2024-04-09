@@ -24,7 +24,7 @@ import { throwError } from 'rxjs';
 })
 export class CustomerDetailPage implements OnInit {
 
-  loadedCustomer: CardInfo;
+  loadedCustomer: CardInfo
   ViewDataFlag = false;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -34,13 +34,11 @@ export class CustomerDetailPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    
-    this.initcustomerForm();
+    this.customerService.getCustomerTypeList();
+    this.customerService.getTerritoryList();
+
 
     this.activatedRoute.paramMap.subscribe(paramMap => {
-      console.log(this.customerService.customerForm.value);
-
-
       if (!paramMap.has('customerId')) {
 
         this.router.navigate(['/customer']);
@@ -53,30 +51,14 @@ export class CustomerDetailPage implements OnInit {
         this.loadCustomerDetails(customerId);
       }
       else {
-        this.initcustomerForm();
+
         this.loadCustomerDetails();
       }
 
     });
   }
 
-  initcustomerForm() {
 
-    this.customerService.customerForm.controls.taxId0.valueChanges.subscribe(value => {
-      if(value){
-        this.customerService.customerForm.controls.taxId0.setValue(value.toUpperCase(), { emitEvent: false });
-      }
-    });
-
-
-    this.customerService.customerForm.patchValue({
-      valid: "Y",
-      cardType: "C",
-      series: 89
-    })
-    this.customerService.getCustomerTypeList();
-    this.customerService.getTerritoryList();
-  }
 
   enableFormControl(EditFlag) {
 
@@ -111,13 +93,16 @@ export class CustomerDetailPage implements OnInit {
 
       })).subscribe(data => {
         if (data.responseData.length > 0) {
+
           this.loadedCustomer = data.responseData[0];
-          if(this.customerService.customerForm.value.cardCode != ""){
-            console.log('this.customerService.customerForm.value.cardCode != ""');
-            console.log(this.customerService.customerForm.value);
-            
-          }else{
-            
+          let formData = { ...this.customerService.customerForm.value }
+
+          if (formData.cardCode != '' && formData.cardCode != null) {
+            console.log('there is data that exists in form');
+            console.log(formData);
+
+          } else {
+
             this.customerService.customerForm.patchValue({
               cardCode: this.loadedCustomer.cardCode,
               cardName: this.loadedCustomer.cardName,
@@ -136,7 +121,7 @@ export class CustomerDetailPage implements OnInit {
             this.customerService.customerForm.controls.shiptoBPAddresses.value.push(...this.loadedCustomer.shiptoBPAddresses)
 
             console.log(this.customerService.customerForm.value);
-            
+
           }
         }
 
@@ -144,10 +129,22 @@ export class CustomerDetailPage implements OnInit {
 
       this.enableFormControl(false);
 
-    }else{
-      this.customerService.customerForm.reset()
-      this.initcustomerForm();
+    } else {
 
+      console.log('customer id not exist check form data now');
+
+      let formData = { ...this.customerService.customerForm.value }
+
+          if (formData.cardCode == '' && formData.cardCode != null) {
+            console.log('there is data that exists in form');
+            console.log(this.customerService.customerForm.value);
+
+          } else {
+
+            this.customerService.customerFormReset()
+            console.log(this.customerService.customerForm.value);
+          }
+      this.enableFormControl(true);
     }
   }
 
@@ -159,64 +156,14 @@ export class CustomerDetailPage implements OnInit {
 
   }
 
-  // DeleteCustomer(){
-
-
-  //   const customerId = this.loadedCustomer.cardCode!;
-
-  //     this.alertCtrl.create({
-  //          header:'Are you sure?',
-  //          message:'Do you really want to delete the Customer?',
-  //          buttons:[{
-  //             text:'Cancel',
-  //             role:'cancel'
-
-  //          },{
-  //             text:'Delete',
-  //             handler:() =>{
-
-  //               this.loader.present();
-  //               this.customerService.deleteCustomer(customerId).pipe(catchError(error=>{
-  //                 this.loader.dismiss();
-
-  //                 this.showToast('Some error has been occured','danger');
-  //                 return throwError(()=>error);
-
-  //               })).subscribe(data=>{
-  //                 this.loader.dismiss();
-
-  //                 if(data.responseData)
-  //                 {
-  //                   if(data.responseData[0].cardCode == this.loadedCustomer.id && data.errCode == 0)
-  //                   {
-  //                       this.showToast('Customer Deleted Successfully','secondary');
-  //                       this.customerService.resetValues();
-  //                       this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
-  //                       this.router.navigate(['/customer']);
-
-  //                   }
-  //                 }
-
-
-  //               })
-
-  //             }
-
-
-  //          }
-  //         ]
-
-  //          }).then(alertElement =>{
-
-  //             alertElement.present();
-  //          })
-
-  // }
 
   onSubmit() {
 
 
     let value: AddCustomerCard = { ...this.customerService.customerForm.value } as AddCustomerCard
+
+    console.log(this.customerService.customerForm.value);
+
 
     console.log(value);
 
@@ -297,10 +244,12 @@ export class CustomerDetailPage implements OnInit {
   }
 
   redirectToShipAddress() {
-    this.router.navigate(['/shiptoaddress'], { queryParams: { cCode: this.loadedCustomer.cardCode ? this.loadedCustomer.cardCode : '' } })
+    let cardCode = this.customerService.customerForm.controls.cardCode.value
+    this.router.navigate(['/shiptoaddress'], { queryParams: { cCode: cardCode } })
   }
   redirectToBillAddress() {
-    this.router.navigate(['/billToAddress'], { queryParams: { cCode: this.loadedCustomer.cardCode ? this.loadedCustomer.cardCode : '' } })
+    let cardCode = this.customerService.customerForm.controls.cardCode.value
+    this.router.navigate(['/billToAddress'], { queryParams: { cCode: cardCode } })
   }
 
   enableSave() {

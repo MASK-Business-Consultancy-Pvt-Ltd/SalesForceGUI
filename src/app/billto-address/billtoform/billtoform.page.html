@@ -66,16 +66,24 @@
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="State" labelPlacement="floating" formControlName="state"></ion-input>
-          </ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="State" formControlName="state">
+              <ion-select-option *ngFor="let state of employeeService.stateList" [value]="state.code">
+                {{state.name}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item> 
         </ion-col>
       </ion-row>
    
       <ion-row>
         <ion-col no-padding>
           <ion-item>
-            <ion-input label="Country" labelPlacement="floating" formControlName="country"></ion-input>
-          </ion-item>
+            <ion-select aria-label="Active" interface="popover" placeholder="Country" formControlName="country" (ionChange)="fetchStateList($event)">
+              <ion-select-option *ngFor="let country of employeeService.countryList" [value]="country.code">
+                {{country.name}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item> 
         </ion-col>
       </ion-row>
     </ion-grid>

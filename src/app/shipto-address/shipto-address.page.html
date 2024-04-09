@@ -14,13 +14,23 @@
 
 </ion-header>
  
- <ion-content [fullscreen]="true">
-      <ion-list class="btns" [routerLink]="['/shiptoaddress','']">
-         Add Ship To Address
-      </ion-list>    
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-item *ngFor="let address of shiptoAddressService.availableAddressList">
+      <strong>{{address.addressName}}</strong>
+      <br />
+      <ion-note color="medium" class="ion-text-wrap">
+        {{address.city}}
+      </ion-note>
+      <ion-checkbox slot="start" [checked]="checkAvailableAddress(address)" (ionChange)="addAddressToCustomer($event,address)"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  
+<ion-list class="btns" [routerLink]="['/shiptoaddress','']">
+  Add Bill To Address
+</ion-list>    
 
 <ion-infinite-scroll (ionInfinite)="onScrollLoadData($event)">
-  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+<ion-infinite-scroll-content></ion-infinite-scroll-content>
 </ion-infinite-scroll>
 </ion-content>
-

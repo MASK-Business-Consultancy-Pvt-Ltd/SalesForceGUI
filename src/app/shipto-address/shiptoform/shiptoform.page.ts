@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertController, IonicModule, ToastController } from '@ionic/angular';
 import { ShiptoAddressService } from '../shipto-address.service';
@@ -8,6 +8,9 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { ShipToAddrs } from '../shipto-address.model';
 import { LoaderService } from 'src/app/common/loader.service';
+import { CustomerService } from 'src/app/customer/customer.service';
+import { AddressInfo } from 'src/app/customer/customer.model';
+import { EmployeeService } from 'src/app/employee/employee.service';
 
 @Component({
   selector: 'app-shipToAddress-details.page',
@@ -25,48 +28,44 @@ import { LoaderService } from 'src/app/common/loader.service';
 export class ShipToAddrsForm implements OnInit {
   loadedShipToAddrs: ShipToAddrs = {};
   ViewDataFlag = false;
-  public ShipToAddrsForm!: FormGroup;
+  newRowNum: number = 0
+  public ShipToAddrsForm = new FormGroup({
+    addressName: new FormControl(''),
+    street: new FormControl(''),
+    block: new FormControl(''),
+    zipCode: new FormControl(''),
+    city: new FormControl(''),
+    country: new FormControl('IN'),
+    state: new FormControl(''),
+    addressType: new FormControl('bo_ShipTo'),
+    bpCode: new FormControl(''),
+    rowNum: new FormControl(0)
+  });
   constructor(private _fb: FormBuilder, private activatedRoute: ActivatedRoute,
     private shipToAddrsService: ShiptoAddressService, private router: Router, private alertCtrl: AlertController,
-    private toastCtrl: ToastController, private loader: LoaderService) { }
+    private toastCtrl: ToastController, private loader: LoaderService, private customerService:CustomerService,public employeeService : EmployeeService ) { }
 
   ngOnInit() {
-    this.initExpenseForm();
 
-    this.activatedRoute.paramMap.subscribe(paramMap => {
 
-      if (!paramMap.has('shiptoaddressId')) {
+    this.employeeService.getStateList('IN');
+    this.employeeService.getCountryList();
 
-        this.router.navigate(['/shiptoaddress']);
-        return;
-      }
 
-      if (paramMap.get('shiptoaddressId')) {
-        const shiptoaddressId = JSON.parse(paramMap.get('shiptoaddressId')!);
-        this.ViewDataFlag = true;
-        this.loadExpenseMasterDetails(shiptoaddressId);
-      }
-      else {
-        this.loadExpenseMasterDetails();
-      }
+    const allAddresses = [...this.customerService.customerForm.controls.bpAddresses.value, ...this.customerService.customerForm.controls.shiptoBPAddresses.value];
 
-    });
+    const validAddresses = allAddresses.filter(obj => obj.rowNum != null && !isNaN(obj.rowNum) && obj.rowNum !== 0);
+    
+    if (allAddresses.length > 0) {
+        this.newRowNum = allAddresses.reduce((maxId, obj) => (obj.rowNum > maxId ? obj.rowNum : maxId), -Infinity) + 1;
+    } else {
+        this.newRowNum = 0;
+    }
+
+    console.log('new  rownumber', this.newRowNum);
+    
   }
 
-
-  initExpenseForm() {
-
-    this.ShipToAddrsForm = this._fb.group({
-      id: [0],
-      addressId: ['', Validators.required],
-      block: ['', Validators.required],
-      city: ['', Validators.required],
-      zipCode: ['', Validators.required],
-      state:['', Validators.required],
-      country: ['', Validators.required],
-      gstNo: ['', Validators.required]   
-    });
-  }
 
 
   enableFormControl(EditFlag) {
@@ -90,39 +89,39 @@ export class ShipToAddrsForm implements OnInit {
   }
 }
 
-  loadExpenseMasterDetails(addressId = -1) {
+  // loadExpenseMasterDetails(addressId = -1) {
 
-    if (addressId == -1) {
-    }
-    else {
-      this.shipToAddrsService.getShipToAddrs(addressId).pipe(catchError(error => {
+  //   if (addressId == -1) {
+  //   }
+  //   else {
+  //     this.shipToAddrsService.getShipToAddrs(addressId).pipe(catchError(error => {
 
-        this.showToast('Some error has been occured', 'danger');
-        return throwError(() => error);
+  //       this.showToast('Some error has been occured', 'danger');
+  //       return throwError(() => error);
 
-      })).subscribe(data => {
+  //     })).subscribe(data => {
         
-        if (data.responseData) {
-          this.loadedShipToAddrs = data.responseData[0];
-          this.ShipToAddrsForm.patchValue({
-            id: this.loadedShipToAddrs.id,
-            addressId: this.loadedShipToAddrs.addressId!,
-            block: this.loadedShipToAddrs.block!,
-            city: this.loadedShipToAddrs.city!,
-            zipCode: this.loadedShipToAddrs.zipCode!,
-            state: this.loadedShipToAddrs.state!,
-            country: this.loadedShipToAddrs.country!,
-            gstNo: this.loadedShipToAddrs.gstNo!
+  //       if (data.responseData) {
+  //         this.loadedShipToAddrs = data.responseData[0];
+  //         this.ShipToAddrsForm.patchValue({
+  //           id: this.loadedShipToAddrs.id,
+  //           addressId: this.loadedShipToAddrs.addressId!,
+  //           block: this.loadedShipToAddrs.block!,
+  //           city: this.loadedShipToAddrs.city!,
+  //           zipCode: this.loadedShipToAddrs.zipCode!,
+  //           state: this.loadedShipToAddrs.state!,
+  //           country: this.loadedShipToAddrs.country!,
+  //           gstNo: this.loadedShipToAddrs.gstNo!
 
-          })
-        }
+  //         })
+  //       }
 
-      })
+  //     })
 
-      this.enableFormControl(false);
+  //     this.enableFormControl(false);
 
-    }
-  }
+  //   }
+  // }
 
   ChangeViewDataFlag() {
 
@@ -161,7 +160,7 @@ export class ShipToAddrsForm implements OnInit {
                 this.showToast('Expense Master  Deleted Successfully', 'secondary');
                 this.shipToAddrsService.resetValues();
                 this.fetchProductTypeList(this.shipToAddrsService.pageIndex, this.shipToAddrsService.pageSize, this.shipToAddrsService.searchTerm);
-                this.router.navigate(['/billToAddress']);
+                this.router.navigate(['/shiptoaddress']);
 
               }
             }
@@ -183,57 +182,24 @@ export class ShipToAddrsForm implements OnInit {
   }
 
 
-  onSubmit({ value }: { value: ShipToAddrs }) {
+  onSubmit() {
     
-    if (!value.id) {
-      this.loader.present();
-      this.shipToAddrsService.AddShipToAddrs(value).pipe(catchError(error => {
-        this.loader.dismiss(); 
+    let formData = { ...this.ShipToAddrsForm.value }
 
-        this.showToast('Some error has been occured', 'danger');
-        return throwError(() => error);
-
-      })).subscribe(data => {
-        this.loader.dismiss(); 
-
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
-            this.showToast('Expense Head  Added Successfully', 'secondary');
-            this.shipToAddrsService.resetValues();
-                this.fetchProductTypeList(this.shipToAddrsService.pageIndex, this.shipToAddrsService.pageSize, this.shipToAddrsService.searchTerm);
-            this.router.navigate(['/billToAddress']);
-
-          }
-
-        }
-      })
+    let newAddress: AddressInfo = {
+      addressName: formData.addressName,
+      street: formData.street,
+      block: formData.block,
+      zipCode: formData.zipCode,
+      city: formData.city,
+      country: formData.country,
+      state: formData.state,
+      addressType: formData.addressType,
+      bpCode: formData.bpCode,
+      rowNum: this.newRowNum ? this.newRowNum : 0
     }
-    else {
-
-      this.loader.present();
-      this.shipToAddrsService.updateShipToAddrs(value.id, value).pipe(catchError(error => {
-        this.loader.dismiss(); 
-        this.showToast('Some error has been occured', 'danger');
-        return throwError(() => error);
-
-      })).subscribe(data => {
-        this.loader.dismiss(); 
-
-        if (data.responseData) {
-          if (data.responseData.id && data.errCode == 0) {
-            this.showToast('Expense Head updated Successfully', 'secondary');
-            this.shipToAddrsService.resetValues();
-                this.fetchProductTypeList(this.shipToAddrsService.pageIndex, this.shipToAddrsService.pageSize, this.shipToAddrsService.searchTerm);
-            this.router.navigate(['/billToAddress']);
-
-          }
-
-        }
-
-      })
-
-    }
-
+    this.customerService.customerForm.controls.shiptoBPAddresses.value.push(newAddress)
+    this.router.navigate(['/shiptoaddress']);
 
   }
 
@@ -264,5 +230,11 @@ export class ShipToAddrsForm implements OnInit {
   }
 
 
+  fetchStateList(event:any){
+    this.employeeService.getStateList('IN')
+  }
+  fetchCountryList(){
+    this.employeeService.getCountryList();
 
+  }
 }

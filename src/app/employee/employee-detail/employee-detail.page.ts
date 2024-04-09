@@ -101,7 +101,7 @@ export class EmployeeDetailPage implements OnInit {
   }
 
   fetchStateList(event:any){
-    this.employeeService.getStateList(event.detail.value);
+    this.employeeService.getStateList('IN');
   }
 
   enableFormControl(EditFlag) {

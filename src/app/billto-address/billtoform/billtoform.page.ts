@@ -10,6 +10,7 @@ import { BillToAddrs } from '../billto-address.model';
 import { LoaderService } from 'src/app/common/loader.service';
 import { CustomerService } from 'src/app/customer/customer.service';
 import { AddressInfo } from 'src/app/customer/customer.model';
+import { EmployeeService } from 'src/app/employee/employee.service';
 
 @Component({
   selector: 'app-billToAddress-details.page',
@@ -35,38 +36,30 @@ export class BilltoAddressPage implements OnInit {
     block: new FormControl(''),
     zipCode: new FormControl(''),
     city: new FormControl(''),
-    country: new FormControl(''),
+    country: new FormControl('IN'),
     state: new FormControl(''),
-    addressType: new FormControl(''),
+    addressType: new FormControl('bo_BillTo'),
     bpCode: new FormControl(''),
     rowNum: new FormControl(0)
   });
   constructor(private activatedRoute: ActivatedRoute,
     private billToAddrsService: BillToAddrsService, private router: Router, private alertCtrl: AlertController,
-    private toastCtrl: ToastController, private loader: LoaderService, private customerService: CustomerService) { }
+    private toastCtrl: ToastController, private loader: LoaderService, private customerService: CustomerService,public employeeService:EmployeeService) { }
 
   ngOnInit() {  
 
-
-    // const allAddresses = [...this.customerService.customerForm.controls.bpAddresses.value, ...this.customerService.customerForm.controls.shiptoBPAddresses.value];
-
-    // const validAddresses = allAddresses.filter(obj => obj.rowNum != null && !isNaN(obj.rowNum) && obj.rowNum !== 0);
-    
-    // if (validAddresses.length > 0) {
-    //     this.newRowNum = validAddresses.reduce((maxId, obj) => (obj.rowNum > maxId ? obj.rowNum : maxId), -Infinity) + 1;
-    // } else {
-    //     this.newRowNum = 0;
-    // }
-
+    this.employeeService.getStateList('IN');
+    this.employeeService.getCountryList();
 
     const allAddresses = [...this.customerService.customerForm.controls.bpAddresses.value, ...this.customerService.customerForm.controls.shiptoBPAddresses.value];
 
-    const validAddresses = allAddresses.filter(obj => obj.rowNum != null && obj.rowNum !== 0);
+    const validAddresses = allAddresses.filter(obj => obj.rowNum != null && !isNaN(obj.rowNum) && obj.rowNum !== 0);
     
-    this.newRowNum = validAddresses.length > 0
-        ? validAddresses.reduce((maxId, obj) => (obj.rowNum > maxId ? obj.rowNum : maxId), -Infinity) + 1
-        : 1;
-    
+    if (validAddresses.length > 0) {
+        this.newRowNum = validAddresses.reduce((maxId, obj) => (obj.rowNum > maxId ? obj.rowNum : maxId), -Infinity) + 1;
+    } else {
+        this.newRowNum = 0;
+    }
     
   }
 
@@ -233,7 +226,13 @@ export class BilltoAddressPage implements OnInit {
       }]
     }).then(res => res.present());
   }
+  fetchStateList(event:any){
+    this.employeeService.getStateList('IN')
+  }
+  fetchCountryList(){
+    this.employeeService.getCountryList();
 
+  }
 
 
 }
