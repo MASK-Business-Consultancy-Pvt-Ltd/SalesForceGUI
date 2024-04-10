@@ -60,9 +60,9 @@
     
       <ion-row>
         <ion-col no-padding>
-          <ion-item>
+          <ion-item *ngIf="shipToAddrsService.stateList.length > 0">
             <ion-select aria-label="Active" interface="popover" placeholder="State" formControlName="state">
-              <ion-select-option *ngFor="let state of employeeService.stateList" [value]="state.code">
+              <ion-select-option *ngFor="let state of shipToAddrsService.stateList" [value]="state.code">
                 {{state.name}}
               </ion-select-option>
             </ion-select>

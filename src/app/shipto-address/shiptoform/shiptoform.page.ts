@@ -42,13 +42,13 @@ export class ShipToAddrsForm implements OnInit {
     rowNum: new FormControl(0)
   });
   constructor(private _fb: FormBuilder, private activatedRoute: ActivatedRoute,
-    private shipToAddrsService: ShiptoAddressService, private router: Router, private alertCtrl: AlertController,
+    public shipToAddrsService: ShiptoAddressService, private router: Router, private alertCtrl: AlertController,
     private toastCtrl: ToastController, private loader: LoaderService, private customerService:CustomerService,public employeeService : EmployeeService ) { }
 
   ngOnInit() {
 
 
-    this.employeeService.getStateList('IN');
+    this.shipToAddrsService.getStateList('IN');
     this.employeeService.getCountryList();
 
 

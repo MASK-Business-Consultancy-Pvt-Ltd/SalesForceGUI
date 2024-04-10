@@ -24,9 +24,6 @@
       <ion-item *ngFor="let address of billToAddrsService.availableAddressList">
         <strong>{{address.addressName}}</strong>
         <br />
-        <ion-note color="medium" class="ion-text-wrap">
-          {{address.city}}
-        </ion-note>
         <ion-checkbox slot="start" [checked]="checkAvailableAddress(address)" (ionChange)="addAddressToCustomer($event,address)"></ion-checkbox>
       </ion-item>
     </ion-list>

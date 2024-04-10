@@ -101,6 +101,19 @@ export class CustomerDetailPage implements OnInit {
             console.log('there is data that exists in form');
             console.log(formData);
 
+            this.activatedRoute.paramMap.subscribe(paramMap => {
+              if(paramMap.get('customerId') != this.customerService.customerForm.value.cardCode){
+                console.log('data there but code doesnt match');
+                this.customerService.customerForm.controls.bpAddresses.clear()
+                this.customerService.customerForm.controls.bpAddresses.value.push(...this.loadedCustomer.billtoBPAddresses)
+                this.customerService.customerForm.controls.shiptoBPAddresses.clear()
+                this.customerService.customerForm.controls.shiptoBPAddresses.value.push(...this.loadedCustomer.shiptoBPAddresses)
+                
+              }
+              
+            })
+            
+
           } else {
 
             this.customerService.customerForm.patchValue({
@@ -120,14 +133,12 @@ export class CustomerDetailPage implements OnInit {
             this.customerService.customerForm.controls.shiptoBPAddresses.clear()
             this.customerService.customerForm.controls.shiptoBPAddresses.value.push(...this.loadedCustomer.shiptoBPAddresses)
 
-            console.log(this.customerService.customerForm.value);
-
           }
         }
 
       })
 
-      this.enableFormControl(false);
+      this.enableFormControl(true);
 
     } else {
 
@@ -165,6 +176,7 @@ export class CustomerDetailPage implements OnInit {
     console.log(this.customerService.customerForm.value);
 
 
+
     console.log(value);
 
     if (!value.cardCode) {
@@ -182,7 +194,7 @@ export class CustomerDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Customer Added Successfully', 'secondary');
           this.customerService.resetValues();
-          this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);;
+          //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);;
           this.router.navigate(['/customer']);
 
         }
@@ -190,6 +202,12 @@ export class CustomerDetailPage implements OnInit {
       })
     }
     else {
+      value.bpAddresses.forEach(i=>{
+        i.bpCode = value.cardCode
+      })
+      value.shiptoBPAddresses.forEach(i=>{
+        i.bpCode = value.cardCode
+      })
 
       this.loader.present();
       this.customerService.updateCustomer(value.cardCode, value).pipe(catchError(error => {
@@ -204,7 +222,7 @@ export class CustomerDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Customer updated Successfully', 'secondary');
           this.customerService.resetValues();
-          this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
+          //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
           this.router.navigate(['/customer']);
 
         }
