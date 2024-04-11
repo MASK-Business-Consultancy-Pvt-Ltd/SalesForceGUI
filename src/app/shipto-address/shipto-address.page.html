@@ -7,20 +7,30 @@
     </ion-buttons>
     <ion-title>Ship To Address</ion-title>
 
-    <ion-buttons slot="primary">
-      <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button>
+    <ion-buttons [collapse]="true" slot="end" >
+      <ion-button type="submit" [routerLink]="['/customer',this.customerService.customerForm.value.cardCode]">Save</ion-button>
     </ion-buttons>
+    <!-- <ion-buttons slot="end">
+      <ion-button expand="block" (click)="toggleSearchBar()"><ion-icon name="search-outline"></ion-icon></ion-button>
+    </ion-buttons> -->
   </ion-toolbar>
 
 </ion-header>
  
- <ion-content [fullscreen]="true">
-      <ion-list class="btns" [routerLink]="['/shiptoaddress','']">
-         Add Ship To Address
-      </ion-list>    
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-item *ngFor="let address of shiptoAddressService.availableAddressList">
+      <strong>{{address.addressName}}</strong>
+      <br />
+      <ion-checkbox slot="start" [checked]="checkAvailableAddress(address)" (ionChange)="addAddressToCustomer($event,address)"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  
+<ion-list class="btns" [routerLink]="['/shiptoaddress','']">
+  Add Bill To Address
+</ion-list>    
 
 <ion-infinite-scroll (ionInfinite)="onScrollLoadData($event)">
-  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+<ion-infinite-scroll-content></ion-infinite-scroll-content>
 </ion-infinite-scroll>
 </ion-content>
-

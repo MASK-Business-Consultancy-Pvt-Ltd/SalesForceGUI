@@ -4,20 +4,25 @@ import { HttpClient } from '@angular/common/http';
 import * as myGlobalVar from '../global';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
+import { AddressInfo } from '../customer/customer.model';
+import { GeoResource, GeoResourceResponse } from '../employee/employee.model';
+import { LoaderService } from '../common/loader.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShiptoAddressService {
 
-  ShipToAddrsList:ShipToAddrs[] = [];
+  availableAddressList: AddressInfo[] = []
+    ShipToAddrsList:ShipToAddrs[] = [];
   public totalCount=0;
   public pageIndex=1;
   public pageSize=10;
   showSearchBar = false;
   searchTerm: string = '';
+  stateList:GeoResource[]=[];
 
-  constructor(private http: HttpClient) { } 
+  constructor(private http: HttpClient,private loader:LoaderService) { } 
 
   refreshShipToAddrsList(pageIndex:number, pageSize:number, searchTerm:string){
 
@@ -57,4 +62,25 @@ export class ShiptoAddressService {
    updateShipToAddrs(shipToaddrsId : number,ShipToAddrsData : any):Observable<any>{
     return this.http.put<any>(myGlobalVar.UpdateShipToAddrs + '?ShipToAddrsId=' + shipToaddrsId,ShipToAddrsData);
    }
+   getStateList(countryCode: string) {
+    this.loader.present()
+
+    this.http.get<GeoResourceResponse>(myGlobalVar.getCountryWiseStateList + '?country=' + countryCode).pipe(catchError(error => {
+
+      return throwError(() => error);
+
+    })).subscribe(data => {
+
+      if (data.responseData) {
+
+        this.stateList = data.responseData;
+        console.log(this.stateList);
+        
+        this.loader.dismiss()
+
+      }
+
+    })
+
+  }
 }

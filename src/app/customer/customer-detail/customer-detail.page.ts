@@ -1,9 +1,9 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { AlertController, IonicModule, ToastController } from '@ionic/angular';
-import { CardInfo } from '../customer.model';
+import { AlertController, IonicModule, IonInput, ToastController } from '@ionic/angular';
+import { AddCustomerCard, AddressInfo, CardInfo } from '../customer.model';
 import { CustomerService } from '../customer.service';
 import { LoaderService } from 'src/app/common/loader.service';
 import { catchError } from 'rxjs/operators';
@@ -20,24 +20,25 @@ import { throwError } from 'rxjs';
     NgFor,
     NgIf,
     ReactiveFormsModule
-],
+  ],
 })
-export class CustomerDetailPage implements OnInit { 
-  
-  loadedCustomer: CardInfo;
-  ViewDataFlag=false;
-  public customerForm! : FormGroup;
+export class CustomerDetailPage implements OnInit {
+
+  loadedCustomer: CardInfo
+  ViewDataFlag = false;
 
   constructor(private activatedRoute: ActivatedRoute,
     public customerService: CustomerService, private router: Router,
     private _fb: FormBuilder, private alertCtrl: AlertController,
-    private toastCtrl: ToastController, private loader: LoaderService) { }
+    private toastCtrl: ToastController, private loader: LoaderService,
+  ) { }
 
   ngOnInit() {
-    this.initcustomerForm();
+    this.customerService.getCustomerTypeList();
+    this.customerService.getTerritoryList();
+
 
     this.activatedRoute.paramMap.subscribe(paramMap => {
-
       if (!paramMap.has('customerId')) {
 
         this.router.navigate(['/customer']);
@@ -50,229 +51,227 @@ export class CustomerDetailPage implements OnInit {
         this.loadCustomerDetails(customerId);
       }
       else {
+
         this.loadCustomerDetails();
       }
 
     });
   }
 
-  initcustomerForm() {
-    this.customerForm = this._fb.group({
-        id: [0],
-        //customerCode: ['',Validators.required],
-        customerName: ['',Validators.required],
-        customerType: ['',Validators.required],
-        contactNo: ['', Validators.required],
-        //gender: ['', Validators.required],
-        emailId: ['',Validators.required],
-        active: ['0',Validators.required],
-        territoryID: ['', Validators.required],
-        billToAddress:['',Validators.required],
-        shipToAddress:['',Validators.required]
-    });
-    this.customerForm.controls['active'].setValue('Y');
-    this.customerService.getCustomerTypeList();
-    this.customerService.getTerritoryList();
-  }
 
-  enableFormControl(EditFlag){
 
-    if(EditFlag == true)
-    {
-       //this.customerForm.get('customerCode').enable();
-       this.customerForm.get('customerName').enable();
-       this.customerForm.get('customerType').enable();
-       this.customerForm.get('contactNo').enable();
-       this.customerForm.get('emailId').enable();
-       //this.customerForm.get('gender').enable();
-       this.customerForm.get('active').enable();
-       this.customerForm.get('territoryID').enable();
-       this.customerForm.get('billToAddress').enable();
-       this.customerForm.get('shipToAddress').enable();
+  enableFormControl(EditFlag) {
+
+    if (EditFlag == true) {
+      this.customerService.customerForm.controls.cardName.enable()
+      this.customerService.customerForm.controls.groupCode.enable()
+      this.customerService.customerForm.controls.cellular.enable()
+      this.customerService.customerForm.controls.emailAddress.enable()
+      this.customerService.customerForm.controls.valid.enable()
+      this.customerService.customerForm.controls.territory.enable()
     }
-    else
-    {
-       //this.customerForm.get('customerCode').disable();
-       this.customerForm.get('customerName').disable();
-       this.customerForm.get('customerType').disable();
-       this.customerForm.get('contactNo').disable();
-       this.customerForm.get('emailId').disable();
-      // this.customerForm.get('gender').disable();
-       this.customerForm.get('active').disable();
-       this.customerForm.get('territoryID').disable();
-       this.customerForm.get('billToAddress').disable();
-       this.customerForm.get('shipToAddress').disable();
+    else {
+      this.customerService.customerForm.controls.cardName.disable()
+      this.customerService.customerForm.controls.groupCode.disable()
+      this.customerService.customerForm.controls.cellular.disable()
+      this.customerService.customerForm.controls.emailAddress.disable()
+      this.customerService.customerForm.controls.valid.disable()
+      this.customerService.customerForm.controls.territory.disable()
+
     }
 
-}
-
-loadCustomerDetails(customerId?:string) {
-
-  if (customerId) {
-
-    this.customerService.getCustomer(customerId).pipe(catchError(error => {
-
-      this.showToast('Some error has been occured', 'danger');
-      return throwError(() => error);
-
-    })).subscribe(data => {
-      debugger
-      if (data.responseData) {
-        this.loadedCustomer = data.responseData[0];
-        this.customerForm.patchValue({
-
-        })
-      }
-
-    })
-
-    this.enableFormControl(false);
-
   }
-}
 
-ChangeViewDataFlag(){
-    
-  this.ViewDataFlag = false;
-  this.enableFormControl(true);
+  loadCustomerDetails(customerId?: string) {
 
-}
+    if (customerId) {
 
-// DeleteCustomer(){
-      
+      this.customerService.getCustomer(customerId).pipe(catchError(error => {
 
-//   const customerId = this.loadedCustomer.cardCode!;
+        this.showToast('Some error has been occured', 'danger');
+        return throwError(() => error);
 
-//     this.alertCtrl.create({
-//          header:'Are you sure?',
-//          message:'Do you really want to delete the Customer?',
-//          buttons:[{
-//             text:'Cancel',
-//             role:'cancel'
+      })).subscribe(data => {
+        if (data.responseData.length > 0) {
 
-//          },{
-//             text:'Delete',
-//             handler:() =>{
+          this.loadedCustomer = data.responseData[0];
+          let formData = { ...this.customerService.customerForm.value }
 
-//               this.loader.present();
-//               this.customerService.deleteCustomer(customerId).pipe(catchError(error=>{
-//                 this.loader.dismiss();
-      
-//                 this.showToast('Some error has been occured','danger');
-//                 return throwError(()=>error);
-          
-//               })).subscribe(data=>{
-//                 this.loader.dismiss();
+          if (formData.cardCode != '' && formData.cardCode != null) {
+            console.log('there is data that exists in form');
+            console.log(formData);
+
+            this.activatedRoute.paramMap.subscribe(paramMap => {
+              if(paramMap.get('customerId') != this.customerService.customerForm.value.cardCode){
+                console.log('data there but code doesnt match');
+                this.customerService.customerForm.controls.bpAddresses.clear()
+                this.customerService.customerForm.controls.bpAddresses.value.push(...this.loadedCustomer.billtoBPAddresses)
+                this.customerService.customerForm.controls.shiptoBPAddresses.clear()
+                this.customerService.customerForm.controls.shiptoBPAddresses.value.push(...this.loadedCustomer.shiptoBPAddresses)
                 
-//                 if(data.responseData)
-//                 {
-//                   if(data.responseData[0].cardCode == this.loadedCustomer.id && data.errCode == 0)
-//                   {
-//                       this.showToast('Customer Deleted Successfully','secondary');
-//                       this.customerService.resetValues();
-//                       this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
-//                       this.router.navigate(['/customer']);
-        
-//                   }
-//                 }
-                
-          
-//               })
+              }
+              
+            })
+            
 
-//             }
+          } else {
 
+            this.customerService.customerForm.patchValue({
+              cardCode: this.loadedCustomer.cardCode,
+              cardName: this.loadedCustomer.cardName,
+              cardType: this.loadedCustomer.cardType,
+              cellular: this.loadedCustomer.cellular,
+              emailAddress: this.loadedCustomer.emailAddress,
+              groupCode: this.loadedCustomer.groupCode,
+              series: this.loadedCustomer.series,
+              territory: this.loadedCustomer.territory,
+              valid: this.loadedCustomer.valid,
+              bpFiscalTaxIDCollection: [{ taxId0: this.loadedCustomer.taxId0 }],
+            })
+            this.customerService.customerForm.controls.bpAddresses.clear()
+            this.customerService.customerForm.controls.bpAddresses.value.push(...this.loadedCustomer.billtoBPAddresses)
+            this.customerService.customerForm.controls.shiptoBPAddresses.clear()
+            this.customerService.customerForm.controls.shiptoBPAddresses.value.push(...this.loadedCustomer.shiptoBPAddresses)
 
-//          }
-//         ]
+          }
+        }
 
-//          }).then(alertElement =>{
+      })
 
-//             alertElement.present();
-//          })
+      this.enableFormControl(true);
 
-// }
+    } else {
 
-onSubmit({value} : {value : CardInfo}){
-  
-  if(!value.cardCode)
-  {
-    this.loader.present();
-     this.customerService.AddCustomer(value).pipe(catchError(error=>{
-      this.loader.dismiss();
+      console.log('customer id not exist check form data now');
 
-     this.showToast('Some error has been occured','danger');
-     return throwError(()=>error);
+      let formData = { ...this.customerService.customerForm.value }
 
-   })).subscribe(data=>{
-    this.loader.dismiss();
-     
- 
-       if(data.errCode == 0)
-       {
-             this.showToast('Customer Added Successfully','secondary');
-             this.customerService.resetValues();
-             this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);;
-             this.router.navigate(['/customer']);
+          if (formData.cardCode == '' && formData.cardCode != null) {
+            console.log('there is data that exists in form');
+            console.log(this.customerService.customerForm.value);
 
-       }
+          } else {
 
-   })
+            this.customerService.customerFormReset()
+            console.log(this.customerService.customerForm.value);
+          }
+      this.enableFormControl(true);
+    }
   }
-  else
-  {
-
-    this.loader.present();
-   this.customerService.updateCustomer(value.cardCode,value).pipe(catchError(error=>{
-    this.loader.dismiss(); 
-     this.showToast('Some error has been occured','danger');
-     return throwError(()=>error);
-
-   })).subscribe(data=>{
-    this.loader.dismiss(); 
-     
-
-       if(data.errCode == 0)
-       {
-             this.showToast('Customer updated Successfully','secondary');
-             this.customerService.resetValues();
-             this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
-             this.router.navigate(['/customer']);
-
-       }
 
 
-   })
+  ChangeViewDataFlag() {
+
+    this.ViewDataFlag = false;
+    this.enableFormControl(true);
 
   }
 
- 
-}
 
-public async fetchCustomerList(pageIndex,pageSize,searchTerm){
+  onSubmit() {
 
-  //this.loader.present();
-  
 
-  await this.customerService.refreshCustomerList(pageIndex,pageSize,searchTerm);
-  this.customerService.pageIndex += 1;
-    
-  
-}
+    let value: AddCustomerCard = { ...this.customerService.customerForm.value } as AddCustomerCard
 
-async showToast(ToastMsg,colorType) {
-  await this.toastCtrl.create({
-    message: ToastMsg,
-    duration: 2000,
-    position: 'top',
-    color:colorType,
-    buttons: [{
-      text: 'ok',
-      handler: () => {
-        //console.log("ok clicked");
-      }
-    }]
-  }).then(res => res.present());
-}
+    console.log(this.customerService.customerForm.value);
 
+
+
+    console.log(value);
+
+    if (!value.cardCode) {
+      this.loader.present();
+      this.customerService.AddCustomer(value).pipe(catchError(error => {
+        this.loader.dismiss();
+
+        this.showToast('Some error has been occured', 'danger');
+        return throwError(() => error);
+
+      })).subscribe(data => {
+        this.loader.dismiss();
+
+
+        if (data.errCode == 0) {
+          this.showToast('Customer Added Successfully', 'secondary');
+          this.customerService.resetValues();
+          //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);;
+          this.router.navigate(['/customer']);
+
+        }
+
+      })
+    }
+    else {
+      value.bpAddresses.forEach(i=>{
+        i.bpCode = value.cardCode
+      })
+      value.shiptoBPAddresses.forEach(i=>{
+        i.bpCode = value.cardCode
+      })
+
+      this.loader.present();
+      this.customerService.updateCustomer(value.cardCode, value).pipe(catchError(error => {
+        this.loader.dismiss();
+        this.showToast('Some error has been occured', 'danger');
+        return throwError(() => error);
+
+      })).subscribe(data => {
+        this.loader.dismiss();
+
+
+        if (data.errCode == 0) {
+          this.showToast('Customer updated Successfully', 'secondary');
+          this.customerService.resetValues();
+          //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
+          this.router.navigate(['/customer']);
+
+        }
+
+
+      })
+
+    }
+
+
+  }
+
+  public async fetchCustomerList(pageIndex, pageSize, searchTerm) {
+
+    //this.loader.present();
+
+
+    await this.customerService.refreshCustomerList(pageIndex, pageSize, searchTerm);
+    this.customerService.pageIndex += 1;
+
+
+  }
+
+  async showToast(ToastMsg, colorType) {
+    await this.toastCtrl.create({
+      message: ToastMsg,
+      duration: 2000,
+      position: 'top',
+      color: colorType,
+      buttons: [{
+        text: 'ok',
+        handler: () => {
+          //console.log("ok clicked");
+        }
+      }]
+    }).then(res => res.present());
+  }
+
+  redirectToShipAddress() {
+    let cardCode = this.customerService.customerForm.controls.cardCode.value
+    this.router.navigate(['/shiptoaddress'], { queryParams: { cCode: cardCode } })
+  }
+  redirectToBillAddress() {
+    let cardCode = this.customerService.customerForm.controls.cardCode.value
+    this.router.navigate(['/billToAddress'], { queryParams: { cCode: cardCode } })
+  }
+
+  enableSave() {
+
+  }
 
 }

@@ -6,12 +6,13 @@ import { CustomerType } from '../customer-type/customer-type.model';
 import { catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { Territory } from '../zone/zone.model';
+import { AddressInfo } from '../customer/customer.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BillToAddrsService {
-
+  availableAddressList: AddressInfo[] = []
   billToAddrsList: BillToAddrs[] = [];
   territoryList: Territory[] = [];
   public totalCount=0;

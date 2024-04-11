@@ -58,11 +58,10 @@ export const UpdateTerritory = BaseURL + 'Territory/UpdateTerritory'
 
 //#region CustomerType Type Master API link
 export const getAllCustomer = BaseURL + 'BusinessPartner/GetAllBusinessPartner'
-export const getAllCustomerWithoutPagination = BaseURL + 'Customer/GetAllCustomerWithoutPagination'
 export const getCustomerById = BaseURL + 'BusinessPartner/GetBusinessPartnerById'
-export const DeleteCustomer = BaseURL + 'Customer/DeleteCustomer'
-export const AddCustomer = BaseURL + 'Customer/AddCustomer'
-export const UpdateCustomer = BaseURL + 'Customer/UpdateCustomer' 
+export const DeleteCustomer = BaseURL + 'BusinessPartner/DeleteBusinessPartner'
+export const AddCustomer = BaseURL + 'BusinessPartner/AddBusinessPartner'
+export const UpdateCustomer = BaseURL + 'BusinessPartner/UpdateBusinessPartner' 
 
 //#region CustomerType Type Master API link
 export const getAllCustomerType = BaseURL + 'CustomerGroup/GetAllCustomerGroup'
