@@ -197,6 +197,7 @@ export class BilltoAddressPage implements OnInit {
       rowNum: this.newRowNum ? this.newRowNum : 0
     }
     this.customerService.customerForm.controls.bpAddresses.value.push(newAddress)
+    this.billToAddrsService.availableAddressList = [...this.customerService.customerForm.controls.bpAddresses.value]
     this.router.navigate(['/billToAddress']);
 
   }

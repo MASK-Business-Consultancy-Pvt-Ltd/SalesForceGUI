@@ -1,6 +1,6 @@
 import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
 import { BillToAddrsService } from './billto-address.service';
@@ -29,13 +29,17 @@ export class BilltoAddressPage implements OnInit {
     //this.fetchbillToAddrs(this.billToAddrsService.pageIndex, this.billToAddrsService.pageSize, this.billToAddrsService.searchTerm);
     //this.billToAddrsService.pageIndex += 1;
     console.log(this.customerService.customerForm.value);
-    
 
-    this.billToAddrsService.availableAddressList = this.customerService.customerForm.controls.bpAddresses.value as AddressInfo[]
+
+    this.billToAddrsService.availableAddressList = [...this.customerService.customerForm.controls.bpAddresses.value]
 
   }
 
-  
+  ionViewWillEnter() {
+    console.log(this.customerService.customerForm.value);
+
+  }
+
 
   public async fetchbillToAddrs(pageIndex, pageSize, searchTerm) {
 
@@ -99,25 +103,31 @@ export class BilltoAddressPage implements OnInit {
     }).then(res => res.present());
   }
 
-  public checkAvailableAddress(data:AddressInfo): boolean{
-    return this.customerService.customerForm.controls.bpAddresses.value.includes(data)
+  public checkAvailableAddress(data: AddressInfo): boolean {
+    const bpAddresses = this.customerService.customerForm.controls.bpAddresses.value;
+    return bpAddresses.some((address: AddressInfo) => {
+      // Assuming AddressInfo has an appropriate equality check, such as comparing IDs
+      return address.addressName == data.addressName; // Adjust the comparison based on your AddressInfo structure
+    });
   }
 
-  public addAddressToCustomer(event:any,address:AddressInfo){
+  public addAddressToCustomer(event: any, address: AddressInfo) {
     console.log(event.target.checked);
 
-    if(event.target.checked){
+    if (event.target.checked) {
       this.customerService.customerForm.controls.bpAddresses.value.push(address)
     }
-    else{
-      let alist = this.customerService.customerForm.controls.bpAddresses.value.filter(i=>{
+    else {
+      let alist: AddressInfo[] = this.customerService.customerForm.controls.bpAddresses.value.filter(i => {
         return i.addressName != address.addressName
       })
-
-      this.customerService.customerForm.controls.bpAddresses.clear()
-      this.customerService.customerForm.controls.bpAddresses.value.push(...alist)
+      this.customerService.customerForm.controls.bpAddresses.reset()
+      this.customerService.customerForm.controls.bpAddresses.value.push(alist)
     }
-    
+
   }
+
+  
+  
 
 }

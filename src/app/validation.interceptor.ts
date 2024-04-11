@@ -10,12 +10,13 @@ import { Router } from '@angular/router';
 import { Observable, catchError, finalize, throwError } from 'rxjs';
 import * as myGlobalVar from './global';
 import { LoginService } from './login/login.service';
+import { LoaderService } from './common/loader.service';
 
 
 @Injectable()
 export class ValidationInterceptor implements HttpInterceptor {
 
-  constructor(private router:Router, private loginService:LoginService) {}
+  constructor(private router:Router, private loginService:LoginService, private loader:LoaderService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = localStorage.getItem(myGlobalVar.TokenKey);
@@ -31,6 +32,7 @@ export class ValidationInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
          let errorMsg = '';
          if (error.error instanceof ErrorEvent) {
+            this.loader.dismiss()
             console.log('This is client side error');
             errorMsg = `Error: ${error.error.message}`;
          } else {

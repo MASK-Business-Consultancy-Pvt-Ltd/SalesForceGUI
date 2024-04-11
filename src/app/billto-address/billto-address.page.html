@@ -3,7 +3,7 @@
 
 
     <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="'/'"></ion-back-button>
+      <ion-back-button [defaultHref]="'/customer/'+customerService.customerForm.controls.cardCode.value"></ion-back-button>
 
     </ion-buttons>
     <ion-title>Bill To Address</ion-title>
@@ -24,7 +24,7 @@
       <ion-item *ngFor="let address of billToAddrsService.availableAddressList">
         <strong>{{address.addressName}}</strong>
         <br />
-        <ion-checkbox slot="start" [checked]="checkAvailableAddress(address)" (ionChange)="addAddressToCustomer($event,address)"></ion-checkbox>
+        <ion-icon slot="end" (ionChange)="addAddressToCustomer($event,address)" (click)="addAddressToCustomer($event,address)" name="trash-outline"></ion-icon>
       </ion-item>
     </ion-list>
     
