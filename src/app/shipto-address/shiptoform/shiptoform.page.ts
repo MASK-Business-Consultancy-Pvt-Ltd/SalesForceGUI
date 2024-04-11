@@ -61,147 +61,100 @@ export class ShipToAddrsForm implements OnInit {
     } else {
         this.newRowNum = 0;
     }
+    this.activatedRoute.paramMap.subscribe(param => {
+
+      if (param.get('AddressRowNumber') != '') {
+        let addressData: AddressInfo = allAddresses.filter(i => {
+          return i.rowNum == +param.get('AddressRowNumber')
+        })[0]
+        this.ShipToAddrsForm.patchValue({
+          addressName: addressData.addressName,
+          addressType: addressData.addressType,
+          block: addressData.block,
+          bpCode: addressData.bpCode,
+          city: addressData.city,
+          country: addressData.country,
+          rowNum: addressData.rowNum,
+          state: addressData.state,
+          street: addressData.street,
+          zipCode: addressData.zipCode
+        })
+
+
+      } else {
+        this.ShipToAddrsForm.reset()
+        this.ShipToAddrsForm.patchValue({
+          rowNum: this.newRowNum,
+          addressType: 'bo_ShipTo',
+          country: 'IN'
+        })
+      }
+
+    })
 
     console.log('new  rownumber', this.newRowNum);
     
   }
 
-
-
-  enableFormControl(EditFlag) {
-    if (EditFlag == true) {   
-      this.ShipToAddrsForm.get('addressId').enable();
-      this.ShipToAddrsForm.get('block').enable();
-      this.ShipToAddrsForm.get('city').enable();
-      this.ShipToAddrsForm.get('zipCode').enable();
-      this.ShipToAddrsForm.get('state').enable();
-      this.ShipToAddrsForm.get('country').enable();
-      this.ShipToAddrsForm.get('gstNo').enable();
-    }
-    else {
-      this.ShipToAddrsForm.get('addressId').disable();
-      this.ShipToAddrsForm.get('block').disable();
-      this.ShipToAddrsForm.get('city').disable();
-      this.ShipToAddrsForm.get('zipCode').disable();
-      this.ShipToAddrsForm.get('state').disable();
-      this.ShipToAddrsForm.get('country').enable();
-      this.ShipToAddrsForm.get('gstNo').enable();
-  }
-}
-
-  // loadExpenseMasterDetails(addressId = -1) {
-
-  //   if (addressId == -1) {
-  //   }
-  //   else {
-  //     this.shipToAddrsService.getShipToAddrs(addressId).pipe(catchError(error => {
-
-  //       this.showToast('Some error has been occured', 'danger');
-  //       return throwError(() => error);
-
-  //     })).subscribe(data => {
-        
-  //       if (data.responseData) {
-  //         this.loadedShipToAddrs = data.responseData[0];
-  //         this.ShipToAddrsForm.patchValue({
-  //           id: this.loadedShipToAddrs.id,
-  //           addressId: this.loadedShipToAddrs.addressId!,
-  //           block: this.loadedShipToAddrs.block!,
-  //           city: this.loadedShipToAddrs.city!,
-  //           zipCode: this.loadedShipToAddrs.zipCode!,
-  //           state: this.loadedShipToAddrs.state!,
-  //           country: this.loadedShipToAddrs.country!,
-  //           gstNo: this.loadedShipToAddrs.gstNo!
-
-  //         })
-  //       }
-
-  //     })
-
-  //     this.enableFormControl(false);
-
-  //   }
-  // }
-
   ChangeViewDataFlag() {
 
     this.ViewDataFlag = false;
-    this.enableFormControl(true);
 
   }
-
-  DeleteExpenseMaster() {
-
-
-    const shiptoaddressId = this.loadedShipToAddrs.id!;
-
-    this.alertCtrl.create({
-      header: 'Are you sure?',
-      message: 'Do you really want to delete the Expense Head ?',
-      buttons: [{
-        text: 'Cancel',
-        role: 'cancel'
-
-      }, {
-        text: 'Delete',
-        handler: () => {
-
-          this.loader.present();
-          this.shipToAddrsService.deleteShipToAddrs(shiptoaddressId).pipe(catchError(error => {
-            this.loader.dismiss();
-            this.showToast('Some error has been occured', 'danger');
-            return throwError(() => error);
-
-          })).subscribe(data => {
-            this.loader.dismiss();
-
-            if (data.responseData) {
-              if (data.responseData.id == this.loadedShipToAddrs.id && data.errCode == 0) {
-                this.showToast('Expense Master  Deleted Successfully', 'secondary');
-                this.shipToAddrsService.resetValues();
-                this.fetchProductTypeList(this.shipToAddrsService.pageIndex, this.shipToAddrsService.pageSize, this.shipToAddrsService.searchTerm);
-                this.router.navigate(['/shiptoaddress']);
-
-              }
-            }
-
-
-          })
-
-        }
-
-
-      }
-      ]
-
-    }).then(alertElement => {
-
-      alertElement.present();
-    })
-
-  }
-
 
   onSubmit() {
-    
-    let formData = { ...this.ShipToAddrsForm.value }
+    this.activatedRoute.paramMap.subscribe(param => {
+      let formData = { ...this.ShipToAddrsForm.value }
 
-    let newAddress: AddressInfo = {
-      addressName: formData.addressName,
-      street: formData.street,
-      block: formData.block,
-      zipCode: formData.zipCode,
-      city: formData.city,
-      country: formData.country,
-      state: formData.state,
-      addressType: formData.addressType,
-      bpCode: formData.bpCode,
-      rowNum: this.newRowNum ? this.newRowNum : 0
-    }
-    this.customerService.customerForm.controls.shiptoBPAddresses.value.push(newAddress)
-    this.router.navigate(['/shiptoaddress']);
+      if (param.get('AddressRowNumber') != '') {
+
+        console.log(this.shipToAddrsService.availableAddressList);
+
+        let filteredItem: AddressInfo = this.shipToAddrsService.availableAddressList.filter(i => i.rowNum === +param.get('AddressRowNumber'))[0];
+          filteredItem.addressName= formData.addressName,
+          filteredItem.addressType= formData.addressType,
+          filteredItem.block= formData.block,
+          filteredItem.bpCode= formData.bpCode,
+          filteredItem.city= formData.city,
+          filteredItem.country= formData.country,
+          filteredItem.rowNum= formData.rowNum,
+          filteredItem.state= formData.state,
+          filteredItem.street= formData.street,
+          filteredItem.zipCode= formData.zipCode
+        
+        
+
+      } else {
+        let newAddress: AddressInfo = {
+          addressName: formData.addressName,
+          street: formData.street,
+          block: formData.block,
+          zipCode: formData.zipCode,
+          city: formData.city,
+          country: formData.country,
+          state: formData.state,
+          addressType: formData.addressType,
+          bpCode: formData.bpCode,
+          rowNum: formData.rowNum ? formData.rowNum : this.newRowNum
+        }
+        this.customerService.customerForm.controls.shiptoBPAddresses.value.push(newAddress)
+        this.shipToAddrsService.availableAddressList = [...this.customerService.customerForm.controls.shiptoBPAddresses.value]
+
+      }
+
+      if (this.ShipToAddrsForm.valid) {
+        this.router.navigate(['/shiptoaddress']);
+      } else {
+        this.showToast('Please fill in all information','danger')
+      }
+    })
+
+
 
   }
+
+
+ 
 
   public async fetchProductTypeList(pageIndex,pageSize,searchTerm){
 

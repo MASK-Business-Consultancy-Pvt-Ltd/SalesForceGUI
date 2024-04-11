@@ -21,10 +21,10 @@
 
   <ion-content [fullscreen]="true">
     <ion-list>
-      <ion-item *ngFor="let address of billToAddrsService.availableAddressList">
-        <strong>{{address.addressName}}</strong>
+      <ion-item  *ngFor="let address of billToAddrsService.availableAddressList">
+        <strong [routerLink]="['/billToAddress',address.rowNum]">{{address.addressName}}</strong>
         <br />
-        <ion-icon slot="end" (ionChange)="addAddressToCustomer($event,address)" (click)="addAddressToCustomer($event,address)" name="trash-outline"></ion-icon>
+        <ion-icon slot="end" id="present-alert" (click)="presentAlert(address)"  name="trash-outline"></ion-icon>
       </ion-item>
     </ion-list>
     
@@ -36,5 +36,11 @@
 <ion-infinite-scroll-content></ion-infinite-scroll-content>
 </ion-infinite-scroll>
 </ion-content>
+
+<ion-alert
+  header="Confirm Delete"
+  message="Are you sure you want to delete this item?"
+  (didDismiss)="handleAlertDismiss($event)"
+></ion-alert>
 
 

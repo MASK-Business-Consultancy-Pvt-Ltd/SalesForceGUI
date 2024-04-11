@@ -193,6 +193,7 @@ export class CustomerDetailPage implements OnInit {
 
         if (data.errCode == 0) {
           this.showToast('Customer Added Successfully', 'secondary');
+          this.customerService.customerFormReset()
           this.customerService.resetValues();
           //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);;
           this.router.navigate(['/customer']);
@@ -203,10 +204,12 @@ export class CustomerDetailPage implements OnInit {
     }
     else {
       value.bpAddresses.forEach(i=>{
-        i.bpCode = value.cardCode
+        i.bpCode = value.cardCode,
+        i.addressType = 'bo_BillTo'
       })
       value.shiptoBPAddresses.forEach(i=>{
-        i.bpCode = value.cardCode
+        i.bpCode = value.cardCode,
+        i.addressType = 'bo_ShipTo'
       })
 
       this.loader.present();
@@ -222,6 +225,8 @@ export class CustomerDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Customer updated Successfully', 'secondary');
           this.customerService.resetValues();
+          this.customerService.customerFormReset()
+
           //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
           this.router.navigate(['/customer']);
 

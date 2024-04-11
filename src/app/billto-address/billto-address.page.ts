@@ -2,10 +2,11 @@ import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
+import { AlertController, InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
 import { BillToAddrsService } from './billto-address.service';
 import { CustomerService } from '../customer/customer.service';
 import { AddressInfo } from '../customer/customer.model';
+
 @Component({
   selector: 'app-billto-address',
   templateUrl: './billto-address.page.html',
@@ -22,7 +23,11 @@ import { AddressInfo } from '../customer/customer.model';
 })
 export class BilltoAddressPage implements OnInit {
 
-  constructor(public billToAddrsService: BillToAddrsService, private toastCtrl: ToastController, public customerService: CustomerService) { }
+  constructor(public billToAddrsService: BillToAddrsService, 
+    private toastCtrl: ToastController, 
+    public customerService: CustomerService,
+    private alertCtrl:AlertController
+    ) { }
 
   ngOnInit() {
     //this.billToAddrsService.searchTerm = "";
@@ -31,7 +36,7 @@ export class BilltoAddressPage implements OnInit {
     console.log(this.customerService.customerForm.value);
 
 
-    this.billToAddrsService.availableAddressList = [...this.customerService.customerForm.controls.bpAddresses.value]
+    this.billToAddrsService.availableAddressList = this.customerService.customerForm.controls.bpAddresses.value
 
   }
 
@@ -111,23 +116,57 @@ export class BilltoAddressPage implements OnInit {
     });
   }
 
-  public addAddressToCustomer(event: any, address: AddressInfo) {
-    console.log(event.target.checked);
+  public addAddressToCustomer(address: AddressInfo) {
 
-    if (event.target.checked) {
-      this.customerService.customerForm.controls.bpAddresses.value.push(address)
-    }
-    else {
-      let alist: AddressInfo[] = this.customerService.customerForm.controls.bpAddresses.value.filter(i => {
-        return i.addressName != address.addressName
-      })
-      this.customerService.customerForm.controls.bpAddresses.reset()
-      this.customerService.customerForm.controls.bpAddresses.value.push(alist)
-    }
+    
+    let alist: AddressInfo[] = this.customerService.customerForm.controls.bpAddresses.value.filter(i => {
+      return i.addressName != address.addressName
+    })
+    this.customerService.customerForm.controls.bpAddresses.reset()
+    this.customerService.customerForm.controls.bpAddresses.value.push(...alist)
+    this.billToAddrsService.availableAddressList = this.customerService.customerForm.controls.bpAddresses.value
 
   }
 
+  async presentAlert(address: AddressInfo) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirm Delete',
+      message: `Are you sure you want to delete ${address.addressName}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Cancel clicked');
+          },
+        },
+        {
+          text: 'Delete',
+          cssClass: 'danger',
+          handler: () => {
+            this.addAddressToCustomer(address); // Call deleteAddress method with the address
+          },
+        },
+      ],
+    });
+
+    alert.present();
+  }
+
   
+
+
+
   
+  handleAlertDismiss(event: any) {
+    // Handle alert dismiss if needed
+    console.log('Alert dismissed:', event);
+  }
+
+  
+
+
+
 
 }
