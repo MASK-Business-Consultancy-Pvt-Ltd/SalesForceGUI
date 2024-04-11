@@ -170,6 +170,7 @@ export class CustomerDetailPage implements OnInit {
 
   onSubmit() {
 
+    this.customerService.customerForm.controls.bpAddresses.value.push(...this.customerService.customerForm.controls.shiptoBPAddresses.value)
 
     let value: AddCustomerCard = { ...this.customerService.customerForm.value } as AddCustomerCard
 
@@ -203,14 +204,7 @@ export class CustomerDetailPage implements OnInit {
       })
     }
     else {
-      value.bpAddresses.forEach(i=>{
-        i.bpCode = value.cardCode,
-        i.addressType = 'bo_BillTo'
-      })
-      value.shiptoBPAddresses.forEach(i=>{
-        i.bpCode = value.cardCode,
-        i.addressType = 'bo_ShipTo'
-      })
+
 
       this.loader.present();
       this.customerService.updateCustomer(value.cardCode, value).pipe(catchError(error => {

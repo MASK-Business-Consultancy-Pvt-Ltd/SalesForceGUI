@@ -98,7 +98,11 @@ export class BilltoAddressPage implements OnInit {
 
   onSubmit() {
     this.activatedRoute.paramMap.subscribe(param => {
+      this.billtoForm.patchValue({
+        addressType: 'bo_BillTo',
+      })
       let formData = { ...this.billtoForm.value }
+      
 
       if (param.get('AddressRowNumber') != '') {
 

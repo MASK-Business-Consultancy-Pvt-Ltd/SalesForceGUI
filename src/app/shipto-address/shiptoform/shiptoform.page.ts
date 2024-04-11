@@ -104,6 +104,9 @@ export class ShipToAddrsForm implements OnInit {
 
   onSubmit() {
     this.activatedRoute.paramMap.subscribe(param => {
+      this.ShipToAddrsForm.patchValue({
+        addressType: 'bo_ShipTo',
+      })
       let formData = { ...this.ShipToAddrsForm.value }
 
       if (param.get('AddressRowNumber') != '') {
