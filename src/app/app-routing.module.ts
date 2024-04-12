@@ -244,7 +244,7 @@ const routes: Routes = [
         loadComponent: () => import('./billto-address/billto-address.page').then(x => x.BilltoAddressPage)
       },
       {
-        path: ':billtoform',
+        path: ':AddressRowNumber',
         loadComponent: () => import('./billto-address/billtoform/billtoform.page').then(m => m.BilltoAddressPage)
       }
 
@@ -260,7 +260,7 @@ const routes: Routes = [
         loadComponent: () => import('./shipto-address/shipto-address.page').then(x => x.ShiptoAddressPage)
       },
       {
-        path: ':shiptoaddressId',
+        path: ':AddressRowNumber',
         loadComponent: () => import('./shipto-address/shiptoform/shiptoform.page').then(m => m.ShipToAddrsForm)
       }
     ],canActivate:[AuthGuard]

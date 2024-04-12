@@ -1,11 +1,12 @@
 import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
+import { AlertController, InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
 import { BillToAddrsService } from './billto-address.service';
 import { CustomerService } from '../customer/customer.service';
 import { AddressInfo } from '../customer/customer.model';
+
 @Component({
   selector: 'app-billto-address',
   templateUrl: './billto-address.page.html',
@@ -22,20 +23,28 @@ import { AddressInfo } from '../customer/customer.model';
 })
 export class BilltoAddressPage implements OnInit {
 
-  constructor(public billToAddrsService: BillToAddrsService, private toastCtrl: ToastController, public customerService: CustomerService) { }
+  constructor(public billToAddrsService: BillToAddrsService, 
+    private toastCtrl: ToastController, 
+    public customerService: CustomerService,
+    private alertCtrl:AlertController
+    ) { }
 
   ngOnInit() {
     //this.billToAddrsService.searchTerm = "";
     //this.fetchbillToAddrs(this.billToAddrsService.pageIndex, this.billToAddrsService.pageSize, this.billToAddrsService.searchTerm);
     //this.billToAddrsService.pageIndex += 1;
     console.log(this.customerService.customerForm.value);
-    
 
-    this.billToAddrsService.availableAddressList = this.customerService.customerForm.controls.bpAddresses.value as AddressInfo[]
+
+    this.billToAddrsService.availableAddressList = this.customerService.customerForm.controls.bpAddresses.value
 
   }
 
-  
+  ionViewWillEnter() {
+    console.log(this.customerService.customerForm.value);
+
+  }
+
 
   public async fetchbillToAddrs(pageIndex, pageSize, searchTerm) {
 
@@ -99,25 +108,65 @@ export class BilltoAddressPage implements OnInit {
     }).then(res => res.present());
   }
 
-  public checkAvailableAddress(data:AddressInfo): boolean{
-    return this.customerService.customerForm.controls.bpAddresses.value.includes(data)
+  public checkAvailableAddress(data: AddressInfo): boolean {
+    const bpAddresses = this.customerService.customerForm.controls.bpAddresses.value;
+    return bpAddresses.some((address: AddressInfo) => {
+      // Assuming AddressInfo has an appropriate equality check, such as comparing IDs
+      return address.addressName == data.addressName; // Adjust the comparison based on your AddressInfo structure
+    });
   }
 
-  public addAddressToCustomer(event:any,address:AddressInfo){
-    console.log(event.target.checked);
+  public addAddressToCustomer(address: AddressInfo) {
 
-    if(event.target.checked){
-      this.customerService.customerForm.controls.bpAddresses.value.push(address)
-    }
-    else{
-      let alist = this.customerService.customerForm.controls.bpAddresses.value.filter(i=>{
-        return i.addressName != address.addressName
-      })
-
-      this.customerService.customerForm.controls.bpAddresses.clear()
-      this.customerService.customerForm.controls.bpAddresses.value.push(...alist)
-    }
     
+    let alist: AddressInfo[] = this.customerService.customerForm.controls.bpAddresses.value.filter(i => {
+      return i.addressName != address.addressName
+    })
+    this.customerService.customerForm.controls.bpAddresses.reset()
+    this.customerService.customerForm.controls.bpAddresses.value.push(...alist)
+    this.billToAddrsService.availableAddressList = this.customerService.customerForm.controls.bpAddresses.value
+
   }
+
+  async presentAlert(address: AddressInfo) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirm Delete',
+      message: `Are you sure you want to delete ${address.addressName}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Cancel clicked');
+          },
+        },
+        {
+          text: 'Delete',
+          cssClass: 'danger',
+          handler: () => {
+            this.addAddressToCustomer(address); // Call deleteAddress method with the address
+          },
+        },
+      ],
+    });
+
+    alert.present();
+  }
+
+  
+
+
+
+  
+  handleAlertDismiss(event: any) {
+    // Handle alert dismiss if needed
+    console.log('Alert dismissed:', event);
+  }
+
+  
+
+
+
 
 }

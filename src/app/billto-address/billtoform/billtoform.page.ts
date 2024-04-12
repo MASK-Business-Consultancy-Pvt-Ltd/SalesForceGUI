@@ -28,10 +28,10 @@ import { EmployeeService } from 'src/app/employee/employee.service';
 export class BilltoAddressPage implements OnInit {
   loadedBillToAddrs: BillToAddrs = {};
 
-  newRowNum:number = 0
+  newRowNum: number = 0
   ViewDataFlag = false;
   public billtoForm = new FormGroup({
-    addressName: new FormControl(''),
+    addressName: new FormControl('', [Validators.required]),
     street: new FormControl(''),
     block: new FormControl(''),
     zipCode: new FormControl(''),
@@ -44,160 +44,110 @@ export class BilltoAddressPage implements OnInit {
   });
   constructor(private activatedRoute: ActivatedRoute,
     private billToAddrsService: BillToAddrsService, private router: Router, private alertCtrl: AlertController,
-    private toastCtrl: ToastController, private loader: LoaderService, private customerService: CustomerService,public employeeService:EmployeeService) { }
+    private toastCtrl: ToastController, private loader: LoaderService, private customerService: CustomerService, public employeeService: EmployeeService) { }
 
-  ngOnInit() {  
-
+  ngOnInit() {
     this.employeeService.getStateList('IN');
     this.employeeService.getCountryList();
-
     const allAddresses = [...this.customerService.customerForm.controls.bpAddresses.value, ...this.customerService.customerForm.controls.shiptoBPAddresses.value];
-
     const validAddresses = allAddresses.filter(obj => obj.rowNum != null && !isNaN(obj.rowNum) && obj.rowNum !== 0);
-    
+
     if (validAddresses.length > 0) {
-        this.newRowNum = validAddresses.reduce((maxId, obj) => (obj.rowNum > maxId ? obj.rowNum : maxId), -Infinity) + 1;
+      this.newRowNum = validAddresses.reduce((maxId, obj) => (obj.rowNum > maxId ? obj.rowNum : maxId), -Infinity) + 1;
     } else {
-        this.newRowNum = 0;
+      this.newRowNum = 0;
     }
-    
-  }
+    this.activatedRoute.paramMap.subscribe(param => {
+
+      if (param.get('AddressRowNumber') != '') {
+        let addressData: AddressInfo = allAddresses.filter(i => {
+          return i.rowNum == +param.get('AddressRowNumber')
+        })[0]
+        this.billtoForm.patchValue({
+          addressName: addressData.addressName,
+          addressType: addressData.addressType,
+          block: addressData.block,
+          bpCode: addressData.bpCode,
+          city: addressData.city,
+          country: addressData.country,
+          rowNum: addressData.rowNum,
+          state: addressData.state,
+          street: addressData.street,
+          zipCode: addressData.zipCode
+        })
 
 
-
-
-  enableFormControl(EditFlag) {
-    if (EditFlag == true) {
-      this.billtoForm.get('addressId').enable();
-      this.billtoForm.get('block').enable();
-      this.billtoForm.get('city').enable();
-      this.billtoForm.get('zipCode').enable();
-      this.billtoForm.get('state').enable();
-      this.billtoForm.get('country').enable();
-      this.billtoForm.get('gstNo').enable();
-    }
-    else {
-      this.billtoForm.get('addressId').disable();
-      this.billtoForm.get('block').disable();
-      this.billtoForm.get('city').disable();
-      this.billtoForm.get('zipCode').disable();
-      this.billtoForm.get('state').disable();
-      this.billtoForm.get('country').enable();
-      this.billtoForm.get('gstNo').enable();
-    }
-  }
-
-  // loadExpenseMasterDetails(DesignationId = -1) {
-
-  //   if (DesignationId == -1) {
-  //   }
-  //   else {
-  //     this.billToAddrsService.getBillToAddrs(DesignationId).pipe(catchError(error => {
-
-  //       this.showToast('Some error has been occured', 'danger');
-  //       return throwError(() => error);
-
-  //     })).subscribe(data => {
-
-  //       if (data.responseData) {
-  //         this.loadedBillToAddrs = data.responseData[0];
-  //         this.billtoForm.patchValue({
-  //           id: this.loadedBillToAddrs.id,
-  //           addressId: this.loadedBillToAddrs.addressId!,
-  //           block: this.loadedBillToAddrs.block!,
-  //           city: this.loadedBillToAddrs.city!,
-  //           zipCode: this.loadedBillToAddrs.zipCode!,
-  //           state: this.loadedBillToAddrs.state!,
-  //           country: this.loadedBillToAddrs.country!,
-  //           gstNo: this.loadedBillToAddrs.gstNo!
-
-  //         })
-  //       }
-
-  //     })
-
-  //     this.enableFormControl(false);
-
-  //   }
-  // }
-
-  ChangeViewDataFlag() {
-
-    this.ViewDataFlag = false;
-    this.enableFormControl(true);
-
-  }
-
-  DeleteExpenseMaster() {
-
-
-    const billtoform = this.loadedBillToAddrs.id!;
-
-    this.alertCtrl.create({
-      header: 'Are you sure?',
-      message: 'Do you really want to delete the Expense Head ?',
-      buttons: [{
-        text: 'Cancel',
-        role: 'cancel'
-
-      }, {
-        text: 'Delete',
-        handler: () => {
-
-          this.loader.present();
-          this.billToAddrsService.deleteBillToAddrs(billtoform).pipe(catchError(error => {
-            this.loader.dismiss();
-            this.showToast('Some error has been occured', 'danger');
-            return throwError(() => error);
-
-          })).subscribe(data => {
-            this.loader.dismiss();
-
-            if (data.responseData) {
-              if (data.responseData.id == this.loadedBillToAddrs.id && data.errCode == 0) {
-                this.showToast('Expense Master  Deleted Successfully', 'secondary');
-                this.billToAddrsService.resetValues();
-                this.fetchProductTypeList(this.billToAddrsService.pageIndex, this.billToAddrsService.pageSize, this.billToAddrsService.searchTerm);
-                this.router.navigate(['/billToAddress']);
-
-              }
-            }
-
-
-          })
-
-        }
-
-
+      } else {
+        this.billtoForm.reset()
+        this.billtoForm.patchValue({
+          rowNum: this.newRowNum,
+          addressType: 'bo_BillTo',
+          country: 'IN'
+        })
       }
-      ]
 
-    }).then(alertElement => {
-
-      alertElement.present();
     })
+
+
+
+
+
 
   }
 
 
   onSubmit() {
+    this.activatedRoute.paramMap.subscribe(param => {
+      this.billtoForm.patchValue({
+        addressType: 'bo_BillTo',
+      })
+      let formData = { ...this.billtoForm.value }
+      
 
-    let formData = { ...this.billtoForm.value }
+      if (param.get('AddressRowNumber') != '') {
 
-    let newAddress: AddressInfo = {
-      addressName: formData.addressName,
-      street: formData.street,
-      block: formData.block,
-      zipCode: formData.zipCode,
-      city: formData.city,
-      country: formData.country,
-      state: formData.state,
-      addressType: formData.addressType,
-      bpCode: formData.bpCode,
-      rowNum: this.newRowNum ? this.newRowNum : 0
-    }
-    this.customerService.customerForm.controls.bpAddresses.value.push(newAddress)
-    this.router.navigate(['/billToAddress']);
+        console.log(this.billToAddrsService.availableAddressList);
+
+        let filteredItem: AddressInfo = this.billToAddrsService.availableAddressList.filter(i => i.rowNum === +param.get('AddressRowNumber'))[0];
+          filteredItem.addressName= formData.addressName,
+          filteredItem.addressType= formData.addressType,
+          filteredItem.block= formData.block,
+          filteredItem.bpCode= formData.bpCode,
+          filteredItem.city= formData.city,
+          filteredItem.country= formData.country,
+          filteredItem.rowNum= formData.rowNum,
+          filteredItem.state= formData.state,
+          filteredItem.street= formData.street,
+          filteredItem.zipCode= formData.zipCode
+        
+        
+
+      } else {
+        let newAddress: AddressInfo = {
+          addressName: formData.addressName,
+          street: formData.street,
+          block: formData.block,
+          zipCode: formData.zipCode,
+          city: formData.city,
+          country: formData.country,
+          state: formData.state,
+          addressType: formData.addressType,
+          bpCode: formData.bpCode,
+          rowNum: formData.rowNum ? formData.rowNum : this.newRowNum
+        }
+        this.customerService.customerForm.controls.bpAddresses.value.push(newAddress)
+        this.billToAddrsService.availableAddressList = [...this.customerService.customerForm.controls.bpAddresses.value]
+
+      }
+
+      if (this.billtoForm.valid) {
+        this.router.navigate(['/billToAddress']);
+      } else {
+        this.showToast('Please fill in all information','danger')
+      }
+    })
+
+
 
   }
 
@@ -226,10 +176,10 @@ export class BilltoAddressPage implements OnInit {
       }]
     }).then(res => res.present());
   }
-  fetchStateList(event:any){
+  fetchStateList(event: any) {
     this.employeeService.getStateList('IN')
   }
-  fetchCountryList(){
+  fetchCountryList() {
     this.employeeService.getCountryList();
 
   }

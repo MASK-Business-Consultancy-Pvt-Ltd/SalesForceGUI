@@ -42,9 +42,12 @@ export class LoginPage implements OnInit {
           this.router.navigate(['/dashboard']);
         }
       },
+      error: ()=>{
+        this.loader.dismiss()
+      }
     });
     } else {
-      // Handle form validation errors
+      
     }
   }
 

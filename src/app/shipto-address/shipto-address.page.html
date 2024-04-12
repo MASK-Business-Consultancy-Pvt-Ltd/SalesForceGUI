@@ -20,9 +20,10 @@
 <ion-content [fullscreen]="true">
   <ion-list>
     <ion-item *ngFor="let address of shiptoAddressService.availableAddressList">
-      <strong>{{address.addressName}}</strong>
+      <strong [routerLink]="['/shiptoaddress',address.rowNum]">{{address.addressName}}</strong>
+
       <br />
-      <ion-checkbox slot="start" [checked]="checkAvailableAddress(address)" (ionChange)="addAddressToCustomer($event,address)"></ion-checkbox>
+      <ion-icon slot="end" id="present-alert" (click)="presentAlert(address)"  name="trash-outline"></ion-icon>
     </ion-item>
   </ion-list>
   
@@ -34,3 +35,9 @@
 <ion-infinite-scroll-content></ion-infinite-scroll-content>
 </ion-infinite-scroll>
 </ion-content>
+
+<ion-alert
+  header="Confirm Delete"
+  message="Are you sure you want to delete this item?"
+  (didDismiss)="handleAlertDismiss($event)"
+></ion-alert>

@@ -3,7 +3,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
+import { AlertController, InfiniteScrollCustomEvent, IonicModule, ToastController } from '@ionic/angular';
 import { AddressInfo } from '../customer/customer.model';
 import { CustomerService } from '../customer/customer.service';
 
@@ -21,7 +21,9 @@ import { CustomerService } from '../customer/customer.service';
 })
 export class ShiptoAddressPage implements OnInit {
 
-  constructor(public shiptoAddressService: ShiptoAddressService, private toastCtrl: ToastController, public customerService: CustomerService) { }
+  constructor(public shiptoAddressService: ShiptoAddressService, private toastCtrl: ToastController, 
+    public customerService: CustomerService,private alertCtrl:AlertController
+    ) { }
 
   ngOnInit() {
     // this.shiptoAddressService.searchTerm = "";
@@ -92,25 +94,54 @@ export class ShiptoAddressPage implements OnInit {
     }).then(res => res.present());
   }
 
-  public checkAvailableAddress(data: AddressInfo): boolean {
-    return this.customerService.customerForm.controls.shiptoBPAddresses.value.includes(data)
+
+  public addAddressToCustomer(address: AddressInfo) {
+    console.log(address);
+    
+    let alist: AddressInfo[] = this.customerService.customerForm.controls.shiptoBPAddresses.value.filter(i => {
+      return i.addressName != address.addressName
+    })
+    this.customerService.customerForm.controls.shiptoBPAddresses.reset()
+    this.customerService.customerForm.controls.shiptoBPAddresses.value.push(...alist)
+    console.log(this.customerService.customerForm.controls.shiptoBPAddresses.value);
+    this.shiptoAddressService.availableAddressList = this.customerService.customerForm.controls.shiptoBPAddresses.value
   }
 
-  public addAddressToCustomer(event: any, address: AddressInfo) {
-    console.log(event.target.checked);
 
-    if (event.target.checked) {
-      this.customerService.customerForm.controls.shiptoBPAddresses.value.push(address)
-    }
-    else {
-      let alist = this.customerService.customerForm.controls.shiptoBPAddresses.value.filter(i => {
-        return i.addressName != address.addressName
-      })
+  async presentAlert(address: AddressInfo) {
+    const alert = await this.alertCtrl.create({
+      header: 'Confirm Delete',
+      message: `Are you sure you want to delete ${address.addressName}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Cancel clicked');
+          },
+        },
+        {
+          text: 'Delete',
+          cssClass: 'danger',
+          handler: () => {
+            this.addAddressToCustomer(address); // Call deleteAddress method with the address
+          },
+        },
+      ],
+    });
 
-      this.customerService.customerForm.controls.shiptoBPAddresses.clear()
-      this.customerService.customerForm.controls.shiptoBPAddresses.value.push(...alist)
-    }
+    alert.present();
+  }
 
+  
+
+
+
+  
+  handleAlertDismiss(event: any) {
+    // Handle alert dismiss if needed
+    console.log('Alert dismissed:', event);
   }
 }
 

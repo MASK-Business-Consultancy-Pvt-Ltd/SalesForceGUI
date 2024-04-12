@@ -170,6 +170,7 @@ export class CustomerDetailPage implements OnInit {
 
   onSubmit() {
 
+    this.customerService.customerForm.controls.bpAddresses.value.push(...this.customerService.customerForm.controls.shiptoBPAddresses.value)
 
     let value: AddCustomerCard = { ...this.customerService.customerForm.value } as AddCustomerCard
 
@@ -193,6 +194,7 @@ export class CustomerDetailPage implements OnInit {
 
         if (data.errCode == 0) {
           this.showToast('Customer Added Successfully', 'secondary');
+          this.customerService.customerFormReset()
           this.customerService.resetValues();
           //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);;
           this.router.navigate(['/customer']);
@@ -202,12 +204,7 @@ export class CustomerDetailPage implements OnInit {
       })
     }
     else {
-      value.bpAddresses.forEach(i=>{
-        i.bpCode = value.cardCode
-      })
-      value.shiptoBPAddresses.forEach(i=>{
-        i.bpCode = value.cardCode
-      })
+
 
       this.loader.present();
       this.customerService.updateCustomer(value.cardCode, value).pipe(catchError(error => {
@@ -222,6 +219,8 @@ export class CustomerDetailPage implements OnInit {
         if (data.errCode == 0) {
           this.showToast('Customer updated Successfully', 'secondary');
           this.customerService.resetValues();
+          this.customerService.customerFormReset()
+
           //this.fetchCustomerList(this.customerService.pageIndex, this.customerService.pageSize, this.customerService.searchTerm);
           this.router.navigate(['/customer']);
 
